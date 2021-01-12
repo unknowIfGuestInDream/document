@@ -6,7 +6,7 @@
 侧重点更倾向于java服务端所涉及的技术栈，希望本文能为您得到帮助。
 
 
-* 后端框架：springBoot
+* 后端框架：springBoot2.3.0
 * 其他技术：minio、MongoDB4.2.5、mysql5.7、elasticsearch7.6.2、logstash7.6.2、rabbitmq3.7.14、redis5.0
 
 [Gitee](https://gitee.com/tanglchen/springBootDemo)
