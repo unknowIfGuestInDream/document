@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <title>Document</title>
+    <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     <!-- 设置浏览器图标 -->
     <link rel="icon" href="favicon.ico" type="image/x-icon"/>
@@ -12,7 +12,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <!-- 默认主题 -->
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify/lib/themes/vue.css">
+    <link rel="stylesheet" href="themes/vue.css">
 </head>
 
 <body>
@@ -61,7 +61,7 @@
             language: 'chinese'
         },
         plugins: [
-            function(hook) {
+            function (hook) {
                 //header模块暂时隐藏
                 var header = [
                     '<p>',
@@ -79,9 +79,9 @@
                 hook.afterEach(function (html) {
                     // var isReadme = window.location.href.indexOf("README");
                     var isReadme = 1;
-                    if(isReadme===-1){
+                    if (isReadme === -1) {
                         return header + html + footer;
-                    }else{
+                    } else {
                         return html + footer;
                     }
                 });
@@ -90,20 +90,18 @@
     }
 </script>
 <!-- docsify的js依赖 -->
-<script src="//cdn.jsdelivr.net/npm/docsify/lib/docsify.min.js"></script>
+<script src="lib/docsify.min.js"></script>
 <!-- emoji表情支持 -->
-<script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/emoji.min.js"></script>
+<script src="lib/emoji.min.js"></script>
 <!-- 图片放大缩小支持 -->
-<script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/zoom-image.min.js"></script>
+<script src="lib/zoom-image.min.js"></script>
 <!-- 搜索功能支持 -->
-<script src="https://cdn.bootcss.com/docsify/4.5.9/plugins/search.min.js"></script>
->
+<script src="lib/search.js"></script>
 <!-- 复制到剪贴板 -->
-<script src="//unpkg.com/docsify-copy-code"></script>
+<script src="lib/docsify-copy-code.min.js"></script>
 <!-- 字数统计 -->
-<script src="//unpkg.com/docsify-count/dist/countable.js"></script>
+<script src="lib/countable.js"></script>
 <!--Java代码高亮-->
-<script src="//unpkg.com/prismjs/components/prism-java.js"></script>
+<script src="lib/prism-java.js"></script>
 </body>
-
 </html>
