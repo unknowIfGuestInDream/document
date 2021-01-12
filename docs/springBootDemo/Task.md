@@ -4,7 +4,7 @@
 
 启动类新增 @EnableScheduling注解来支持Task;
 
-##在注解上直接使用task定时任务
+##在注解上直接使用task定时任务 :id=hello-world
 
 测试用例:
 ```java
