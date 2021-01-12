@@ -52,9 +52,9 @@ public class ScheduledService {
 }
 ```
 
-!>使用Scheduled Task的弊端就是不适用于分布式集群的操作，Scheduled Task是一种轻量级的任务定时调度器，相比于Quartz,减少了很多的配置信息，但是Scheduled Task不适用于服务器集群，引文在服务器集群下会出现任务被多次调度执行的情况，因为集群的节点之间是不会共享任务信息的，每个节点的定时任务都会定时执行
+!> 使用Scheduled Task的弊端就是不适用于分布式集群的操作，Scheduled Task是一种轻量级的任务定时调度器，相比于Quartz,减少了很多的配置信息，但是Scheduled Task不适用于服务器集群，引文在服务器集群下会出现任务被多次调度执行的情况，因为集群的节点之间是不会共享任务信息的，每个节点的定时任务都会定时执行
 
-由于Task是单线程的，所以实战中可以配置定时任务线程池或者通过spring的注解@Async异步调用
+?> 由于Task是单线程的，所以实战中可以配置定时任务线程池或者通过spring的注解@Async异步调用
 
 ## 可更改的定时任务 :id=task2
 
@@ -140,4 +140,4 @@ public class TaskController implements SchedulingConfigurer {
 }
 ```
 
-!>这种方式控制不强，没有持久化，不随时启动停止
+!> 这种方式控制不强，没有持久化，不随时启动停止
