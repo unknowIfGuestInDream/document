@@ -10,5 +10,3 @@
 
 [Gitee](https://gitee.com/tanglchen/springBootDemo)
 [Get Started](README.md)
-
-![color](#f0f0f0)
