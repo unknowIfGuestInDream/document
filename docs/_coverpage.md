@@ -10,4 +10,4 @@
 * 其他技术：minio、MongoDB、mysql、elasticsearch、logstash、rabbitmq、redis
 
 [Gitee](https://gitee.com/tanglchen/springBootDemo)
-[Get Started](#quick-start)
+[Get Started](#README)
