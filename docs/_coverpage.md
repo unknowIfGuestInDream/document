@@ -1,5 +1,6 @@
 ![logo](images/logo.png)
-
+<!-- 背景色 -->
+![color](#f0f0f0)
 # springBootDemo
 
 > 本文档是作者从事java工程师以来的学习历程，旨在为大家提供一个较详细的学习教程，
@@ -7,8 +8,7 @@
 
 
 * 后端框架：springBoot
-* UI类库：Mint-UI、Vant
-* 后端数据接口：Express、MongoDB
+* 其他技术：minio、MongoDB、mysql、elasticsearch、logstash、rabbitmq、redis
 
 [Gitee](https://gitee.com/tanglchen/springBootDemo)
 [Get Started](#quick-start)
