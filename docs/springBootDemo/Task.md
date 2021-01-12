@@ -55,3 +55,89 @@ public class ScheduledService {
 !>使用Scheduled Task的弊端就是不适用于分布式集群的操作，Scheduled Task是一种轻量级的任务定时调度器，相比于Quartz,减少了很多的配置信息，但是Scheduled Task不适用于服务器集群，引文在服务器集群下会出现任务被多次调度执行的情况，因为集群的节点之间是不会共享任务信息的，每个节点的定时任务都会定时执行
 
 由于Task是单线程的，所以实战中可以配置定时任务线程池或者通过spring的注解@Async异步调用
+
+## 可更改的定时任务 :id=task2
+
+```java
+
+import java.util.Date;
+ 
+import org.apache.log4j.Logger;
+import org.springframework.scheduling.Trigger;
+import org.springframework.scheduling.TriggerContext;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.SchedulingConfigurer;
+import org.springframework.scheduling.config.ScheduledTaskRegistrar;
+import org.springframework.scheduling.support.CronTrigger;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+ 
+@RestController
+@EnableScheduling
+@RequestMapping("/task")
+public class TaskController implements SchedulingConfigurer {
+ 
+    private Logger logger = Logger.getLogger(TaskController.class);
+ 
+    /**
+     * 定时任务的定时器表达式： 秒 分 时 日期 月 星期
+     * 注意：有的地方说定时正则表达式可以有year，即7个元素，但是，在spring-boot里面，只能是6个元素，没有年。
+     */
+    private String cronExpression = "1/5 * * * * *";
+ 
+    /**
+     * 通过REST API请求对参数进行修改，定时规则进行调整
+     * @param exp
+     * @return
+     */
+    @RequestMapping("/change")
+    public String change(@RequestParam("exp") String exp) {
+        cronExpression = exp;
+        logger.info("new cron expression: " + exp);
+        return cronExpression;
+    }
+ 
+    /**
+     * 定时任务要执行的方法
+     * @return
+     */
+    private Runnable getTask() {
+        Runnable task = new Runnable() {
+            @Override
+            public void run() {
+            	logger.info("==定时任务==开始: " + new Date());
+            	
+            	//业务处理，忽视所有异常
+                try {
+                	//do something
+                	
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+                
+                logger.info("==定时任务==结束: " + new Date());
+            }
+        };
+        return task;
+    }
+ 
+    /**
+     * 调度实现的时间控制
+     * @param scheduledTaskRegistrar
+     */
+    @Override
+    public void configureTasks(ScheduledTaskRegistrar scheduledTaskRegistrar) {
+        Trigger trigger=new Trigger() {
+            @Override
+            public Date nextExecutionTime(TriggerContext triggerContext) {
+                CronTrigger cronTrigger=new CronTrigger(cronExpression);
+                return cronTrigger.nextExecutionTime(triggerContext);
+            }
+        };
+        scheduledTaskRegistrar.addTriggerTask(getTask(), trigger);
+    }
+}
+```
+
+!>这种方式控制不强，没有持久化，不随时启动停止
