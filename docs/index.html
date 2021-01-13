@@ -86,8 +86,8 @@
                     }
                 });
             },
-            function(hook, vm) {
-                hook.beforeEach(function(html) {
+            function (hook, vm) {
+                hook.beforeEach(function (html) {
                     var url =
                         'https://gitee.com/tanglchen/document/tree/master/docs/' +
                         vm.route.file;
@@ -95,10 +95,9 @@
 
                     return (
                         editHtml +
-                        html +
-                        '\n----\n' +
-                        '最后修改 {docsify-updated} ' +
-                        editHtml
+                        html
+                        // + '\n----\n'
+                        // + '<a href="https://docsify.js.org" target="_blank" style="color: inherit; font-weight: normal; text-decoration: none;">Powered by docsify</a>'
                     );
                 });
             }
