@@ -85,6 +85,22 @@
                         return html + footer;
                     }
                 });
+            },
+            function(hook, vm) {
+                hook.beforeEach(function(html) {
+                    var url =
+                        'https://gitee.com/tanglchen/document/tree/master/docs/' +
+                        vm.route.file;
+                    var editHtml = '[📝 修改文档](' + url + ')\n';
+
+                    return (
+                        editHtml +
+                        html +
+                        '\n----\n' +
+                        '最后修改 {docsify-updated} ' +
+                        editHtml
+                    );
+                });
             }
         ]
     }
