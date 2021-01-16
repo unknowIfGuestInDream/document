@@ -24,11 +24,11 @@
 <div id="app"></div>
 <script>
     window.$docsify = {
-        themeColor: '#c30aff',//主题颜色
+        themeColor: '#42b983',//主题颜色
         // 项目名称
         name: 'springBootDemo',
         // 仓库地址，点击右上角的Github章鱼猫头像会跳转到此地址
-        repo: 'https://gitee.com/tanglchen/springBootDemo',
+        repo: 'https://github.com/TaCheJW',
         auto2top: true,//切换页面后是否自动跳转到页面顶部。
         onlyCover: false, //将封面跟文档分开 而不是上下连接
         // 侧边栏支持，默认加载的是项目根目录下的_sidebar.md文件
@@ -60,6 +60,12 @@
             color: 'rgb(90,90,90)',
             language: 'chinese'
         },
+        // pagination: {
+        //     previousText: '上一章节',
+        //     nextText: '下一章节',
+        //     crossChapter: true,
+        //     crossChapterText: true,
+        // },
         plugins: [
             function (hook) {
                 //header模块暂时隐藏
@@ -85,6 +91,21 @@
                         return html + footer;
                     }
                 });
+            },
+            function (hook, vm) {
+                hook.beforeEach(function (html) {
+                    var url =
+                        'https://gitee.com/tanglchen/document/tree/master/docs/' +
+                        vm.route.file;
+                    var editHtml = '[:memo: 修改文档](' + url + ')\n';
+
+                    return (
+                        editHtml +
+                        html
+                        // + '\n----\n'
+                        // + '<a href="https://docsify.js.org" target="_blank" style="color: inherit; font-weight: normal; text-decoration: none;">Powered by docsify</a>'
+                    );
+                });
             }
         ]
     }
@@ -106,5 +127,14 @@
 <script src="lib/prism-sql.js"></script>
 <script src="lib/prism-yaml.js"></script>
 <script src="lib/prism-bash.js"></script>
+<!-- 聊天室 -->
+<!--<script>-->
+    <!--((window.gitter = {}).chat = {}).options = {-->
+        <!--room: 'TaCheJW/Lobby'-->
+    <!--};-->
+<!--</script>-->
+<!--<script src="lib/sidecar.v1.js" async defer></script>-->
+<!-- 分页 -->
+<!--<script src="//unpkg.com/docsify-pagination/dist/docsify-pagination.min.js"></script>-->
 </body>
 </html>
