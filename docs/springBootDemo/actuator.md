@@ -53,7 +53,7 @@ info: #下面的值全部自定义即可
     phone:   #作者联系方式
 ```
 
-访问http://localhost:8080/actuator/info，可以看到定义的info信息。
+访问 [http://localhost:8080/actuator/info](http://localhost:8080/actuator/info ':disabled')，可以看到定义的info信息。
 
 ## 集成security对actuator进行权限控制
 
