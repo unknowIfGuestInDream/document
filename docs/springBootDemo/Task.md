@@ -2,7 +2,7 @@
 
 ?> 启动类新增 @EnableScheduling注解来支持Task;
 
-## 在注解上直接使用task定时任务 :id=task1
+## 在注解上直接使用task定时任务
 
 测试用例:
 ```java
@@ -54,7 +54,7 @@ public class ScheduledService {
 
 ?> 由于Task是单线程的，所以实战中可以配置定时任务线程池或者通过spring的注解@Async异步调用
 
-## 可更改的简单定时任务 :id=task2
+## 可更改的简单定时任务
 
 ```java
 
@@ -140,7 +140,7 @@ public class TaskController implements SchedulingConfigurer {
 
 !> 这种方式控制不强，没有持久化，不随时启动停止，且只能对已有的定时任务进行修改，无法新增或删除定时任务。
 
-## 动态增删定时任务 :id=task3
+## 动态增删定时任务
 
 添加执行定时任务的线程池配置类
 ```java
@@ -480,7 +480,7 @@ CREATE TABLE `schedule_task` (
 
 > 根据该表写基础增删改查方法
 
-### 新增定时任务 :id=task3_ins
+### 新增定时任务
 
 ```markdown
 boolean success = 新增方法;
@@ -496,7 +496,7 @@ else {
 return 成功回调;
 ```
 
-### 修改定时任务 :id=task3_upd
+### 修改定时任务
 
 先移除原来的任务，再启动新任务
 ```markdown
@@ -519,7 +519,7 @@ else {
 return 成功回调;
 ```
 
-### 删除定时任务 :id=task3_del
+### 删除定时任务
 
 ```markdown
 boolean success = 删除方法;
@@ -535,7 +535,7 @@ else{
 return 成功回调;
 ```
 
-### 定时任务启动/停止状态切换 :id=task3_startAndStop
+### 定时任务启动/停止状态切换
 
 ```markdown
 修改当前数据的status
@@ -548,7 +548,7 @@ if (修改后的status.equals(1)) { //即启动
 }
 ```
 
-### 定时任务随项目启动 :id=task3_init
+### 定时任务随项目启动
 
 添加实现了CommandLineRunner接口的类，当spring boot项目启动完成后，加载数据库里状态为正常的定时任务。
 ```java
