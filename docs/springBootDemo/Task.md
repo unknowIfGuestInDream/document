@@ -478,5 +478,110 @@ CREATE TABLE `schedule_task` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 ```
 
+> 根据该表写基础增删改查方法
+
+### 新增定时任务 :id=task3_ins
+
+```markdown
+boolean success = 新增方法;
+if (!success)
+    return 失败回调;
+else {
+    if (新增数据的status.equals(1)) { //即在运行中
+        SchedulingRunnable task = new SchedulingRunnable(新增数据的beanName, 新增数据的methodName, 新增数据的methodParams);
+        cronTaskRegistrar.addCronTask(task, 新增数据的cron);
+    }
+}
+
+return 成功回调;
+```
+
+### 修改定时任务 :id=task3_upd
+
+先移除原来的任务，再启动新任务
+```markdown
+boolean success = 修改方法;
+if (!success)
+    return 失败回调;
+else {
+    //先移除再添加
+    if (当前数据的status.equals(1)) { //即在运行中
+        SchedulingRunnable task = new SchedulingRunnable(当前数据的beanName, 当前数据的methodName, 当前数据的methodParams);
+        cronTaskRegistrar.removeCronTask(task);
+    }
+
+    if (修改后数据的status.equals(1)) {
+        SchedulingRunnable task = new SchedulingRunnable(修改后数据的beanName, 修改后数据的methodName, 修改后数据的methodParams);
+        cronTaskRegistrar.addCronTask(task, 修改后数据的cron);
+    }
+}
+
+return 成功回调;
+```
+
+### 删除定时任务 :id=task3_del
+
+```markdown
+boolean success = 删除方法;
+if (!success)
+    return 失败回调;
+else{
+    if (当前数据的status.equals(1)) { //即在运行中
+        SchedulingRunnable task = new SchedulingRunnable(当前数据的beanName, 当前数据的methodName, 当前数据的methodParams);
+        cronTaskRegistrar.removeCronTask(task);
+    }
+}
+
+return 成功回调;
+```
+
+### 定时任务启动/停止状态切换 :id=task3_startAndStop
+
+```markdown
+修改当前数据的status
+if (修改后的status.equals(1)) { //即启动
+    SchedulingRunnable task = new SchedulingRunnable(当前数据的beanName, 当前数据的methodName, 当前数据的methodParams);
+    cronTaskRegistrar.addCronTask(task, 当前数据的cron);
+} else { //停止
+    SchedulingRunnable task = new SchedulingRunnable(当前数据的beanName, 当前数据的methodName, 当前数据的methodParams);
+    cronTaskRegistrar.removeCronTask(task);
+}
+```
+
+### 定时任务随项目启动 :id=task3_init
+
+添加实现了CommandLineRunner接口的类，当spring boot项目启动完成后，加载数据库里状态为正常的定时任务。
+```java
+@Service
+public class TaskInitRunner implements CommandLineRunner {
+
+    private static final Logger logger = LoggerFactory.getLogger(SysJobRunner.class);
+
+    @Autowired
+    private ISysJobRepository sysJobRepository; //表的增删改查方法类
+
+    @Autowired
+    private CronTaskRegistrar cronTaskRegistrar;
+
+    @Override
+    public void run(String... args) {
+        // 初始加载数据库里状态为正常的定时任务
+        List<SysJobPO> jobList = sysJobRepository.getSysJobListByStatus(1);
+        if (CollectionUtils.isNotEmpty(jobList)) { //list不为空
+            for (SysJobPO job : jobList) {
+                SchedulingRunnable task = new SchedulingRunnable(job.getBeanName(), job.getMethodName(), job.getMethodParams());
+                cronTaskRegistrar.addCronTask(task, job.getCronExpression());
+            }
+
+            logger.info("定时任务已加载完毕...");
+        }
+    }
+}
+```
+
+> Task的运用到这里就结束了，springTask定时任务相比较quartz更轻量，如果单机部署的话建议使用springTask，分布式的话建议使用quartz，powerjob等框架,或者将项目中的定时任务抽取出来成一个项目，在使用springTask。
+
+
+
 
 
