@@ -10,7 +10,7 @@ springboot使用actuator的方式非常简单，只需要在项目中加入依�
 
 ![](../images/actuator/actuator.png)
 
-##开启actuator监控
+## 开启actuator监控
 
 **yml配置:**
 ```yaml
@@ -55,7 +55,7 @@ info: #下面的值全部自定义即可
 
 访问http://localhost:8080/actuator/info，可以看到定义的info信息。
 
-##集成security对actuator进行权限控制
+## 集成security对actuator进行权限控制
 
 actuator可以集成security进行权限控制，具体不在描述。
 
