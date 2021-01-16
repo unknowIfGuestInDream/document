@@ -6,4 +6,4 @@
  
 * springBoot集成功能
  
- * [actuator](springBootDemo/actuator.md)
+ * [actuator监控](springBootDemo/actuator.md)
