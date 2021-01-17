@@ -129,7 +129,7 @@ public class WebLogAspect {
 
 ## 使用自定义注解记录日志
 
-**定义一个方法级别的@Log注解，用于标注需要监控的方法：**
+**定义一个方法级别的@LogAnno注解，用于标注需要监控的方法：**
 
 ```java
 /**
@@ -206,8 +206,8 @@ public class WebLogAspect {
         String paramJson = mapper.writeValueAsString(paramMap);
         log.info("方法描述: [{}]  浏览器: [{}]  浏览器版本： [{}]  操作系统: [{}]  用户: [{}]  IP: [{}]  URL: [{}] 参数： [{}]", operateType, browser, version, os, ipName, ip, url, paramJson);
 
-        //将日志信息存到数据库
-        //实战中日志存储操作不影响实际业务，建议对存储日志操作进行异步处理或者使用消息队列进行处理
+        //此处为将日志信息存到数据库的操作。
+        //实战中日志存储操作不影响实际业务，建议对存储日志操作进行异步处理或者使用消息队列进行处理。
 
         try {
             //执行目标方法
