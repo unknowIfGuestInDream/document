@@ -666,7 +666,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
 }
 ```
 
-## 过滤器，监听器和拦截器执行流程和对比图
+## 过滤器，监听器和拦截器执行流程
 
 **执行流程:**
 
