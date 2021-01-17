@@ -323,6 +323,7 @@ public class ContextListener implements ServletContextListener, ServletContextAt
 	}
 }
 ```
+
 - HttpSession 相关的监听: HttpSessionListener, HttpSessionIdListener, HttpSessionAttributeListener,HttpSessionActivationListener
 ```java
 @WebListener
@@ -390,7 +391,6 @@ public class SessionListener implements HttpSessionListener, HttpSessionIdListen
 	public void sessionDidActivate(HttpSessionEvent se) {
 		System.out.println("===> session did activate");
 	}
-
 }
 ```
 
