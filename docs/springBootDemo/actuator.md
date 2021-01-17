@@ -1,5 +1,7 @@
 >Actuator监控是springboot提供对应用自身监控，以及对应用系统配置查看等功能。
 
+## 开启actuator监控
+
 springboot使用actuator的方式非常简单，只需要在项目中加入依赖spring-boot-starter-actuator
 ```xml
 <dependency>
@@ -9,8 +11,6 @@ springboot使用actuator的方式非常简单，只需要在项目中加入依�
 ```
 
 ![](../images/actuator/actuator.png)
-
-## 开启actuator监控
 
 **yml配置:**
 ```yaml
