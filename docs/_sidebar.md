@@ -6,7 +6,9 @@
  * [springBoot初始化](springBootDemo/basic/Init.md)
  * [springBoot工具类](springBootDemo/basic/Util.md)
  * [springBoot事件与监听](springBootDemo/basic/Event.md)
- * [springBoot虚拟路径](springBootDemo/basic/Event.md)
+ * [springBoot虚拟路径](springBootDemo/basic/Resource.md)
+ * [springBoot日志配置](springBootDemo/basic/Log.md)
+ * [springBoot其他设置](springBootDemo/basic/Other.md)
  
 * springBoot集成功能
  
