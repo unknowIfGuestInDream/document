@@ -671,8 +671,8 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
 **执行流程:**
 
-![](../images/web/web.png)
+![](../../images/web/web.png)
 
 **对比图**
 
-![](../images/web/webCompare.png)
+![](../../images/web/webCompare.png)

@@ -440,7 +440,7 @@ public class TaskController {
 
 **表schedule_task设计**
 
-![](../images/task/schedule_task.png)
+![](../../images/task/schedule_task.png)
 
 ```sql
 /*

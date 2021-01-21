@@ -161,7 +161,7 @@ public class AsyncPoolConfig implements AsyncConfigurer {
 - awaitTerminationSeconds：waitForTasksToCompleteOnShutdown的等待的时长，默认值为0，即不等待。
 - rejectedExecutionHandler：当没有线程可以被使用时的处理策略（拒绝任务），默认策略为abortPolicy，包含下面四种策略：
 
-![](../images/async/async_pool.png)
+![](../../images/async/async_pool.png)
 
 - callerRunsPolicy：用于被拒绝任务的处理程序，它直接在 execute 方法的调用线程中运行被拒绝的任务；如果执行程序已关闭，则会丢弃该任务。
 - abortPolicy：直接抛出java.util.concurrent.RejectedExecutionException异常。
