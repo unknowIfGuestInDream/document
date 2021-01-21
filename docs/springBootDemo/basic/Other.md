@@ -1,3 +1,5 @@
 ## springBoot设置启动样式
 
-## springBoot设置返回日期
+默认新建banner.txt放入resources下
+
+## springBoot设置时区
