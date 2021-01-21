@@ -3,6 +3,7 @@
  
  * [Task定时任务](springBootDemo/Task.md)
  * [Async异步](springBootDemo/Async.md)
+ * [springBoot初始化](springBootDemo/Init.md)
  
 * springBoot集成功能
  
