@@ -18,7 +18,7 @@
     }
 ```
 
-## AnnotationUtils
+## AnnotationUtils注解工具类
 
 ```markdown
 // 通过 AnnotationUtils.findAnnotation 获取 RateLimiter 注解
