@@ -13,7 +13,7 @@ Spring Boot | 2.3.1 | MVC框架
 Spring Security | 5.1.4 | 认证和授权框架
 Swagger-UI | 2.7.0 | 文档生产工具
 Elasticsearch | 7.6.2 | 搜索引擎
-RabbitMq | 3.7.15 | 消息队列
+RabbitMq | 3.7.15 | 消息队列
 Redis | 5.0 | 分布式缓存
 MongoDb | 4.2.5 | NoSql数据库
 Druid | 1.1.9 | 数据库连接池
