@@ -6,7 +6,6 @@
  * [springBoot初始化](springBootDemo/basic/Init.md)
  * [springBoot工具类](springBootDemo/basic/Util.md)
  * [springBoot事件与监听](springBootDemo/basic/Event.md)
- * [springBoot虚拟路径](springBootDemo/basic/Resource.md)
  * [springBoot日志配置](springBootDemo/basic/Log.md)
  * [springBoot其他设置](springBootDemo/basic/Other.md)
  
@@ -16,3 +15,4 @@
  * [AOP切面编程](springBootDemo/imploded/AOP.md)
  * [过滤器、监听器和拦截器](springBootDemo/imploded/web.md)
  * [springBoot异常全局处理](springBootDemo/imploded/Exception.md)
+ * [springBoot虚拟路径](springBootDemo/imploded/Resource.md)
