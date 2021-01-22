@@ -4,11 +4,6 @@
 - Spring Bean初始化的InitializingBean,init-method和PostConstruct 
 - Spring的事件机制
 
-https://blog.csdn.net/pjmike233/article/details/81908540  
-http://www.360doc.com/content/20/0308/11/13328254_897664573.shtml  
-https://www.jianshu.com/p/01e08aef73c9  
-https://www.cnblogs.com/exmyth/p/7750770.html
-
 ## ApplicationRunner与CommandLineRunner
 
 **ApplicationRunner**
@@ -83,22 +78,48 @@ public class KangBaHandler implements InitializingBean {
 4. 被注解方法不得抛出已检查异常
 5. 此方法只会被执行一次
 
-## spring事件
+## spring事件进行初始化操作
 
-ApplicationStartedEvent：spring boot启动开始时执行的事件  
-ApplicationEnvironmentPreparedEvent：spring boot 对应Enviroment已经准备完毕，但此时上下文context还没有创建。  
-ApplicationPreparedEvent:spring boot上下文context创建完成，但此时spring中的bean是没有完全加载完成的。  
-ApplicationReadyEvent：springboot加载完成时候执行的事件。  
-ApplicationFailedEvent:spring boot启动异常时执行事件 
+**利用ContextRefreshedEvent事件进行初始化操作**
+```java
+@Component
+public class ApplicationListenerTest implements ApplicationListener<ContextRefreshedEvent> {
+
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        System.out.println("我被调用了..");
+    }
+}
+```
+
+**利用ApplicationReadyEvent事件进行初始化操作**
+```java
+/**
+ * springboot加载完成时候执行的事件。
+ * 
+ * @author: TangLiang
+ * @date: 2021/1/22 23:48
+ * @since: 1.0
+ */
+@Component
+public class ApplicationReadyEventTest implements ApplicationListener<ApplicationReadyEvent> {
+    @Override
+    public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
+        System.out.println("ApplicationReadyEvent");
+    }
+}
+```
 
 ## Spring项目启动的执行顺序
 
-@PostConstruct>InitializingBean>ApplicationRunner  
+@PostConstruct > InitializingBean > ContextRefreshedEvent > ApplicationRunner > CommandLineRunner > ApplicationReadyEvent
 所以使用的时候当心了， 使用不当容易造成未知的问题哦！
 
 ## 总结
 
-轻量的逻辑可放在Bean的@PostConstruct方法中  
+轻量的逻辑可放在Bean的@PostConstruct方法中    
 耗时长的逻辑如果放在@PostConstruct方法中，可使用独立线程执行  
-初始化操作放在CommandLineRunner或ApplicationRunner的实现组件中  
-对bean的初始化操作使用InitializingBean  
+@PostConstruct 方法固有地绑定到现有的 Spring bean，因此应仅将其用于此单个 bean 的初始化逻辑；  
+初始化操作放在CommandLineRunner或ApplicationRunner的实现组件中，想获取复杂的命令行参数时，我们可以使用 ApplicationRunner    
+对bean的初始化操作使用InitializingBean，比使用 @PostConstruct 更安全，因为如果我们依赖尚未自动注入的 @Autowired 字段，则 @PostConstruct 方法可能会遇到 NullPointerExceptions  
+如果我们不需要获取命令行参数，我们可以通过 ApplicationListener<ApplicationReadyEvent> 创建一些全局的启动逻辑，我们还可以通过它获取 Spring Boot 支持的 configuration properties 环境变量参数  
