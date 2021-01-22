@@ -45,7 +45,7 @@ Order值相同ApplicationRunner的实现优先执行
 
 args为启动配置参数。
 
-![](../../images/init/start.jpg ':size=400x300')
+![](../../images/init/start.jpg ':size=800x600')
 
 两个接口都有run()方法，只不过它们的参数不一样，CommandLineRunner的参数是最原始的参数，没有进行任何处理，ApplicationRunner的参数是ApplicationArguments,是对原始参数的进一步封装。
 
