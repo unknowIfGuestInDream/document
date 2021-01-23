@@ -4,13 +4,15 @@ ApplicationEvent以及Listener是Spring为我们提供的一个事件监听、�
 
 ## SpringBoot的内置事件
 
-SpringApplicationEvent 是 Spring Boot Application（应用）相关的事件基类，如下图所示：  
+SpringApplicationEvent 是 Spring Boot Application（应用）相关的事件基类，如下图所示：
+  
 ![](../../images/event/SpringApplicationEvent.png)
 
 - ApplicationStartingEvent  
 springboot启动开始的时候执行的事件   
 - ApplicationEnvironmentPreparedEvent  
-spring boot 对应Enviroment已经准备完毕，但此时上下文context还没有创建。 
+spring boot 对应Enviroment已经准备完毕，但此时上下文context还没有创建。
+ 
 ```java
 @Component
 public class MyApplicationEnvironmentPreparedEventListener implements
@@ -39,6 +41,7 @@ public class MyApplicationEnvironmentPreparedEventListener implements
 当SpringApplication的上下文ApplicationContext准备好后，对单例Bean们实例化之前，发送此事件。所以此事件又可称为：contextPrepared事件。 
 - ApplicationPreparedEvent  
 spring boot上下文context创建完成，但此时spring中的bean是没有完全加载完成的。  
+
 ```java
 @Component
 public class MyApplicationPreparedEventListener implements ApplicationListener<ApplicationPreparedEvent> {
@@ -62,7 +65,8 @@ public class MyApplicationPreparedEventListener implements ApplicationListener<A
 ```
 
 - ApplicationStartedEvent    
-spring boot启动开始时执行的事件  
+spring boot启动开始时执行的事件 
+ 
 ```java
 @Component
 public class MyApplicationStartedEventListener implements ApplicationListener<ApplicationStartedEvent> {
@@ -82,6 +86,7 @@ public class MyApplicationStartedEventListener implements ApplicationListener<Ap
 springboot加载完成时候执行的事件。  
 - ApplicationFailedEvent  
 spring boot启动异常时执行事件  
+
 ```java
 @Component
 public class MyApplicationFailedEventListener implements ApplicationListener<ApplicationFailedEvent> {
@@ -106,6 +111,7 @@ public class MyApplicationFailedEventListener implements ApplicationListener<App
 这个 Web 服务器初始化事件在 WebServer 启动之后发送，对应的还有 ServletWebServerInitializedEvent（Servlet Web 服务器初始化事件）、ReactiveWebServerInitializedEvent（响应式 Web 服务器初始化事件）。  
 
 ApplicationContextEvent 是 Spring Context 相关的事件基类，如下图所示:  
+
 ![](../../images/event/ApplicationContextEvent.png)
 
 - ContextStartedEvent  
