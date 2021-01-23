@@ -337,6 +337,15 @@ public class HelloServiceImpl implements HelloService {
         String sql = "insert into user (id,name,age) values (" + id + ",'fsx',21)";
         jdbcTemplate.update(sql);
 
+        //事务控制
+        /*
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
+                @Override
+                public void afterCommit() {
+                    applicationEventPublisher.publishEvent(new MyAfterTransactionEvent("我是和事务相关的事件，请事务提交后执行我~~~", id));
+                }
+            });*/
+
         // 发布一个自定义的事件~~~
         applicationEventPublisher.publishEvent(new MyAfterTransactionEvent("我是和事务相关的事件，请事务提交后执行我~~~", id));
         return "service hello";
