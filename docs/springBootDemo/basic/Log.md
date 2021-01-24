@@ -119,7 +119,7 @@ Logback是log4j框架的作者开发的新一代日志框架，它效率更高�
 </configuration>
 ```
 
-## yml配置日志：
+## yml配置日志
 ```yaml
 logging:
   level:
