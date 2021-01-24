@@ -17,3 +17,4 @@
  * [异常全局处理](springBootDemo/imploded/Exception.md)
  * [虚拟路径](springBootDemo/imploded/Resource.md)
  * [Druid连接池](springBootDemo/imploded/Druid.md)
+ * [Cache缓存](springBootDemo/imploded/Cache.md)
