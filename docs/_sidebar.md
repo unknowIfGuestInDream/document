@@ -7,6 +7,7 @@
  * [spring工具类](springBootDemo/basic/Util.md)
  * [事件与监听](springBootDemo/basic/Event.md)
  * [日志配置](springBootDemo/basic/Log.md)
+ * [类型转换](springBootDemo/basic/Converter.md)
  * [其他设置](springBootDemo/basic/Other.md)
  
 * springBoot集成功能
