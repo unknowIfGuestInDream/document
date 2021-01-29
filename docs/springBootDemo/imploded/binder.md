@@ -92,14 +92,14 @@ public class GlobalControllerAdvice {
     }
 ```
 
-### 3、集成类
+### 3、继承类
 
 写个BaseController，让其他controller继承该类。
 
 ## 注册自定义编辑器
 
 使用自定义编辑器就是在第二个的基础上添加个自定义编辑器就行了，自定义的编辑器类需要继承  
-> org.springframework.beans.propertyeditors.PropertiesEditor;
+> org.springframework.beans.propertyeditors.PropertiesEditor
 
 并重写其setAsText和getAsText两个方法就行了！
 
