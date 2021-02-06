@@ -2,9 +2,6 @@
 
 在使用时，必须编写一个实现org.springframework.core.convert.converter.Converter接口的java类。这个接口的声明如下
 
-https://blog.csdn.net/liushangzaibeijing/article/details/82493910  
-https://www.cnblogs.com/yy3b2007com/p/11757900.html
-
 ```java
 public interface Converter<S, T> {
     T convert(S var1);
@@ -122,3 +119,6 @@ public class WebConfig {
   }
 }
 ```
+
+参考: https://blog.csdn.net/liushangzaibeijing/article/details/82493910    
+     https://www.cnblogs.com/yy3b2007com/p/11757900.html
