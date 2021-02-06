@@ -1,6 +1,7 @@
 
 * springBoot基础功能
  
+ * [IDEA配置](springBootDemo/basic/IDEA.md)
  * [Task定时任务](springBootDemo/basic/Task.md)
  * [Async异步](springBootDemo/basic/Async.md)
  * [初始化](springBootDemo/basic/Init.md)
