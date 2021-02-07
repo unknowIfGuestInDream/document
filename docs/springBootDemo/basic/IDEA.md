@@ -17,6 +17,10 @@ ctrl+alt+l | 代码格式化
 ctrl+alt+o | 格式化import引用
 alt+enter | 提示可能的操作
 ctrl+g | 跳转到指定行
+ctrl+shift+i | 查看方法定义
+Ctrl+y | 删除当前行
+Ctrl+F6 | 重构函数
+Shift+F6 | 重命名
 
 ### 配置IDEA运行内存
 
@@ -105,6 +109,61 @@ hh.exe -decompile javadoc java8.chm
 设置快捷键 进入免打扰模式，设置自己想要的快捷键
 
 ![](../../images/idea/idea15.png)
+
+### run面板多个服务显示到Services面板
+
+![](../../images/idea/idea16.png)
+
+在项目根目录下 .idea/libraries/workspace.xml文件中，加入下面内容即可：  
+
+```xml
+  <component name="RunDashboard">
+    <option name="configurationTypes">
+      <set>
+        <option value="SpringBootApplicationConfigurationType" />
+      </set>
+    </option>
+  </component>
+```
+
+![](../../images/idea/idea17.jpg)
+
+### 设置多排显示tabs
+
+![](../../images/idea/idea18.png)
+
+### 新建书签 阅读源码备注
+
+在代码左侧 F11 添加代码的书签，便于记录操作  
+
+![](../../images/idea/idea19.png)
+
+### 设置背景
+
+按下 ctrl+shift+A 或者 double shift 后点击Action
+
+![](../../images/idea/idea20.png)
+
+![](../../images/idea/idea21.png)
+
+### 转义工具
+
+先将焦点定位到双引号里面，使用alt+enter快捷键弹出inject language视图，并选中
+Inject language or reference。
+
+![](../../images/idea/idea22.png)
+
+选择后,切记，要直接按下enter回车键，才能弹出inject language列表。在列表中选择 json组件。
+
+![](../../images/idea/idea23.png)
+
+选择完后。鼠标焦点自动会定位在双引号里面，这个时候你再次使用alt+enter就可以看到
+
+![](../../images/idea/idea24.png)
+
+选中Edit JSON Fragment并回车，就可以看到编辑JSON文件的视图了。
+
+![](../../images/idea/idea25.png)
 
 ## IDEA插件
 
