@@ -69,6 +69,12 @@ Xmx分配2G到3G最佳，根据个人电脑情况决定
 
 ![](../../images/idea/idea5.webp)
 
+### 将编译进程和Maven的堆值设置大一些
+
+![](../../images/idea/idea26.png)
+
+![](../../images/idea/idea27.png)
+
 ### 设置自动显示（鼠标移动显示）方法注释
 
 ![](../../images/idea/idea6.png)
