@@ -21,6 +21,7 @@ ctrl+shift+i | 查看方法定义
 Ctrl+y | 删除当前行
 Ctrl+F6 | 重构函数
 Shift+F6 | 重命名
+ctrl+shift+u | 切换大小写
 
 ### 配置IDEA运行内存
 
