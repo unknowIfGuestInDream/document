@@ -1,23 +1,17 @@
 
-* Linux基础功能
+* Linux基础使用
  
- * [IDEA配置](../springBootDemo/basic/IDEA.md)
- * [Task定时任务](springBootDemo/basic/Task.md)
- * [Async异步](springBootDemo/basic/Async.md)
- * [初始化](springBootDemo/basic/Init.md)
- * [spring工具类](springBootDemo/basic/Util.md)
- * [事件与监听](springBootDemo/basic/Event.md)
- * [日志配置](springBootDemo/basic/Log.md)
- * [类型转换](springBootDemo/basic/Converter.md)
- * [其他设置](springBootDemo/basic/Other.md)
+ * [Linux常用命令](basic/BASIC.md)
  
-* springBoot集成功能
+* Linux下载软件
  
- * [actuator监控](springBootDemo/imploded/actuator.md)
- * [AOP切面编程](springBootDemo/imploded/AOP.md)
- * [过滤器、监听器和拦截器](springBootDemo/imploded/web.md)
- * [属性编辑器](springBootDemo/imploded/binder.md)
- * [异常全局处理](springBootDemo/imploded/Exception.md)
- * [虚拟路径](springBootDemo/imploded/Resource.md)
- * [Druid连接池](springBootDemo/imploded/Druid.md)
- * [Cache缓存](springBootDemo/imploded/Cache.md)
+ * [安装java](soft/java.md)
+ * [安装node](soft/node.md)
+ * [安装mysql](soft/mysql.md)
+ * [安装RabbitMQ](soft/rabbit.md)
+ * [安装elasticsearch](soft/elasticsearch.md)
+ * [安装logstash](soft/logstash.md)
+ * [安装redis](soft/redis.md)
+ * [安装mongodb](soft/mongodb.md)
+ * [安装minio](soft/minio.md)
+ * [安装nginx](soft/nginx.md)
