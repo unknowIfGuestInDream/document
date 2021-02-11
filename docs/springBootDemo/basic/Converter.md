@@ -1,4 +1,45 @@
-> Spring的Converter可以将一种类型转换成另一种类型。
+> Spring MVC 框架的 Converter<S，T> 是一个可以将一种数据类型转换成另一种数据类型的接口，这里 S 表示源类型，T 表示目标类型。开发者在实际应用中使用框架内置的类型转换器基本上就够了，但有时需要编写具有特定功能的类型转换器。
+
+## 内置的类型转换器
+
+在 Spring MVC 框架中，对于常用的数据类型，开发者无须创建自己的类型转换器，因为 Spring MVC 框架有许多内置的类型转换器用于完成常用的类型转换。Spring MVC 框架提供的内置类型转换包括以下几种类型。
+
+1. 标量转换器
+
+名称 | 作用
+----|----
+StringToBooleanConverter | 	String 到 boolean 类型转换
+ObjectToStringConverter | Object 到 String 转换，调用 toString 方法转换
+StringToNumberConverterFactory | String 到数字转换（例如 Integer、Long 等）
+NumberToNumberConverterFactory | 数字子类型（基本类型）到数字类型（包装类型）转换
+StringToCharacterConverter | String 到 Character 转换，取字符串中的第一个字符
+NumberToCharacterConverter | 数字子类型到 Character 转换
+CharacterToNumberFactory | Character 到数字子类型转换
+StringToEnumConverterFactory | String 到枚举类型转换，通过 Enum.valueOf 将字符串转换为需要的枚举类型
+EnumToStringConverter | 枚举类型到 String 转换，返回枚举对象的 name 值
+StringToLocaleConverter | String 到 java.util.Locale 转换
+PropertiesToStringConverter | java.util.Properties 到 String 转换，默认通过 ISO-8859-1 解码
+StringToPropertiesConverter | String 到 java.util.Properties 转换，默认使用 ISO-8859-1 编码
+
+2. 集合、数组相关转换器
+
+名称 | 作用
+----|----
+ArrayToCollectionConverter | 	任意数组到任意集合（List、Set）转换
+CollectionToArrayConverter | 	任意集合到任意数组转换
+ArrayToArrayConverter | 	任意数组到任意数组转换
+CollectionToCollectionConverter | 	集合之间的类型转换
+MapToMapConverter | 	Map之间的类型转换
+ArrayToStringConverter | 	任意数组到 String 转换
+StringToArrayConverter | 	字符串到数组的转换，默认通过“，”分割，且去除字符串两边的空格（trim）
+ArrayToObjectConverter | 	任意数组到 Object 的转换，如果目标类型和源类型兼容，直接返回源对象；否则返回数组的第一个元素并进行类型转换
+ObjectToArrayConverter | 	Object 到单元素数组转换
+CollectionToStringConverter | 	任意集合（List、Set）到 String 转换
+StringToCollectionConverter | 	String 到集合（List、Set）转换，默认通过“，”分割，且去除字符串两边的空格（trim）
+CollectionToObjectConverter | 	任意集合到任意 Object 的转换，如果目标类型和源类型兼容，直接返回源对象；否则返回集合的第一个元素并进行类型转换
+ObjectToCollectionConverter | 	Object 到单元素集合的类型转换
+
+## 自定义类型转换器
 
 在使用时，必须编写一个实现org.springframework.core.convert.converter.Converter接口的java类。这个接口的声明如下
 
@@ -120,5 +161,86 @@ public class WebConfig {
 }
 ```
 
-参考: https://blog.csdn.net/liushangzaibeijing/article/details/82493910    
-     https://www.cnblogs.com/yy3b2007com/p/11757900.html
+## 示例
+
+场景：
+
+> 例如有一个应用 springMVCDemo03 希望用户在页面表单中输入信息来创建商品信息。当输入“apple，10.58，200”时表示在程序中自动创建一个 new Goods，并将“apple”值自动赋给 goodsname 属性，将“10.58”值自动赋给 goodsprice 属性，将“200”值自动赋给 goodsnumber 属性。
+
+1. 创建实体类
+
+```java
+public class GoodsModel {
+    private String goodsname;
+    private double goodsprice;
+    private int goodsnumber;
+    // 省略setter和getter方法
+}
+```
+
+2. 创建控制器类
+
+```java
+@Controller
+@RequestMapping("/my")
+public class ConverterController {
+    @RequestMapping("/converter")
+    /*
+     * 使用@RequestParam
+     * ("goods")接收请求参数，然后调用自定义类型转换器GoodsConverter将字符串值转换为GoodsModel的对象gm
+     */
+    public String myConverter(@RequestParam("goods") GoodsModel gm, Model model) {
+        model.addAttribute("goods", gm);
+        return "showGoods";
+    }
+}
+```
+
+3. 创建自定义类型转换器类
+
+```java
+public class GoodsConverter implements Converter<String, GoodsModel> {
+    public GoodsModel convert(String source) {
+        // 创建一个Goods实例
+        GoodsModel goods = new GoodsModel();
+        // 以“，”分隔
+        String stringvalues[] = source.split(",");
+        if (stringvalues != null && stringvalues.length == 3) {
+            // 为Goods实例赋值
+            goods.setGoodsname(stringvalues[0]);
+            goods.setGoodsprice(Double.parseDouble(stringvalues[1]));
+            goods.setGoodsnumber(Integer.parseInt(stringvalues[2]));
+            return goods;
+        } else {
+            throw new IllegalArgumentException(String.format(
+                    "类型转换失败， 需要格式'apple, 10.58,200 ',但格式是[% s ] ", source));
+        }
+    }
+}
+```
+
+4. 注册类型转换器
+
+```java
+@Configuration
+public class ResourceConfig implements WebMvcConfigurer {
+    /**
+     * 添加自定义的Converters和Formatters.
+     */
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        //添加字符串转换Date的自定义转换器
+        registry.addConverter(new GoodsConverter());
+    }
+}
+```
+
+5. 创建相关视图
+
+```html
+<form action="${pageContext.request.contextPath}/my/converter" method= "post">
+    请输入商品信息（格式为apple, 10.58,200）:
+    <input type="text" name="goods" /><br>
+    <input type="submit" value="提交" />
+</form>
+```
