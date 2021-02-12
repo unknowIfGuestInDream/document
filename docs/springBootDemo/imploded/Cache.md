@@ -114,6 +114,8 @@ public class StudentServiceImpl implements StudentService{
 
 ```yaml
 spring:
+  cache:
+    type: redis
   redis:
     # Redis数据库索引（默认为0）
     database: 0
