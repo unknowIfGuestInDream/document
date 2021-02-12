@@ -172,6 +172,14 @@ Inject language or reference。
 
 ![](../../images/idea/idea25.png)
 
+### restful工具
+
+开发中经常会要测试接口的行为，通常会使用到各种工具，IDEA本身集成了工具。
+
+![](../../images/idea/idea28.png)
+
+![](../../images/idea/idea29.png)
+
 ## IDEA插件
 
 ### lombok
