@@ -23,4 +23,5 @@
  * [Cache缓存](springBootDemo/imploded/Cache.md)
  * [Validator参数校验](springBootDemo/imploded/Validator.md)
  * [Swagger2测试文档](springBootDemo/imploded/Swagger2.md)
+ * [邮件](springBootDemo/imploded/Mail.md)
  * [集成Redis](springBootDemo/imploded/Redis.md)
