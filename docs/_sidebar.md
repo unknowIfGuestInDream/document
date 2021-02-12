@@ -21,3 +21,5 @@
  * [虚拟路径](springBootDemo/imploded/Resource.md)
  * [Druid连接池](springBootDemo/imploded/Druid.md)
  * [Cache缓存](springBootDemo/imploded/Cache.md)
+ * [Validator参数校验](springBootDemo/imploded/Validator.md)
+ * [集成Redis](springBootDemo/imploded/Redis.md)
