@@ -200,7 +200,7 @@ public class SwaggerConfig {
 }
 ```
 
-## 测试类：
+## 测试Demo
 
 ```java
 import io.swagger.annotations.*;
@@ -372,7 +372,7 @@ public class Swagger2Config {
 }
 ```
 
-访问路径 http://localhost:8080/swagger-ui/
+> 访问路径 http://localhost:8080/swagger-ui/
 
 如果集成Spring Security则需要在访问接口时添加一个合法的Authorization请求头即可，新增以下代码
 
