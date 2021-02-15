@@ -25,3 +25,4 @@
  * [Swagger2测试文档](springBootDemo/imploded/Swagger2.md)
  * [邮件](springBootDemo/imploded/Mail.md)
  * [集成Redis](springBootDemo/imploded/Redis.md)
+ * [Minio文件存储服务](springBootDemo/imploded/Minio.md)
