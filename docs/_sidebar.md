@@ -27,3 +27,6 @@
  * [集成Redis](springBootDemo/imploded/Redis.md)
  * [集成MongoDb](springBootDemo/imploded/Mongodb.md)
  * [Minio文件存储服务](springBootDemo/imploded/Minio.md)
+
+* 部署篇
+ * [Nginx负载均衡](springBootDemo/deploy/Nginx.md)
