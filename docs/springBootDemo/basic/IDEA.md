@@ -180,6 +180,38 @@ Inject language or reference。
 
 ![](../../images/idea/idea29.png)
 
+### Deployment自动部署项目
+
+Idea Deployment是一个方便的工具，将你的项目直接部署到服务器上。  
+根据情况不同，Idea提供了三种部署的方式：
+1. Web Server在本地电脑上，并且服务器运行目录也在项目目录下
+2. Web Server在本地电脑上，但是服务器运行目录在另一个目录
+3. Web Server在远程服务器上，我们可以通过FTP/FTPS/SFTP，上传文件
+
+![](../../images/idea/idea30.png)
+
+![](../../images/idea/idea31.png)
+
+配置后可以在右侧工具栏找到Remote Host找到配置的服务器
+
+![](../../images/idea/idea32.png)
+
+可以选择Tools下面的 Start SSH session… 开启远程终端连接
+
+![](../../images/idea/idea33.png)
+
+可以选择指定文件上传到部署环境，例如上传war包
+
+![](../../images/idea/idea34.png)
+
+此外还可以设置在svn/git提交后自动提交到部署环境
+
+![](../../images/idea/idea35.png)
+
+![](../../images/idea/idea36.png)
+
+在 Tools > Deployment > Options 可以选择自动上传文件
+
 ## IDEA插件
 
 ### lombok
