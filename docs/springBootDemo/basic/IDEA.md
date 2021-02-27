@@ -192,6 +192,8 @@ Idea Deployment是一个方便的工具，将你的项目直接部署到服务�
 
 ![](../../images/idea/idea31.png)
 
+![](../../images/idea/idea40.png)
+
 配置后可以在右侧工具栏找到Remote Host找到配置的服务器
 
 ![](../../images/idea/idea32.png)
@@ -210,7 +212,7 @@ Idea Deployment是一个方便的工具，将你的项目直接部署到服务�
 
 ![](../../images/idea/idea36.png)
 
-在 Tools > Deployment > Options 可以选择自动上传文件
+在 Tools > Deployment > Automatic Upload 可以选择自动上传文件
 
 ### 版本控制Changelist
 
