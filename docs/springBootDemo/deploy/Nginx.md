@@ -807,50 +807,6 @@ http {
         }
     }
 
-   server {
-      listen  80;
-      server_name  minio.xxx.com;
-      location / {
-      proxy_redirect off;
-      proxy_set_header Host $host;
-      proxy_set_header X-Real-IP $remote_addr;
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_buffers           32 4k;
-      proxy_pass http://127.0.0.1:9000/;
-      }
-
-     include /etc/nginx/default.d/*.conf;
-        error_page 404 /404.html;
-        location = /404.html {
-        }
-
-        error_page 500 502 503 504 /50x.html;
-        location = /50x.html {
-        }  
-   }
-
-  server {
-      listen  80;
-      server_name  xxx.com;
-      location / {
-      proxy_redirect off;
-      proxy_set_header Host $host;
-      proxy_set_header X-Real-IP $remote_addr;
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_buffers           32 4k;
-      proxy_pass http://127.0.0.1/;
-      }
-
-     include /etc/nginx/default.d/*.conf;
-        error_page 404 /404.html;
-        location = /404.html {
-        }
-
-        error_page 500 502 503 504 /50x.html;
-        location = /50x.html {
-        }  
-   }
-
   server {
       listen  80;
       server_name www.xxx.com;
@@ -875,81 +831,8 @@ http {
         location = /50x.html {
         }
    }
-
-  server {
-      listen  80;
-      server_name  cx.xxx.com;
-      location / {
-      proxy_redirect off;
-      proxy_set_header Host $host;
-      proxy_set_header X-Real-IP $remote_addr;
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_buffers           32 4k;
-      proxy_pass http://127.0.0.1:2368/;
-      }
-
-     include /etc/nginx/default.d/*.conf;
-        error_page 404 /404.html;
-        location = /404.html {
-        }
-
-        error_page 500 502 503 504 /50x.html;
-        location = /50x.html {
-        }
-   }
-   
-  server {
-      listen  80;
-      server_name  rabbit.xxx.com;
-      location / {
-      proxy_redirect off;
-      proxy_set_header Host $host;
-      proxy_set_header X-Real-IP $remote_addr;
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_buffers           32 4k;
-      proxy_pass http://127.0.0.1:15672/;
-      }
-
-     include /etc/nginx/default.d/*.conf;
-        error_page 404 /404.html;
-        location = /404.html {
-        }
-
-        error_page 500 502 503 504 /50x.html;
-        location = /50x.html {
-        }  
-   }
    
 # Settings for a TLS enabled server.
-
-    server {
-        listen       443 ssl http2 default_server;
-        listen       [::]:443 ssl http2 default_server;
-        server_name  xxx.com;
-        root         /usr/share/nginx/html;
-
-        ssl_certificate "/etc/nginx/server.crt";
-        ssl_certificate_key "/etc/nginx/server.key";
-        ssl_session_cache shared:SSL:1m;
-        ssl_session_timeout  10m;
-        ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;#按照这个套件配置
-        ssl_protocols TLSv1 TLSv1.1 TLSv1.2; #按照这个协议配置
-        ssl_prefer_server_ciphers on;
-
-        # Load configuration files for the default server block.
-        include /etc/nginx/default.d/*.conf;
-
-        location / {
-        }
-
-        error_page 404 /404.html;
-        location = /404.html {
-        }
-
-        error_page 500 502 503 504 /50x.html;
-        location = /50x.html {
-        }
-    }
 	
 	server {
         listen       443;
@@ -972,76 +855,6 @@ http {
             alias /usr/local/document/docs/;
             index  index.html;
             #add_header Cache-Control "no-cache, no-store";
-        }
-
-        error_page 404 /404.html;
-        location = /404.html {
-        }
-
-        error_page 500 502 503 504 /50x.html;
-        location = /50x.html {
-        }
-    }
-
-  server {
-        listen       443;
-        listen       [::]:443;
-        server_name   minio.xxx.com;
-        root         /usr/share/nginx/html;
-
-        ssl_certificate "/etc/nginx/minio.crt";
-        ssl_certificate_key "/etc/nginx/minio.key";
-        ssl_session_cache shared:SSL:1m;
-        ssl_session_timeout  10m;
-        ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;#?????è?¸ªå?»¶???½®
-        ssl_protocols TLSv1 TLSv1.1 TLSv1.2; #?????è?¸ª??????½®
-        ssl_prefer_server_ciphers on;
-
-        # Load configuration files for the default server block.
-        include /etc/nginx/default.d/*.conf;
-
-        location / {
-         proxy_redirect off;
-         proxy_set_header Host $host;
-         proxy_set_header X-Real-IP $remote_addr;
-         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-         proxy_buffers           32 4k;
-         proxy_pass http://127.0.0.1:9000/;
-        }
-
-        error_page 404 /404.html;
-        location = /404.html {
-        }
-
-        error_page 500 502 503 504 /50x.html;
-        location = /50x.html {
-        }
-    }
-	
-	  server {
-        listen       443;
-        listen       [::]:443;
-        server_name   cx.xxx.com;
-        root         /usr/share/nginx/html;
-
-        ssl_certificate "/etc/nginx/cx.crt";
-        ssl_certificate_key "/etc/nginx/cx.key";
-        ssl_session_cache shared:SSL:1m;
-        ssl_session_timeout  10m;
-        ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;#?????è?¸ªå?»¶???½®
-        ssl_protocols TLSv1 TLSv1.1 TLSv1.2; #?????è?¸ª??????½®
-        ssl_prefer_server_ciphers on;
-
-        # Load configuration files for the default server block.
-        include /etc/nginx/default.d/*.conf;
-
-        location / {
-        proxy_redirect off;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_buffers           32 4k;
-        proxy_pass http://127.0.0.1:2368/;
         }
 
         error_page 404 /404.html;
