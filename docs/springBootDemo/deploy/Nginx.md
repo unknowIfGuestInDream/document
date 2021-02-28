@@ -809,7 +809,7 @@ http {
 
    server {
       listen  80;
-      server_name  minio.tlcsdm.com;
+      server_name  minio.xxx.com;
       location / {
       proxy_redirect off;
       proxy_set_header Host $host;
@@ -831,7 +831,7 @@ http {
 
   server {
       listen  80;
-      server_name  tlcsdm.com;
+      server_name  xxx.com;
       location / {
       proxy_redirect off;
       proxy_set_header Host $host;
@@ -853,7 +853,7 @@ http {
 
   server {
       listen  80;
-      server_name www.tlcsdm.com;
+      server_name www.xxx.com;
       location / {
         alias /usr/local/document/docs/;
         index  index.html;
@@ -878,7 +878,7 @@ http {
 
   server {
       listen  80;
-      server_name  cx.tlcsdm.com;
+      server_name  cx.xxx.com;
       location / {
       proxy_redirect off;
       proxy_set_header Host $host;
@@ -900,7 +900,7 @@ http {
    
   server {
       listen  80;
-      server_name  rabbit.tlcsdm.com;
+      server_name  rabbit.xxx.com;
       location / {
       proxy_redirect off;
       proxy_set_header Host $host;
@@ -925,7 +925,7 @@ http {
     server {
         listen       443 ssl http2 default_server;
         listen       [::]:443 ssl http2 default_server;
-        server_name  tlcsdm.com;
+        server_name  xxx.com;
         root         /usr/share/nginx/html;
 
         ssl_certificate "/etc/nginx/server.crt";
@@ -954,7 +954,7 @@ http {
 	server {
         listen       443;
         listen       [::]:443;
-        server_name  www.tlcsdm.com;
+        server_name  www.xxx.com;
         root         /usr/share/nginx/html;
 
         ssl_certificate "/etc/nginx/server.crt";
@@ -986,7 +986,7 @@ http {
   server {
         listen       443;
         listen       [::]:443;
-        server_name   minio.tlcsdm.com;
+        server_name   minio.xxx.com;
         root         /usr/share/nginx/html;
 
         ssl_certificate "/etc/nginx/minio.crt";
@@ -1021,7 +1021,7 @@ http {
 	  server {
         listen       443;
         listen       [::]:443;
-        server_name   cx.tlcsdm.com;
+        server_name   cx.xxx.com;
         root         /usr/share/nginx/html;
 
         ssl_certificate "/etc/nginx/cx.crt";
@@ -1059,14 +1059,7 @@ http {
 ## Windows下Nginx配置例子
 
 ```
-#user  nobody;
 worker_processes  1;
-
-#error_log  logs/error.log;
-#error_log  logs/error.log  notice;
-#error_log  logs/error.log  info;
-
-#pid        logs/nginx.pid;
 
 events {
     worker_connections  1024;
@@ -1085,13 +1078,10 @@ http {
     sendfile        on;
 	tcp_nopush      on;   # 减少网络报文段的数量
     tcp_nodelay     on;
-    #tcp_nopush     on;
 
-    #keepalive_timeout  0;
     keepalive_timeout   65;
 	types_hash_max_size 2048;
 
-    #gzip  on;
 	gzip on;
 	gzip_buffers 16 8k;
 	gzip_comp_level 6;
@@ -1103,7 +1093,6 @@ http {
  
     #服务器集群
     upstream name{
-        #server 127.0.0.1:8080;
         server 127.0.0.1:8081;#可以在这里加权重
 		server 10.18.26.107:8081 backup; #热备
     }
@@ -1115,7 +1104,7 @@ http {
     server {
         listen       80;
         #server_name  localhost;
-		server_name    2794037nv1.51vip.biz;
+		server_name    xxx.51vip.biz;
 		
         #charset koi8-r;
 
@@ -1168,19 +1157,8 @@ http {
             expires              30d;
         }
 
-        #error_page  404              /404.html;
-
-        # redirect server error pages to the static page /50x.html
-        #
         error_page   500 502 503 504  /50x.html;
-        location = /50x.html {
-            root   html;
-        }
-		
 		error_page  404          /404.html;
-		location = /404.html {
-            root   html;
-        }
     }
 
 }
