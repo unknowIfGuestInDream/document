@@ -5,6 +5,11 @@
  
 * 并发包
 
- * 线程同步器
- 
-  * [CountDownLatch计数器](java/current/threadSynchronizer/CountDownLatch.md)
+ * [随机数生成器](java/current/ThreadLocalRandom.md)
+ * [原子操作类](java/current/Atomic.md)
+ * [并发List](java/current/CopyOnWriteArrayList.md)
+ * [锁](java/current/Lock.md)
+ * [队列](java/current/Queue.md)
+ * [线程池ThreadPoolExecutor](java/current/ThreadPoolExecutor.md)
+ * [线程池ScheduledThreadPoolExecutor](java/current/ScheduledThreadPoolExecutor.md)
+ * [线程同步器](java/current/ThreadSynchronizer.md)
