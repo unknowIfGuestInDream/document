@@ -5,4 +5,6 @@
  
 * 并发包
 
- * [CountDownLatch计数器](java/current/CountDownLatch.md)
+ * 线程同步器
+ 
+  * [CountDownLatch计数器](java/current/threadSynchronizer/CountDownLatch.md)
