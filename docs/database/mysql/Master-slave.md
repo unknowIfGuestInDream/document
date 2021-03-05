@@ -1,8 +1,8 @@
 > 主从同步
 
-![参考1](https://www.cnblogs.com/timingstarts/p/12563510.html)
+https://www.cnblogs.com/timingstarts/p/12563510.html
 
-![参考2](http://www.macrozheng.com/#/reference/mysql_master_slave?id=mysql%e4%b8%bb%e4%bb%8e%e5%a4%8d%e5%88%b6%ef%bc%8c%e4%bb%8e%e5%8e%9f%e7%90%86%e5%88%b0%e5%ae%9e%e8%b7%b5%ef%bc%81)
+http://www.macrozheng.com/#/reference/mysql_master_slave?id=mysql%e4%b8%bb%e4%bb%8e%e5%a4%8d%e5%88%b6%ef%bc%8c%e4%bb%8e%e5%8e%9f%e7%90%86%e5%88%b0%e5%ae%9e%e8%b7%b5%ef%bc%81
 
 slave端  
 replicate-do-db    设定需要复制的数据库（多数据库使用逗号，隔开）  
@@ -22,3 +22,11 @@ binlog_format=row
 2 主有trigger,从库上没有trigger时，依然不影响主从同步  
 3 主上无trigger,从上有trigger时 ，主从数据依然一致，从库上的trigger没有被触发  
 binlog_format=statement  
+
+主库表锁！  
+mysql>flush tables with read lock;  
+主库解锁！  
+mysql>unlock tables;  
+
+分区：  
+https://www.cnblogs.com/myvic/p/7711498.html
