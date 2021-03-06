@@ -736,6 +736,78 @@ server {
 }
 ```
 
+### 对客户端限流
+
+limit_req_zone
+
+```
+http {
+    # 将请求客户端的IP存放到perip区域，区域大小为10M，并限制同一IP地址的请求每秒钟只处理10次
+    limit_req_zone $binary_remote_addr zone=perip:10m rate=10r/s;
+
+    server {
+        listen       8080;
+        server_name  localhost;
+
+    # 每个IP最大并发1条连接
+        # 该语句还可直接放置到http模块下，这样下属的server都应用该配置
+        # 该语句还可放置到server中的location模块中，这样仅指定的location应用该配置
+        #limit_conn perip 1;
+        # 每个连接限速300 k/s
+        #limit_rate 300k; 
+    # 当有大量请求爆发时，可以缓存20条请求
+        # 设置了nodelay，缓存队列的请求会立即处理，若请求数 > rate+burst 时，立即返回503；如果没设置，则会按照rate排队等待处理
+        # 该语句还可直接放置到http模块下，这样下属的server都应用该配置
+        # 该语句还可放置到server中的location模块中，这样仅指定的location应用该配置
+        limit_req zone=perip burst=20 nodelay;
+    }
+}  
+```
+
+### 对服务器限流
+
+ngx_http_upstream_module
+
+```
+对服务器进行（反向代理）限流
+upstream MyName {
+    server 192.168.0.1:8080 weight=1 max_conns=10;
+    server 192.168.0.2:8080 weight=1 max_conns=10;
+}
+
+max_conns=number
+限制到代理服务器的同时活动连接的最大数量（1.11.5）。 默认值为零，表示没有限制。 如果服务器组不驻留在共享内存中，则每个工作进程的限制都有效。
+如果启用了空闲保持活动连接，多个工作线程和共享内存，则到代理服务器的活动和空闲连接的总数可能会超过max_conns值。
+```
+
+### 隐藏Nginx版本号
+
+```
+http {
+server_tokens off;
+}
+```
+
+### IP安全
+
+白名单高度安全配置（适用于授权IP较少的情况，其余全部deny封锁），可配置在http、server、location中
+
+```
+location / {
+allow 192.168.1.1;
+deny all;
+}
+```
+
+黑名单配置（适用于授权IP较多的情况，allow其余），可配置在http、server、location中
+
+```
+location / {
+deny 192.168.1.1;
+allow all;
+}
+```
+
 ## Linux环境下Nginx配置例子
 
 ```
