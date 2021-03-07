@@ -808,6 +808,29 @@ allow all;
 }
 ```
 
+## Nginx性能优化
+
+* worker_processes nginx运行工作进程个数，一般设置cpu的核心或者核心数x2，如：worker_processes 4;
+* worker_cpu_affinity 运行CPU亲和力，与worker_processes对应，如：worker_cpu_affinity 0001 0010 0100 1000;
+* worker_rlimit_nofile Nginx最多可以打开文件数，与ulimit -n保持一致，如：worker_rlimit_nofile 65535;
+* events 事件处理模型。如：
+```markdown
+events {
+  use epoll;
+  worker_connections 65535;
+  multi_accept on;
+}
+```
+
+* use epoll nginx采用epoll事件模型，处理效率高
+* work_connections 是单个worker进程允许客户端最大连接数，这个数值一般根据服务器性能和内存来制定，
+实际最大值就是worker进程数乘以work_connections，实际我们填入一个65535，足够了，这些都算并发值，
+一个网站的并发达到这么大的数量，也算一个大站了！
+* multi_accept 告诉nginx收到一个新连接通知后接受尽可能多的连接，默认是on，设置为on后，多个worker按串行方式来处理连接，
+也就是一个连接只有一个worker被唤醒，其他的处于休眠状态，设置为off后，多个worker按并行方式来处理连接，
+也就是一个连接会唤醒所有的worker，直到连接分配完毕，没有取得连接的继续休眠。当你的服务器连接数不多时，
+开启这个参数会让负载有一定的降低，但是当服务器的吞吐量很大时，为了效率，可以关闭这个参数。
+
 ## Linux环境下Nginx配置例子
 
 ```
