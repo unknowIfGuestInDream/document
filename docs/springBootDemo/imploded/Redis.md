@@ -882,3 +882,7 @@ public class RedisHelper {
 	}
 }
 ```
+
+## 注解+redis接口防刷
+
+https://mp.weixin.qq.com/s/whrBi7SSGJrZS8l5RWaTWg
