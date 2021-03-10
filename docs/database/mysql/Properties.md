@@ -18,3 +18,19 @@ b)水平分表：将相同字段表中的记录按照某种Hash算法进行拆�
 
 MyISAM引擎和InnoDB引擎介绍及应用场景  
 https://blog.csdn.net/m0_37814112/article/details/78633136
+
+**记录 sending data导致的cpu打满 sql卡死**
+
+show variables like 'innodb_buffer_pool_size'
+
+修改 innodb_buffer_pool_size值  如果服务器只有mysql的话 最大设置为总内存的75%左右
+
+**查看执行的sql**
+
+mysql -u用户 -p密码
+
+show processlist;   或者    show full processlist;
+
+**类似于日志之类的数据备份表**
+
+引擎修改为MYISAM引擎 innodb事务影响插入效率
