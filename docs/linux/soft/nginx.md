@@ -14,7 +14,7 @@ vim /etc/nginx/nginx.conf
 
 3.按 “i” 切换至编辑模式，编辑 nginx.conf 文件
 
-具体配置可参考 [Nginx配置](../../springBootDemo/deploy/Nginx.md?id=linux环境下nginx配置例子)
+具体配置可参考 [Nginx配置](springBootDemo/deploy/Nginx?id=linux环境下nginx配置例子)
 
 4.按 “Esc”，输入 “:wq”，保存文件并返回
 
