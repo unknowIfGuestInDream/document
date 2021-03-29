@@ -9,6 +9,7 @@
  
 * 并发包
 
+ * [可重入锁](java/current/ReEnter.md)
  * [随机数生成器](java/current/ThreadLocalRandom.md)
  * [原子操作类](java/current/Atomic.md)
  * [并发List](java/current/CopyOnWriteArrayList.md)
