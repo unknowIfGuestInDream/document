@@ -292,3 +292,84 @@ renderer: function (value, metaData, record, rowIndex, colIndex) {
                     return value;
                 }
 ```
+
+## 显示总和平均数
+
+```
+Ext.onReady(function(){
+		//创建表格数据
+		var datas = [
+			['张三',2500],
+			['李四',1500]
+		];
+		//创建Grid表格组件
+		Ext.create('Ext.grid.Panel',{
+			title : 'Ext.grid.feature.Summary示例',
+			renderTo: Ext.getBody(),
+			width:300,
+			height:150,
+			frame:true,
+			store: {
+		        fields: ['name','salary','introduce'],
+		        proxy: {
+		            type: 'memory',
+		            data : datas,
+		            reader : 'array'//Ext.data.reader.Array解析器
+		        },
+		        autoLoad: true
+		    },
+		    features: [{
+		    	ftype: 'summary'//Ext.grid.feature.Summary表格汇总特性
+		    }],
+			columns: [//配置表格列
+				{header: "姓名", flex: 1, dataIndex: 'name', 
+					summaryType: 'count',//求数量
+					summaryRenderer: function(value){
+						return '员工总数：'+value
+					}
+				},
+				{header: "薪资", flex: 1, dataIndex: 'salary', 
+					summaryType: 'average',//求平均值
+					summaryRenderer: function(value){
+						return '平均薪资：'+value
+					}
+				}
+			]
+		});
+	});
+```
+
+## grid不让取消选中
+
+```html
+SIMPLE
+1.
+                'itemclick': function (view, record, item, index, e, eOpts) {
+                    this.selModel.locked = false;
+                    var rowStore = workTicketDetailPanel.getStore();
+                    for (var i = 0, leng = rowStore.getCount(); i < leng; i++) {
+                        if (rowStore.getAt(i).get("WORK_TICKET_NUM_") == record.data.WORK_TICKET_NUM_) {
+                            workTicketDetailPanel.getSelectionModel().select(i, true);
+                        } else {
+                            workTicketDetailPanel.getSelectionModel().deselect(i);
+                        }
+                    }
+                    this.selModel.locked = true;
+                    _setButtonStatus(record.get('SUBMIT_STATUS_'));
+                },
+
+2.
+'select': function (selModel, record, row) {
+                    var rowStore = workTicketDetailPanel.getStore();
+                    for (var i = 0, leng = rowStore.getCount(); i < leng; i++) {
+                        if (rowStore.getAt(i).get("WORK_TICKET_NUM_") == record.data.WORK_TICKET_NUM_) {
+                            workTicketDetailPanel.getSelectionModel().select(i, true);
+                        } else {
+                            workTicketDetailPanel.getSelectionModel().deselect(i);
+                        }
+                    }
+                },
+                'deselect': function () {
+                    return false;
+                },
+```

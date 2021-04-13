@@ -47,12 +47,6 @@ var formPanel = Ext.create('Ext.form.Panel', {
 		});
 ```
 
-## 生成uuid
-
-```javascript
-Ext.data.IdGenerator.get('uuid').generate().replace(/-/g, "")
-```
-
 ## 自定义电话号码的vtype验证
 
 ```javascript

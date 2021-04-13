@@ -69,3 +69,11 @@ Ext.onReady(function(){
 ```
 Ext.data.IdGenerator.get('uuid').generate().replace(/-/g, "")
 ```
+
+## 数字格式化
+
+```
+                renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
+                    return Ext.util.Format.number(value, '0.00');
+                }
+```
