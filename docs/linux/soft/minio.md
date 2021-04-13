@@ -17,5 +17,11 @@ chmod +x minio
 3. 后台启动
 
 ```
-MINIO_ACCESS_KEY=myminioadmin MINIO_SECRET_KEY=myminioadmin nohup ./minio server --config-dir /usr/software/minio/config /usr/software/minio/data>  /usr/software/minio/minio.log 2>&1 &#
+MINIO_ACCESS_KEY=tangliang MINIO_SECRET_KEY=tangliang nohup ./minio server /home/minio/data> /home/minio/minio.log 2>&1 &#
+```
+
+4. 非后台启动
+
+```
+./minio server /home/minio/data
 ```
