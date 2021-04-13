@@ -18,3 +18,4 @@
  * [线程池ThreadPoolExecutor](java/current/ThreadPoolExecutor.md)
  * [线程池ScheduledThreadPoolExecutor](java/current/ScheduledThreadPoolExecutor.md)
  * [线程同步器](java/current/ThreadSynchronizer.md)
+ * [CompletableFuture](java/current/CompletableFuture.md)
