@@ -10,3 +10,4 @@
 
  * [性能优化](database/oracle/Properties.md)
  * [sql调优](database/oracle/Sql.md)
+ * [常用方法](database/oracle/Methods.md)
