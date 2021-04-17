@@ -20,6 +20,6 @@
 * [观察者模式](designPattern/basic/ObserverPattern.md)
 * [状态模式](designPattern/basic/StatePattern.md)
 * [策略模式](designPattern/basic/StrategyPattern.md)
-* [模板方法模式](designPattern/basic/TemplateMethodPattern.md)
+* [模板模式](designPattern/basic/TemplateMethodPattern.md)
 * [访问者模式](designPattern/basic/VisitorPattern.md)
 * [委托模式](designPattern/basic/DelegationPattern.md)
