@@ -10,6 +10,7 @@
 * Extjs表单
  
  * [form](extjs/form/form.md)
+ * [radio](extjs/radio/radio.md)
 
 * 其它功能或组件
  
