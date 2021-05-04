@@ -1,9 +1,5 @@
 > oracle sql语句调优
 
-https://zhuanlan.zhihu.com/p/143995493
-
-https://blog.csdn.net/InJra_p/article/details/90081975
-
 ## IN 操作符
 用IN写出来的SQL的优点是比较容易写及清晰易懂，这比较适合现代软件开发的风格。但是用IN的SQL性能总是比较低的，从Oracle执行的步骤来分析用IN的SQL与不用IN的SQL有以下区别：
 
@@ -44,6 +40,10 @@ select * from ls_jg_dfys
 
 ## WHERE后面的条件顺序影响
 SQL条件的执行是从右到左的
+
+## 选择最有效率的表名顺序
+ORACLE的解析器按照从右到左的顺序处理FROM子句中的表名，因此FROM子句中写在最后的表(基础表 driving table)将被最先处理。  
+只在基于规则的优化器中有效。
 
 ## 查询表顺序的影响
 在FROM后面的表中的列表顺序会对SQL执行性能影响，在没有索引及ORACLE没有对表进行统计分析的情况下，ORACLE会按表出现的顺序进行链接，由此可见表的顺序不对时会产生十分耗服物器资源的数据交叉。（注：如果对表进行了统计分析，ORACLE会自动先进小表的链接，再进行大表的链接）
