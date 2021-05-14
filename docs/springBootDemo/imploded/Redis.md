@@ -886,3 +886,34 @@ public class RedisHelper {
 ## 注解+redis接口防刷
 
 https://mp.weixin.qq.com/s/whrBi7SSGJrZS8l5RWaTWg
+
+## 使用redis存储session
+
+在pom.xml中添加
+
+```
+<dependency>
+     <groupId>org.springframework.session</groupId>
+      <artifactId>spring-session-data-redis</artifactId>
+</dependency>
+```
+
+在启动类（任意新建一个空类都可以）上面添加注解：@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 86400*30)
+
+@EnableRedisHttpSession注解其中maxInactiveIntervalInSeconds参数是设置Session失效时间，开启注解后spring会生成一个新的拦截器，用于实现Session共享操作
+
+启动项目后进入页面 会发现信息存储到了redis中
+
+测试方法获取sessionid值，具体代码如下：
+
+```java
+@RequestMapping("/uid")
+public String uid(HttpSession session) {
+    UUID uid = (UUID) session.getAttribute("uid");
+    if (uid == null) {
+        uid = UUID.randomUUID();
+    }
+    session.setAttribute("uid", uid);
+    return session.getId();
+}
+```
