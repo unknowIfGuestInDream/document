@@ -373,3 +373,6 @@ SIMPLE
                     return false;
                 },
 ```
+
+## 切换单选多选
+`Ext.getCmp('checkStepPanel').selModel.selectionMode = 'SINGLE';`
