@@ -100,3 +100,74 @@ public class GlobalCorsConfig {
     }
 }
 ```
+
+## 批量下载文件并放到压缩包
+
+```java
+@RestController
+@RequiredArgsConstructor
+public class RiderController {
+    private final RiderService riderService;
+    /**
+     * 附件批量下载
+     */
+    @GetMapping(value = "downloadRiderList")
+    @Log(title = "附件管理", operateType = "附件批量下载")
+    public void downloadRiderList(String V_PERCODE, @RequestParam(value = "V_GUID_LIST") List<String> V_GUID_LIST, @RequestParam(value = "I_ID_LIST") List<Integer> I_ID_LIST, String mark, HttpServletRequest request, HttpServletResponse response) throws IOException, SQLException {
+//目前批量下载各个文件并不大，所有可以走串行，如果以后有大文件的话，则需要异步下载，此代码暂时注释，以后如需异步时再用
+//        List<CompletableFuture<Map<String, Object>>> list = new ArrayList<>();
+//        for (int i = 0, length = V_GUID_LIST.size(); i < length; i++) {
+//            CompletableFuture<Map<String, Object>> future = riderService.selectRiderBlobAsync(BaseUtils.getIp(request), V_PERCODE, V_GUID_LIST.get(i), I_ID_LIST.get(i));
+//            list.add(future);
+//        }
+//        CompletableFuture<Map<String, Object>>[] completableFutures = list.toArray(new CompletableFuture[list.size()]);
+//        CompletableFuture.allOf(completableFutures).join();
+        try {
+            String zipName = "【批量下载】" + mark + "等.zip";
+            response.reset();
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/x-msdownload");
+            response.setHeader("Content-Disposition", "attachment;filename=" + BaseUtils.getFormatString(request, zipName));
+
+            ZipOutputStream zos = new ZipOutputStream(response.getOutputStream());
+            for (int i = 0, length = V_GUID_LIST.size(); i < length; i++) {
+                Map<String, Object> rider = riderService.selectRiderBlob(BaseUtils.getIp(request), V_PERCODE, V_GUID_LIST.get(i), I_ID_LIST.get(i));
+                String fileName = (String) rider.get("V_FILENAME");
+                Blob blob = (Blob) rider.get("result");
+                if (blob != null) {
+                    @Cleanup InputStream inputStream = blob.getBinaryStream();
+                    //创建输入流读取文件
+                    @Cleanup BufferedInputStream bis = new BufferedInputStream(inputStream);
+                    //将文件写入zip内，即将文件进行打包
+                    zos.putNextEntry(new ZipEntry(fileName));
+                    //写入文件的方法，同上
+                    int size = 0;
+                    byte[] buffer = new byte[4096];
+                    //设置读取数据缓存大小
+                    while ((size = bis.read(buffer)) > 0) {
+                        zos.write(buffer, 0, size);
+                    }
+                    //关闭输入输出流
+                    zos.closeEntry();
+                }
+            }
+            zos.close();
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+            response.setContentType("text/html;charset=utf-8");
+            @Cleanup PrintWriter out = null;
+            try {
+                out = response.getWriter();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            out.print("<span style=\"display:block;text-align: center;margin:0 auto;min-width: 150px;\">" + e.getMessage() + "</span><br/>");
+            out.print("<br/><button autocomplete=\"off\" onclick=\"javascript:window.history.back(-1);return false;\" autofocus=\"true\"\n" +
+                    "            style=\"display:block;margin:0 auto;min-width: 150px;background-color:rgb(0, 138, 203);color: rgb(255, 255, 255);\">\n" +
+                    "        返回上一个页面\n" +
+                    "    </button>");
+            out.flush();
+        }
+    }
+}
+```
