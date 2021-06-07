@@ -376,3 +376,91 @@ SIMPLE
 
 ## 切换单选多选
 `Ext.getCmp('checkStepPanel').selModel.selectionMode = 'SINGLE';`
+
+## 表格展示图片
+
+```
+        var riderPanel = Ext.create('Ext.grid.Panel', {
+            id: 'riderPanel',
+            store: riderStore,
+            //title: '文件表单',
+            columnLines: true,
+            frame: true,
+            selModel: {
+                selType: 'checkboxmodel',
+                mode: 'SINGLE'
+            },
+            columns: [{
+                xtype: 'actioncolumn',
+                width: 280,
+                dataIndex: 'fileName',
+                text: '图片',
+                align: 'center',
+                renderer: function (value, metaData, record) {
+                    if (record.get('fileType') == '.jpg' || record.get('fileType') == '.png') {
+                        var id = metaData.record.id;
+
+                        Ext.defer(function () {
+                            Ext.create('Ext.Img', {
+                                height: 140,
+                                width: 250,
+                                src: 'downloadRider.json?fileName=' + value + '&bizCode=' + P_BILLCODE + '&random=' + Math.random(),
+                                renderTo: id,
+                                listeners: {
+                                    scope: this,
+                                    el: {
+                                        dblclick: function (e, a) {
+                                            var winViewImage = Ext.create('Ext.Window', {
+                                                width: 750,
+                                                height: 500,
+                                                maximizable: true,//窗体最大化按钮
+                                                title: '图片',
+                                                layout: "fit", //窗口布局类型
+                                                modal: true, //是否模态窗口，默认为false
+                                                resizable: false,//调整窗体大小
+                                                closeAction: 'hide', //关闭窗体实际上是隐藏窗体并未关闭销毁此窗体对象(节约资源)
+                                                plain: true,//窗体主体部分背景颜色透明
+                                                draggable: true,//充许拖动窗体
+                                                border: false,
+                                                items: [Ext.create('Ext.Img', {
+                                                    width: 750,
+                                                    height: 500,
+                                                    src: 'downloadRider.json?fileName=' + record.get('fileName') + '&bizCode=' + P_BILLCODE
+                                                })]
+                                            });
+                                            winViewImage.show();
+                                        }
+                                    }
+                                }
+
+                            })
+                        }, 50);
+
+                        return Ext.String.format('<div id="{0}"></div>', id);
+                    }
+                }
+            }, {
+                text: '文件名',
+                dataIndex: 'fileName',
+                style: 'text-align: center;',
+                flex: 1
+            }, {
+                text: '操作',
+                style: 'text-align: center;',
+                width: 100,
+                renderer: function (value, metaData, record, rowIndex, colIndex, store, view) {
+                    return '<a href=javascript:_downloadRider()>下载</a>' + '&nbsp&nbsp&nbsp' + '<a href=javascript:_deleteRider()>删除</a>'
+                }
+            }],
+            viewConfig: {
+                emptyText: '<div style="text-align: center; padding-top: 50px; font: italic bold 20px Microsoft YaHei;">没有附件</div>',
+                enableTextSelection: true
+            },
+            dockedItems: [{
+                xtype: 'pagingtoolbar',
+                store: riderStore,
+                dock: 'bottom',
+                displayInfo: true
+            }]
+        });
+```
