@@ -77,3 +77,9 @@ Ext.data.IdGenerator.get('uuid').generate().replace(/-/g, "")
                     return Ext.util.Format.number(value, '0.00');
                 }
 ```
+
+## 数字千分位格式化
+
+```
+Ext.util.Format.number(21000000,Ext.util.Format.thousandSeparator)
+```
