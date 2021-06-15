@@ -1,3 +1,6 @@
+* Map
+
+ * [WeakHashMap](java/map/WeakHashMap.md)
 
 * Optional
 
