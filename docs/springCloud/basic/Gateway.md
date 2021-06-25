@@ -14,3 +14,62 @@ Spring Cloud Gateway 具有如下特性：
 * 易于编写的 Predicate（断言）和 Filter（过滤器）；
 * 请求限流功能；
 * 支持路径重写。
+
+## 示例配置
+
+bootstrap.yml
+
+```yaml
+spring:
+  ## 切换生产环境时 profiles属性注释
+  profiles:
+    active: dev
+  application:
+    name: newangels-gateway
+  cloud:
+    nacos:
+      config:
+        server-addr: 10.18.26.213:8848
+        file-extension: yaml
+        group: DEFAULT_GROUP
+        refresh-enabled: true
+```
+
+newangels-gateway-dev.yaml
+
+```yaml
+server:
+  port: 8701
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 10.18.26.213:8848
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedHeaders: '*'
+            allowedOrigins: '*'
+            allowedMethods: '*'                      
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 31457280
+      max-request-size: 31457280
+  jackson:
+    date-format: yyyy/MM/dd HH:mm:ss
+    time-zone: GMT+8
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+```
