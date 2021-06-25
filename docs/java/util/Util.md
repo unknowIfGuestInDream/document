@@ -635,7 +635,7 @@ public class LRUCache<K, V> {
 }
 ```
 
-## 首字母大写
+## 首字母大/小写
 
 ```java
 public class util{
@@ -662,6 +662,22 @@ public class util{
             chars ^= 32;
         }
         return chars;
+    }
+
+    /**
+     * 首字母小写
+     *
+     * @param string
+     * @return
+     */
+    public static String toLowerCase4Index(String string) {
+        if (Character.isLowerCase(string.charAt(0))) {
+            return string;
+        }
+
+        char[] chars = string.toCharArray();
+        chars[0] += 32;
+        return String.valueOf(chars);
     }
 }
 ```
