@@ -78,3 +78,15 @@ SELECT UPPER('hello world')   as "全部转为大写" FROM dual;
 
 SELECT LOWER('HELLO WORLD')   as "全部转为小写" FROM DUAL;
 ```
+
+## 查询数据库的存储过程
+
+```oracle
+select distinct name From user_source where type = 'PROCEDURE'
+```
+
+## 查询存储过程等参数信息
+
+```oracle
+select * from SYS.ALL_ARGUMENTS t where t.OWNER = '' and t.OBJECT_NAME = ''
+```
