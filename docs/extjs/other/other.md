@@ -132,3 +132,52 @@ Toast = function () {
 ```
 
 使用 `Toast.alert('信息', '新增成功', 2000);`
+
+## 下载
+
+1、js写法
+```javascript
+document.location.href = '/download'
+```
+
+2、extjs写法
+```javascript
+    function _downloadCode(procedureNameList) {
+        var params = {
+            'moduleName': Ext.getCmp('moduleName').getValue()
+        };
+
+        var body = Ext.getBody();
+        var form = body.createChild({
+            tag: 'form',
+            cls: 'x-hidden',
+            action: "/gen/downloadCode",
+            method: "get",
+            target: '_blank'
+        });
+
+        for (var key in params) {
+            if (!Ext.isArray(params[key])) {
+                form.createChild({
+                    tag: 'input',
+                    type: 'text',
+                    cls: 'x-hidden',
+                    name: key,
+                    value: params[key]
+                });
+            } else {
+                for (var i = 0; i < params[key].length; i++) {
+                    form.createChild({
+                        tag: 'input',
+                        type: 'text',
+                        cls: 'x-hidden',
+                        name: key,
+                        value: params[key][i]
+                    });
+                }
+            }
+        }
+
+        form.dom.submit();
+    }
+```
