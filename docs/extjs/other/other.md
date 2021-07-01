@@ -83,3 +83,52 @@ Ext.data.IdGenerator.get('uuid').generate().replace(/-/g, "")
 ```
 Ext.util.Format.number(21000000,Ext.util.Format.thousandSeparator)
 ```
+
+## 数组去重
+
+```javascript
+function unique(arr) {
+        var array = [];
+        var ids = [];
+        for (var i = 0; i < arr.length; i++) {
+            if (ids.indexOf(arr[i].data.I_ID) === -1) {
+                ids.push(arr[i].data.I_ID);
+                array.push(arr[i]);
+            }
+        }
+        return array;
+    }
+```
+
+## 消息框
+
+```javascript
+//消息框
+Toast = function () {
+    var toastContainer;
+
+    function createMessageBar(title, msg) {
+        return '<div class="x-message-box" style="text-align: center; color: #666;"><div class="x-box-tl"><div class="x-box-tr"><div class="x-box-tc"></div></div></div><div class="x-box-ml"><div class="x-box-mr"><div class="x-box-mc" style="font: bold 15px Microsoft YaHei;">' + title + ' : ' + msg + '</div></div></div><div class="x-box-bl"><div class="x-box-br"><div class="x-box-bc"></div></div></div></div>';
+    }
+
+    return {
+        alert: function (title, msg, delay) {
+            if (!toastContainer) {
+                toastContainer = Ext.DomHelper.insertFirst(document.body, {
+                    id: 'toastContainer',
+                    style: 'position: absolute; left: 0; right: 0; margin: auto; width: 360px; z-index: 20000; background: #87CEFA; '
+                }, true);
+            }
+
+            var message = Ext.DomHelper.append(toastContainer, createMessageBar(title, msg), true);
+            message.hide();
+            message.slideIn('t').ghost("t", {
+                delay: delay,
+                remove: true
+            });
+        }
+    };
+}();
+```
+
+使用 `Toast.alert('信息', '新增成功', 2000);`

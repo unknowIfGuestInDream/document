@@ -190,3 +190,30 @@ function _insertRider() {
 				vtype:'dateRange'
 			}
 ```
+
+## 必填项前加红色标识
+
+1、重写allowBlank属性
+
+```javascript
+Ext.override(Ext.form.field.Base, {
+    initComponent: function () {
+        if (this.allowBlank !== undefined && !this.allowBlank) {
+            if (this.fieldLabel) {
+                this.fieldLabel = '<font color=red>*</font>' + this.fieldLabel;
+            }
+        }
+        this.callParent(arguments);
+    }
+});
+```
+
+2、beforeLabelTextTpl属性
+
+```markdown
+var required = '<span style="color:red;font-weight:bold" data-qtip="Required">*</span>';
+                {xtype: 'textfield',
+                id: 'moduleName',
+                beforeLabelTextTpl: required,
+                fieldLabel: '模块名称'}
+```
