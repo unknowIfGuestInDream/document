@@ -12,6 +12,47 @@ Spring Boot 对 @Conditional 注解为我们做了细化，这些注解都定义
 * 都可以应用在 METHOD 上，所以有 @Bean 标记的方法也可以应用这些注解
 * 都是用了 @Conditional 注解来标记，OnBeanCondition 等自定义 Condition 还是实现了 Condition 接口
 
+## @Conditional
+@Conditional注解是可以根据一些自定义的条件动态的选择是否加载该bean到springIOC容器中去
+
+###示例
+定义一个Condition
+```java
+public class MyCondition implements Condition {
+    public boolean matches(ConditionContext context,AnnotatedTypeMetadata metadata) {
+        Environment env = context.getEnvironment();
+        String system = env.getProperty("os.name");
+        System.out.println("系统环境为 ==="+system);
+        // 系统环境在Windows才加载该bean到容器中
+        if(system.contains("Windows")){
+            return true;
+        }
+        return false;
+    }
+}
+```
+
+定义一个bean加上@Conditional注解如下：  
+
+```java
+@Conditional({MyCondition.class})
+@Configuration
+public class MainConfig {
+
+    @Bean(value="user0")
+    public User getUser(){
+        System.out.println("创建user实例");
+        return new User("张三",26);
+    }
+    //@Conditional({MyCondition.class})
+    @Bean(value="user1")
+    public User getUser1(){
+        System.out.println("创建user1实例");
+        return new User("李四",26);
+    }
+}
+```
+
 ## @ConditionalOnProperty
 在spring boot中有时候需要控制配置类是否生效,可以使用@ConditionalOnProperty注解来控制@Configuration是否生效.
 
@@ -182,6 +223,19 @@ public class Config {
 
 类似配置在autoconfigure包下有很多，在引入相应依赖后配置才会生效
 
+**注意：**  
+```java
+@Configuration    
+@ConditionalOnClass(KafkaTemplate.class)
+```
+如果 classpath 中没有 KafkaTemplate.class，编译会报错  
+可以用类的 所在包路径 + 类名 当参数即可 如
+```java
+@ConditionalOnClass(name = "org.springframework.kafka.core.KafkaTemplate")
+//@ConditionalOnClass(value = "org.springframework.kafka.core.KafkaTemplate")
+//@ConditionalOnClass(KafkaTemplate.class)
+```
+
 ## @ConditionalOnExpression
 如果我们有更复杂的多个配置属性一起判断，那么我们就可以用这个基于SPEL表达式的表达式了
 
@@ -267,22 +321,234 @@ conditional.express=true
 ```
 
 ## @ConditionalOnSingleCandidate
+表示当指定Bean在容器中只有一个，或者虽然有多个但是指定首选Bean
+
+> 只有指定类已存在于 BeanFactory 中，并且可以确定单个候选项才会匹配成功 BeanFactory 存在多个 bean 实例，但是有一个 primary 候选项被指定(通常在类上使用 @Primary 注解)，也会匹配成功。实质上，如果自动连接具有定义类型的 bean 匹配就会成功 目前，条件只是匹配已经被应用上下文处理的 bean 定义，本身来讲，强烈建议仅仅在 auto-configuration 类中使用这个条件，如果候选 bean 被另外一个 auto-configuration 创建，确保使用该条件的要在其后面运行
+
+示例
+![](../../images/conditional/conditional3.png)
+
+配置多数据源时需要@Primary注解
+```java
+@Configuration
+public class DataSourceConfig {
+    @Primary
+    @Bean(name = "dataSource")
+    @Qualifier("dataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.master")
+    public DataSource mpDefault() {
+        return new DruidDataSource();
+    }
+
+    @Bean(name = "tfJdbcTemplate")
+    public JdbcTemplate tfJdbcTemplate(@Qualifier("dataSource") DataSource dataSource) {
+        return new JdbcTemplate(dataSource);
+    }
+
+    @Bean(name = "txDataSource")
+    @Qualifier("txDataSource")
+    @ConfigurationProperties(prefix = "spring.datasource.cluster")
+    public DataSource txDataSource() {
+        return new DruidDataSource();
+    }
+
+    @Bean(name = "txJdbcTemplate")
+    public JdbcTemplate txJdbcTemplate(@Qualifier("txDataSource") DataSource dataSource) {
+        return new JdbcTemplate(dataSource);
+    }
+}
+```
 
 ## @ConditionalOnResource
 如果我们要加载的 bean 依赖指定资源是否存在于 classpath 中，那么我们就可以使用这个注解
 
+### 示例
+```java
+@Configuration
+@ConditionalOnResource(resources = "/logback.xml")
+public class DataSourceConfig {
+}
+```
+
 ## @ConditionalOnJndi
 只有指定的资源通过 JNDI 加载后才加载 bean
+
+### 示例
+```java
+@Configuration
+@ConditionalOnJndi("java:comp/env/foo")
+public class DataSourceConfig {
+}
+```
 
 ## @ConditionalOnJava
 只有运行指定版本的 Java 才会加载 Bean
 
+### 源码说明
+```java
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Conditional({OnJavaCondition.class})
+public @interface ConditionalOnJava {
+
+    //java版本范围，默认当前版本以及更高版本
+    ConditionalOnJava.Range range() default ConditionalOnJava.Range.EQUAL_OR_NEWER;
+
+    //java版本 
+    JavaVersion value();
+
+    public static enum Range {
+        EQUAL_OR_NEWER,
+        OLDER_THAN;
+
+        private Range() {
+        }
+    }
+}
+```
+
+### 示例
+```java
+@Configuration
+@ConditionalOnJava(JavaVersion.EIGHT)
+public class DataSourceConfig {
+}
+```
+
 ## @ConditionalOnWebApplication 和 @ConditionalOnNotWebApplication
-只有运行在 web 应用里才会加载这个 bean  
+只有运行在 web 应用里才会加载这个 bean，通常是配置类；    
 与之相反，在非 web 环境才加载 bean
 
 ## @ConditionalOnCloudPlatform
 只有运行在指定的云平台上才加载指定的 bean，CloudPlatform 是 org.springframework.boot.cloud 下一个 enum 类型的类
 
+### 示例
+```java
+@Configuration
+@ConditionalOnCloudPlatform(CloudPlatform.CLOUD_FOUNDRY)
+public class DataSourceConfig {
+}
+```
+
 ## 组合条件
+
+### 组合条件 AND
+如果我们想多个条件一起应用，并且条件的关系是 and，我们只需要在类上使用多个@ConditionalOnXxxx 就可以  
+或者继承 AllNestedConditions类封装我们多个条件
+
+```java
+class DefaultWebSecurityCondition extends AllNestedConditions {
+    DefaultWebSecurityCondition() {
+        super(ConfigurationPhase.REGISTER_BEAN);
+    }
+
+    @ConditionalOnMissingBean({WebSecurityConfigurerAdapter.class, SecurityFilterChain.class})
+    static class Beans {
+        Beans() {
+        }
+    }
+
+    @ConditionalOnClass({SecurityFilterChain.class, HttpSecurity.class})
+    static class Classes {
+        Classes() {
+        }
+    }
+}
+```
+
+这样就有了组合 and 条件，只有内部所有条件都满足，才加载指定 bean
+
+### 组合条件 OR
+如果我们希望组合的条件是 or 的关系，可以通过继承 AnyNestedCondition 来完成这一要求
+
+```java
+        static class DifferentCredentialsCondition extends AnyNestedCondition {
+            DifferentCredentialsCondition() {
+                super(ConfigurationPhase.PARSE_CONFIGURATION);
+            }
+
+            @ConditionalOnProperty(
+                prefix = "spring.datasource",
+                name = {"data-username"}
+            )
+            static class DataCredentials {
+                DataCredentials() {
+                }
+            }
+
+            @ConditionalOnProperty(
+                prefix = "spring.datasource",
+                name = {"schema-username"}
+            )
+            static class SchemaCredentials {
+                SchemaCredentials() {
+                }
+            }
+        }
+```
+
+### 条件组合 NONE
+有 and 和 or 就肯定有 non(非)，我们可以通过继承 NoneNestedConditions 完成这一要求
+
+```java
+    static class NotReactiveWebApplicationCondition extends NoneNestedConditions {
+        NotReactiveWebApplicationCondition() {
+            super(ConfigurationPhase.PARSE_CONFIGURATION);
+        }
+
+        @ConditionalOnWebApplication(
+            type = Type.REACTIVE
+        )
+        private static class ReactiveWebApplication {
+            private ReactiveWebApplication() {
+            }
+        }
+    }
+```
+
+## 自定义注解
+自定义注解通过组合方式实现了多条件逻辑应用，我们需要应用这些组合条件也就要自定义注解，模仿内置的注解写就好了
+
+自定义组合方式
+```java
+class TestCondition extends AllNestedConditions {
+    TestCondition() {
+        super(ConfigurationPhase.PARSE_CONFIGURATION);
+    }
+
+    @ConditionalOnMissingBean({WebSecurityConfigurerAdapter.class, SecurityFilterChain.class})
+    static class Beans {
+        Beans() {
+        }
+    }
+
+    @ConditionalOnClass({SecurityFilterChain.class, HttpSecurity.class})
+    static class Classes {
+        Classes() {
+        }
+    }
+}
+```
+
+自定义注解, 只需要通过@Conditional注解指定我们自定义的 condition 类，然后应用到你想用的地方就好了
+```java
+@Target({ ElementType.TYPE, ElementType.METHOD })
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Conditional(TestCondition.class)
+public @interface ConditionalOnTest {
+}
+```
+
+应用
+```
+@Bean
+@ConditionalOnTest
+People people(){
+  return new People();
+}
+```
+
+
 
