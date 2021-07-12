@@ -46,3 +46,4 @@ http://云服务器实例的公网
 * systemctl start nginx
 * systemctl stop nginx 停止nginx
 * systemctl restart nginx 重启nginx
+* service nginx restart  重启nginx
