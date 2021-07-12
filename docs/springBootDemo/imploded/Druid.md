@@ -184,7 +184,7 @@ druid监控首页会有阿里云广告，可以新增配置文件RemoveDruidAdCo
 @Configuration
 @ConditionalOnWebApplication
 @AutoConfigureAfter(DruidDataSourceAutoConfigure.class)
-@ConditionalOnProperty(name = "spring.datasource.druid.stat-view-servlet.enabled",
+@ConditionalOnProperty(name = "spring.datasource.druid.stat-view-servlet.enable",
         havingValue = "true", matchIfMissing = true)
 public class RemoveDruidAdConfig {
 
