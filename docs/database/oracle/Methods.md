@@ -98,6 +98,11 @@ select * from dba_col_comments; -- 包括系统表的字段跟注释
 select * from all_col_comments; -- 所有用户的表的字段跟注释
 ```
 
+## 获取表，视图的注释
+```oracle
+select * from user_tab_comments; -- 当前用户下的表的注释
+```
+
 ## 获取表
 ```oracle
 select * from user_tables; -- 当前用户拥有的表
