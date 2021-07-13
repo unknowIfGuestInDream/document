@@ -6,6 +6,7 @@
 * Linux下载软件
  
  * [安装java](linux/soft/java.md)
+ * [安装tomcat](linux/soft/tomcat.md)
  * [安装node](linux/soft/node.md)
  * [安装mysql](linux/soft/mysql.md)
  * [安装RabbitMQ](linux/soft/rabbit.md)
