@@ -10,7 +10,7 @@ springboot使用actuator的方式非常简单，只需要在项目中加入依�
 </dependency>
 ```
 
-![](../images/actuator/actuator.png)
+![](../../images/actuator/actuator.png)
 
 **yml配置:**
 ```yaml
