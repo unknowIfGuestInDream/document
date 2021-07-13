@@ -90,3 +90,24 @@ select distinct name From user_source where type = 'PROCEDURE'
 ```oracle
 select * from SYS.ALL_ARGUMENTS t where t.OWNER = '' and t.OBJECT_NAME = ''
 ```
+
+## 查询表的字段跟注释
+```oracle
+select * from user_col_comments; -- 当前用户下的表的字段跟注释
+select * from dba_col_comments; -- 包括系统表的字段跟注释
+select * from all_col_comments; -- 所有用户的表的字段跟注释
+```
+
+## 获取表
+```oracle
+select * from user_tables; -- 当前用户拥有的表
+select * from dba_tables; -- 包括系统表
+select * from all_tables; -- 所有用户的表
+```
+
+## 获取表字段
+```oracle
+select * from user_tab_columns; -- 当前用户下的表的字段
+select * from dba_tab_columns; -- 包括系统表的字段
+select * from all_tab_columns; -- 所有用户的表的字段
+```
