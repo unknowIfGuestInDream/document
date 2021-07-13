@@ -464,3 +464,118 @@ SIMPLE
             }]
         });
 ```
+
+## 表格列动态隱藏/显示
+```javascript
+    function _viewAllInfo() {
+        //显示/隐藏的列序号（从0开始）
+        var infoArrat = [1, 12, 13, 14, 15, 17];
+        var workTicketDetailPanel = Ext.getCmp('workTicketDetailPanel');
+        //按钮文本
+        Ext.getCmp('viewWorkProcedureNum').setText(workTicketDetailPanel.columns[1].hidden ? '隐藏详情' : '显示详情');
+        for (var i = 0, leng = infoArrat.length; i < leng; i++) {
+            workTicketDetailPanel.columns[infoArrat[i]].setVisible(workTicketDetailPanel.columns[infoArrat[i]].hidden);
+        }
+    }
+```
+
+## 表格列动态隱藏/显示和表格合并
+
+<details>
+  <summary>展开</summary>
+
+```javascript
+    //查看作业票号
+    function _viewWorkProcedureNum() {
+        var workTicketDetailPanel = Ext.getCmp('workTicketDetailPanel');
+        Ext.getCmp('viewWorkProcedureNum').setText(workTicketDetailPanel.columns[4].hidden ? '隐藏作业票号' : '查看作业票号');
+        workTicketDetailPanel.columns[4].setVisible(workTicketDetailPanel.columns[4].hidden);
+        var colArray = workTicketDetailPanel.columns[4].hidden ? [2, 3, 4, 5, 8, 9, 10, 11, 12] : [2, 3, 4, 5, 6, 9, 10, 11, 12, 13];
+        _mergeGrid(workTicketDetailPanel, colArray);
+    }
+
+    /**
+     * 合并Grid的数据列 根据  WORK_ORDER_DETAIL_ID_合并
+     * @param grid {Ext.Grid.Panel} 需要合并的Grid
+     * @param colIndexArray {Array} 需要合并列的Index(序号)数组；从0开始计数，序号也包含。
+     * @param isAllSome {Boolean} 是否2个tr的colIndexArray必须完成一样才能进行合并。true：完成一样；false：不完全一样
+     */
+    function _mergeGrid(grid, colIndexArray, isAllSome) {
+        var workTicketDetailStore = Ext.data.StoreManager.lookup('workTicketDetailStore');
+        isAllSome = isAllSome == undefined ? true : isAllSome; // 默认为true
+        // 1.是否含有数据
+        //debugger;
+        //Ext.getCmp('WORK_TICKET_DETAIL_ID_').setHidden(false);
+        var gridView = document.getElementById(grid.getView().getId() + '-body');
+        if (gridView == null) {
+            return;
+        }    // 2.获取Grid的所有tr
+        var trArray = [];
+        if (grid.layout.type == 'table') { // 若是table部署方式，获取的tr方式如下
+
+            trArray = gridView.childNodes;
+        } else {
+            trArray = gridView.getElementsByTagName('tr');
+        }    // 3.进行合并操作
+        if (isAllSome) { // 3.1 全部列合并：只有相邻tr所指定的td都相同才会进行合并
+            var lastTr = trArray[0]; // 指向第一行
+            // 1)遍历grid的tr，从第二个数据行开始
+            for (var i = 1, trLength = trArray.length; i < trLength; i++) {
+                var thisTr = trArray[i];
+                var isPass = true; // 是否验证通过
+                // 2)遍历需要合并的列
+                if (workTicketDetailStore.getAt(i - 1).data.WORK_TICKET_DETAIL_ID_ != workTicketDetailStore.getAt(i).data.WORK_TICKET_DETAIL_ID_) {
+                    lastTr = thisTr;
+                    isPass = false;
+                }
+                // 4)若colIndexArray验证通过，就把当前行合并到'合并行'
+                if (isPass) {
+                    for (var j = 0, colArrayLength = colIndexArray.length; j < colArrayLength; j++) {
+                        var colIndex = colIndexArray[j];    // 5)设置合并行的td rowspan属性
+                        if (lastTr.childNodes[colIndex].hasAttribute('rowspan')) {
+                            var rowspan = lastTr.childNodes[colIndex].getAttribute('rowspan') - 0;
+                            rowspan++;
+                            lastTr.childNodes[colIndex].setAttribute('rowspan', rowspan);
+                        } else {
+                            lastTr.childNodes[colIndex].setAttribute('rowspan', '2');
+                        }    // lastTr.childNodes[colIndex].style['text-align'] = 'center';; // 水平居中
+                        lastTr.childNodes[colIndex].style['vertical-align'] = 'middle'; // 纵向居中
+                        thisTr.childNodes[colIndex].style.display = 'none';
+                    }
+                }
+            }
+        } else { // 3.2 逐个列合并：每个列在前面列合并的前提下可分别合并
+            // 1)遍历列的序号数组
+            for (var i = 0, colArrayLength = colIndexArray.length; i < colArrayLength; i++) {
+                var colIndex = colIndexArray[i];
+                var lastTr = trArray[0]; // 合并tr，默认为第一行数据
+                // 2)遍历grid的tr，从第二个数据行开始
+                for (var j = 1, trLength = trArray.length; j < trLength; j++) {
+                    var thisTr = trArray[j];   // 3)2个tr的td内容一样
+                    if (workTicketDetailStore.getAt(j - 1).data.WORK_TICKET_DETAIL_ID_ != workTicketDetailStore.getAt(j).data.WORK_TICKET_DETAIL_ID_) {
+                        //if (lastTr.childNodes[1].innerText == thisTr.childNodes[1].innerText) {
+                        // 4)若前面的td未合并，后面的td都不进行合并操作
+                        if (i > 0 && thisTr.childNodes[colIndexArray[i - 1]].style.display != 'none') {
+                            lastTr = thisTr;
+                            continue;
+                        } else {    // 5)符合条件合并td
+                            if (lastTr.childNodes[colIndex].hasAttribute('rowspan')) {
+                                var rowspan = lastTr.childNodes[colIndex].getAttribute('rowspan') - 0;
+                                rowspan++;
+                                lastTr.childNodes[colIndex].setAttribute('rowspan', rowspan);
+                            } else {
+                                lastTr.childNodes[colIndex].setAttribute('rowspan', '2');
+                            }    // lastTr.childNodes[colIndex].style['text-align'] = 'center';; // 水平居中
+                            lastTr.childNodes[colIndex].style['vertical-align'] = 'middle'; // 纵向居中
+                            thisTr.childNodes[colIndex].style.display = 'none'; // 当前行隐藏
+                        }
+                    } else {    // 5)2个tr的td内容不一样
+                        lastTr = thisTr;
+                    }
+                }
+            }
+        }
+    }
+```
+
+</details>
