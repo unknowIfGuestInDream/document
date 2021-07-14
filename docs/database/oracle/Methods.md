@@ -110,7 +110,7 @@ select * from dba_tables; -- 包括系统表
 select * from all_tables; -- 所有用户的表
 ```
 
-![更多oracle表信息查看](https://docs.oracle.com/en/database/oracle/oracle-database/12.2/refrn/ALL_TABLES.html#GUID-6823CD28-0681-468E-950B-966C6F71325D)
+[更多oracle表信息查看](https://docs.oracle.com/en/database/oracle/oracle-database/12.2/refrn/ALL_TABLES.html#GUID-6823CD28-0681-468E-950B-966C6F71325D  ':target=_blank')
 
 <details>
   <summary>user_tables表各字段意思</summary>
