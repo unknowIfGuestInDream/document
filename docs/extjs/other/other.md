@@ -181,3 +181,82 @@ document.location.href = '/download'
         form.dom.submit();
     }
 ```
+
+## 打印
+<details>
+  <summary>展开</summary>
+  
+```javascript
+//打印
+    function _printWorkTicketDetail(preview) {//打印
+        Ext.Ajax.request({
+            url: '/er/printWorkTicketDetail',
+            async: false,
+            params: {
+                'FTY_CODE_': Ext.getCmp('FTY_CODE_').getValue(),
+                'START_DATE_': Ext.getCmp('START_DATE_').getSubmitValue(),
+                'END_DATE_': Ext.getCmp('END_DATE_').getSubmitValue(),
+                'DEPT_CODE_': Ext.isEmpty(Ext.getCmp('DEPT_CODE_').getValue()) ? '' : Ext.getCmp('DEPT_CODE_').getValue(),
+                'GROUP_CODE_': Ext.isEmpty(Ext.getCmp('GROUP_CODE_').getValue()) ? '' : Ext.getCmp('GROUP_CODE_').getValue()
+            },
+            callback: function (options, success, response) {
+                if (success) {
+                    var data = Ext.decode(response.responseText);
+                    if (data.success) {
+                        //html文本
+                        workOrderDetailExcel = data.workOrderDetailExcel;
+                    }
+                }
+            }
+        });
+
+        var printContent = workOrderDetailExcel;//获得需要打印内容的HTML代码
+        _pageSetupNull();//把页眉页脚设置为空
+        printWindow = window.open('', '_blank');
+        //这里是向新建的窗口写入HTML的head信息，可引入自己的js和css
+        printWindow.document.write('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> <title></title><style type="text/css">@page{size:landscape;margin: 20mm 10mm 0mm 20mm;}</style></head><body>');
+        //这里向新建的窗体中写入BODY的内容，注意，外边加的额外DIV是有必要的，它里面CSS可以控制打印时不会出现空白页
+        printWindow.document.write('<div style="width:100%; height:100%; font-size:10px">' + printContent + "</div>");
+        printWindow.document.write("</body></html>");//这里向新建的窗体写入HTML的结束标记
+
+        //printWindow.document.getElementById("mytable").rows[0].cells[0].style.fontSize = "24px";
+
+        printWindow.document.close();//关闭新建窗口的文档输出流，否则下面的打印语句无效
+        printWindow.print();//打印当前新建窗口中的内容
+        printWindow.close();//关闭新建的窗口
+        _pageSetupDefault();//把页眉页脚恢复为默认
+    }
+
+    //设置网页打印的页眉页脚为空
+    function _pageSetupNull() {
+        var HKEY_Root, HKEY_Path, HKEY_Key;
+        HKEY_Root = "HKEY_CURRENT_USER";
+        HKEY_Path = "\\Software\\Microsoft\\Internet Explorer\\PageSetup\\";
+        try {
+            var Wsh = new ActiveXObject("WScript.Shell");
+            HKEY_Key = "header";
+            Wsh.RegWrite(HKEY_Root + HKEY_Path + HKEY_Key, "");
+            HKEY_Key = "footer";
+            Wsh.RegWrite(HKEY_Root + HKEY_Path + HKEY_Key, "");
+        } catch (e) {
+        }
+
+    }
+
+    //设置网页打印的页眉页脚为默认值
+    function _pageSetupDefault() {
+        var HKEY_Root, HKEY_Path, HKEY_Key;
+        HKEY_Root = "HKEY_CURRENT_USER";
+        HKEY_Path = "\\Software\\Microsoft\\Internet Explorer\\PageSetup\\";
+        try {
+            var Wsh = new ActiveXObject("WScript.Shell");
+            HKEY_Key = "header";
+            Wsh.RegWrite(HKEY_Root + HKEY_Path + HKEY_Key, "&w&b页码，&p/&P");
+            HKEY_Key = "footer";
+            Wsh.RegWrite(HKEY_Root + HKEY_Path + HKEY_Key, "&u&b&d");
+        } catch (e) {
+        }
+    }
+```  
+  
+</details>
