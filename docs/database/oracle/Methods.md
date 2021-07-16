@@ -29,6 +29,17 @@ BEGIN
 END 触发器名;
 ```
 
+## 修改时间字段的触发器
+```oracle
+create or replace trigger TRI_DAILY_DINGROBOT_UPD
+before
+update on DAILY_DINGROBOT
+for each row
+begin
+  select sysdate into :NEW.UPDATE_DATE from dual;
+end;
+```
+
 ## 查询过去7天
 
 ```oracle
