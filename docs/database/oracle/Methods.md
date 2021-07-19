@@ -189,3 +189,11 @@ select * from user_tab_columns; -- 当前用户下的表的字段
 select * from dba_tab_columns; -- 包括系统表的字段
 select * from all_tab_columns; -- 所有用户的表的字段
 ```
+
+## 字段前填充0
+
+固定8位 不足填充0
+
+```oracle
+update 表 t set t.字段 = lpad(t.字段,8,0)
+```
