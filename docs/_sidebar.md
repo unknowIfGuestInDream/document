@@ -18,6 +18,7 @@
  * [actuator监控](springBootDemo/imploded/actuator.md)
  * [AOP切面编程](springBootDemo/imploded/AOP.md)
  * [过滤器、监听器和拦截器](springBootDemo/imploded/web.md)
+ * [RestTemplate](springBootDemo/imploded/restTemplate.md)
  * [属性编辑器](springBootDemo/imploded/binder.md)
  * [异常全局处理](springBootDemo/imploded/Exception.md)
  * [虚拟路径](springBootDemo/imploded/Resource.md)
