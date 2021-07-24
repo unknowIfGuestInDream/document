@@ -171,3 +171,33 @@ public class RiderController {
     }
 }
 ```
+
+## 引入本地jar包打包部署
+当有的jar无法通过maven获取时，通过以下方式可以打包项目进行部署运行
+
+1、在resources下面新建lib文件夹，并把jar包文件放到这个目录下
+
+![](../../images/jar/jar1.png)
+
+2、在pom文件定义几个依赖指向刚才引入的文件
+
+```xml
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>sqljdbc4</artifactId>
+            <version>4.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/resources/lib/sqljdbc4-4.0.jar</systemPath>
+        </dependency>
+```
+
+3. 在maven的pom里给springboot的打包插件引入一下参数
+
+```xml
+<includeSystemScope>true</includeSystemScope>
+```
+
+![](../../images/jar/jar2.png)
+
+
+
