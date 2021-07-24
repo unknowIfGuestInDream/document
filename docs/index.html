@@ -119,7 +119,7 @@
                     // var isReadme = window.location.href.indexOf("README");
                     var isReadme = 1;
                     if (isReadme === -1) {
-                        return header + html + footer;
+                        return header + html + '<div id="SOHUCS" ></div>' + footer;
                     } else {
                         return html + footer;
                     }
@@ -135,8 +135,6 @@
                     return (
                         editHtml +
                         html
-                        + '\n'
-                        + '<div id="SOHUCS" ></div>'
                         // + '<a href="https://docsify.js.org" target="_blank" style="color: inherit; font-weight: normal; text-decoration: none;">Powered by docsify</a>'
                     );
                 });
