@@ -110,6 +110,7 @@
                     '</p>'
                 ].join('');
                 var footer = [
+                    '<div id="SOHUCS" ></div>',
                     '<hr/>',
                     '<footer style="text-align: center">',
                     '<span><a href="https://beian.miit.gov.cn/" target="_blank">辽ICP备2021000033号-1</a></span>',
@@ -119,7 +120,7 @@
                     // var isReadme = window.location.href.indexOf("README");
                     var isReadme = 1;
                     if (isReadme === -1) {
-                        return header + html + '<div id="SOHUCS" ></div>' + footer;
+                        return header + html + footer;
                     } else {
                         return html + footer;
                     }
