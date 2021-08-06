@@ -47,13 +47,13 @@
 
 ## StringUtils字符串工具类
 
-> 首字母大写： public static String capitalize(String str)
-  首字母小写：public static String uncapitalize(String str)
-  判断字符串是否为null或empty： public static boolean hasLength(String str)
-  判断字符串是否为非空白字符串(即至少包含一个非空格的字符串)：public static boolean hasText(String str)
-  获取文件名：public static String getFilename(String path) 如e.g. "mypath/myfile.txt" -> "myfile.txt"
-  获取文件扩展名：public static String getFilenameExtension(String path) 如"mypath/myfile.txt" -> "txt"
-  还有譬如数组转集合、集合转数组、路径处理、字符串分离成数组、数组或集合合并为字符串、数组合并、向数组添加元素等。\
+* 首字母大写： public static String capitalize(String str)
+* 首字母小写：public static String uncapitalize(String str)
+* 判断字符串是否为null或empty： public static boolean hasLength(String str)
+* 判断字符串是否为非空白字符串(即至少包含一个非空格的字符串)：public static boolean hasText(String str)
+* 获取文件名：public static String getFilename(String path) 如e.g. "mypath/myfile.txt" -> "myfile.txt"
+* 获取文件扩展名：public static String getFilenameExtension(String path) 如"mypath/myfile.txt" -> "txt"
+* 还有譬如数组转集合、集合转数组、路径处理、字符串分离成数组、数组或集合合并为字符串、数组合并、向数组添加元素等。
   
 ## CollectionUtils集合工具类
 
@@ -61,11 +61,11 @@
 
 ## NumberUtils数字处理 
 
-> 字符串转换为Number并格式化，包括具体的Number实现类，如Long、Integer、Double，字符串支持16进制字符串，并且会自动去除字符串中的空格：
-  public static <T extends Number> T parseNumber(String text, Class<T> targetClass)
-  public static <T extends Number> T parseNumber(String text, Class<T> targetClass, NumberFormat numberFormat)
-  各种Number中的转换，如Long专为Integer，自动处理数字溢出（抛出异常）：
-  public static <T extends Number> T convertNumberToTargetClass(Number number, Class<T> targetClass)  
+* 字符串转换为Number并格式化，包括具体的Number实现类，如Long、Integer、Double，字符串支持16进制字符串，并且会自动去除字符串中的空格：
+* public static <T extends Number> T parseNumber(String text, Class<T> targetClass)
+* public static <T extends Number> T parseNumber(String text, Class<T> targetClass, NumberFormat numberFormat)
+* 各种Number中的转换，如Long专为Integer，自动处理数字溢出（抛出异常）：
+* public static <T extends Number> T convertNumberToTargetClass(Number number, Class<T> targetClass)  
 
 ## DigestUtils MD5加密
 
