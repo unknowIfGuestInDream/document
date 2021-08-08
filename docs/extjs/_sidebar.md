@@ -16,6 +16,9 @@
 * 其它功能或组件
  
  * [other](extjs/other/other.md)
+ * [localStorage和SessionStorage](extjs/other/storage.md)
+ * [IndexedDB](extjs/other/indexedDB.md)
+ * [WebSql](extjs/other/webSql.md)
 
 * 工具
  
