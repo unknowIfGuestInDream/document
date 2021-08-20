@@ -84,6 +84,14 @@ Ext.data.IdGenerator.get('uuid').generate().replace(/-/g, "")
 Ext.util.Format.number(21000000,Ext.util.Format.thousandSeparator)
 ```
 
+extjs的千分位格式化不会保留小数，如需保留小数采用如下方法
+
+```javascript
+function moneyformat(num) {
+    return (num.toFixed(2) + '').replace(/(\d{1,3})(?=(\d{3})+(?:$|\.))/g, '$1,');
+}
+```
+
 ## 数组去重
 
 ```javascript
