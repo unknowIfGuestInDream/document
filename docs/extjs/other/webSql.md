@@ -1,6 +1,7 @@
 ##简介
 Web SQL 数据库 API 并不是 HTML5 规范的一部分，但是它是一个独立的规范，引入了一组使用 SQL 操作客户端数据库的 APIs。  
-Web SQL 数据库可以在最新版的 Safari, Chrome 和 Opera 浏览器中工作
+Web SQL 数据库可以在最新版的 Safari, Chrome 和 Opera 浏览器中工作  
+然而Web SQL Database实际上已经被废弃，而HTML5的支持的本地存储实际上变成了Web Storage（Local Storage和Session Storage）与IndexedDB
 
 ## 主要方法
 1、openDatabase：这个方法使用现有数据库或创建新数据库创建数据库对象。
