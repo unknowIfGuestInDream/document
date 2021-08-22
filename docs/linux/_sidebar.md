@@ -16,3 +16,4 @@
  * [安装mongodb](linux/soft/mongodb.md)
  * [安装minio](linux/soft/minio.md)
  * [安装nginx](linux/soft/nginx.md)
+ * [安装oracle](linux/soft/oracle.md)
