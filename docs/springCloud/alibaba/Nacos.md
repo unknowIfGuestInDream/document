@@ -10,3 +10,65 @@ Nacos 具有如下特性:
 * 动态 DNS 服务：动态 DNS 服务支持权重路由，让您更容易地实现中间层负载均衡、更灵活的路由策略、流量控制以及数据中心内网的简单DNS解析服务；
 * 服务及其元数据管理：支持从微服务平台建设的视角管理数据中心的所有服务及元数据。
 使用Nacos作为注册中心
+
+## 服务注册新增元数据
+
+```java
+import com.alibaba.cloud.nacos.ConditionalOnNacosDiscoveryEnabled;
+import com.alibaba.cloud.nacos.NacosDiscoveryProperties;
+import com.alibaba.cloud.nacos.NacosServiceManager;
+import com.alibaba.cloud.nacos.discovery.NacosWatch;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cloud.client.CommonsClientAutoConfiguration;
+import org.springframework.cloud.client.discovery.simple.SimpleDiscoveryClientAutoConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+/**
+ * nacos客户端注册至服务端时，更改服务详情中的元数据
+ */
+@Configuration
+@ConditionalOnNacosDiscoveryEnabled
+@AutoConfigureBefore({SimpleDiscoveryClientAutoConfiguration.class, CommonsClientAutoConfiguration.class})
+public class NacosDiscoveryClientConfiguration {
+
+    /**
+     * 程序环境
+     */
+    @Value("${spring.profiles.active:prod}")
+    private String profiles;
+
+    /**
+     * 取操作系统版本
+     */
+    @Value("#{systemProperties['os.name']}")
+    private String systemName;
+
+    @Bean
+    @ConditionalOnMissingBean
+    public NacosDiscoveryProperties nacosProperties() {
+        return new NacosDiscoveryProperties();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(value = {"spring.cloud.nacos.discovery.watch.enabled"}, matchIfMissing = true)
+    public NacosWatch nacosWatch(NacosServiceManager nacosServiceManager, NacosDiscoveryProperties nacosProperties, ObjectProvider<ThreadPoolTaskScheduler> taskScheduler) {
+        //更改服务详情中的元数据，增加服务注册时间
+        nacosProperties.getMetadata().remove("preserved.register.source");
+        nacosProperties.getMetadata().put("startup.time", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        nacosProperties.getMetadata().put("env", profiles);
+        nacosProperties.getMetadata().put("systemName", systemName);
+        return new NacosWatch(nacosServiceManager, nacosProperties, taskScheduler);
+    }
+
+}
+```
