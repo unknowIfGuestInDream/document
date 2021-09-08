@@ -199,5 +199,11 @@ public class RiderController {
 
 ![](../../images/jar/jar2.png)
 
+## 构造器注入解决循环依赖
+
+```markdown
+@RequiredArgsConstructor(onConstructor_ = {@Lazy, @Autowired})
+```
+
 
 
