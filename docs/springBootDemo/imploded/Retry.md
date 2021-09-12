@@ -20,6 +20,8 @@ Spring Retry提供了自动重新调用失败操作的功能。为了使处理�
 
 spring retry 提供了编程式和Aop 注解 两种方式 通过编程式更好理解。
 
+Spring Retry有一个缺点，其回退策略，默认使用的是Thread.sleep方法，会导致当前的线程被阻塞，因此使用的时候要注意。
+
 ## 注解开发
 ### @Retryable
 要向方法添加重试功能，可以使用@Retryable
@@ -395,6 +397,9 @@ public class SpringRetryIntegrationTest {
 2020-01-09 20:04:12 [main] INFO  c.p.s.DefaultListenerSupport - onError 
 2020-01-09 20:04:12 [main] INFO  c.p.s.DefaultListenerSupport - onClose
 ```
+
+## 参考
+![参考文档](https://www.baeldung.com/spring-retry)
 
 
 
