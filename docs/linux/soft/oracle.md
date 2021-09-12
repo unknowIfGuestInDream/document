@@ -23,3 +23,11 @@ export DISPLAY=:0
 dbca
 ```
 
+https://www.cnblogs.com/xuzhaoyang/p/11265240.html
+
+创建数据库 dbca  
+sqlplus  / as sysdba #以dba的身份链接到数据库  
+startup  
+关闭数据库  
+ shutdown immediate
+
