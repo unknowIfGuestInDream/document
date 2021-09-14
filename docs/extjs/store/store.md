@@ -26,3 +26,15 @@
 //注册store
 Ext.data.StoreManager.register(postStore);
 ```
+
+## 获取store中的查询结果其他信息
+
+```javascript
+        var tableInfoStore = Ext.data.StoreManager.lookup('tableInfoStore');
+        tableInfoStore.proxy.extraParams = {
+        };
+        var result = tableInfoStore.load().getProxy().getReader();
+        if (!result.getResponseData().success) {
+            Toast.alert('错误', result.jsonData.message, 3000);
+        }
+```
