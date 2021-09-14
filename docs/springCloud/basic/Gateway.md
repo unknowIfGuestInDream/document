@@ -73,3 +73,60 @@ management:
     health:
       show-details: always
 ```
+
+gateway默认cors配置比较简单，通常选择自定义配置
+```java
+@Configuration
+public class CorsConfig {
+
+    @Bean
+    public CorsWebFilter corsWebFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
+        configuration.addAllowedOrigin("*");
+        // 是否允许携带cookie跨域
+        configuration.setAllowCredentials(true);
+        source.registerCorsConfiguration("/**", configuration);
+        return new CorsWebFilter(source);
+    }
+
+}
+```
+
+## 开启Reactor Netty日志
+logback-spring.xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+    <springProperty scop="context" name="spring.application.name" source="spring.application.name" defaultValue=""/>
+    <!--应用名称-->
+    <property name="APP_NAME" value="${spring.application.name}"/>
+    <!--日志文件保存路径-->
+    <property name="LOG_FILE_PATH" value="logs"/>
+    <contextName>${APP_NAME}</contextName>
+
+    <appender name="accessLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>logs/${APP_NAME}/access/access-%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+            <maxHistory>30</maxHistory>
+            <maxFileSize>2GB</maxFileSize>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="async" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="accessLog"/>
+    </appender>
+
+    <logger name="reactor.netty.http.server.AccessLog" level="INFO" additivity="false">
+        <appender-ref ref="async"/>
+    </logger>
+</configuration>
+```
