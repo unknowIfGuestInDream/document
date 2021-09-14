@@ -10,6 +10,7 @@
  * [日志配置](springBootDemo/basic/Log.md)
  * [Conditional系列注解](springBootDemo/basic/Conditional.md)
  * [AutoConfigure注解](springBootDemo/basic/AutoConfigure.md)
+ * [SPEL表达式](springBootDemo/basic/Spel.md)
  * [类型转换](springBootDemo/basic/Converter.md)
  * [其他设置](springBootDemo/basic/Other.md)
  
