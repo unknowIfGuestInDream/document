@@ -34,7 +34,9 @@ Ext.data.StoreManager.register(postStore);
         tableInfoStore.proxy.extraParams = {
         };
         var result = tableInfoStore.load().getProxy().getReader();
-        if (!result.getResponseData().success) {
+        if (!result.jsonData.success) {
             Toast.alert('错误', result.jsonData.message, 3000);
         }
 ```
+
+jsonData可以换成rawData
