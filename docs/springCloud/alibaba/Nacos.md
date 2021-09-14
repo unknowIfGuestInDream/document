@@ -72,3 +72,38 @@ public class NacosDiscoveryClientConfiguration {
 
 }
 ```
+
+## 共享配置
+示例配置
+
+```yaml
+spring:
+  profiles:
+    active: dev
+  application:
+    name: xxx
+  cloud:
+    nacos:
+      config:
+        server-addr: http://localhost:8848
+        file-extension: yaml
+        group: DEFAULT_GROUP
+        refresh-enabled: true
+        namespace: aaaaa
+        username: xxx
+        password: xxx
+        extension-configs:
+          - data-id: pmnew-share-dev.yaml
+            group: DEFAULT_GROUP
+            refresh: true
+        shared-configs[0]:
+          data-id: pearl-common.yml # 配置文件名-Data Id
+          group: PEARL_GROUP   # 默认为DEFAULT_GROUP
+          refresh: false   # 是否动态刷新，默认为false
+```
+
+共享配置有 shared-configs 和 extension-configs属性，他们配制方法相同有两种写法，如上文配置
+
+优先级：
+
+file-extension > extension-configs > shared-configs  共享配置下标数字越大，优先级越高
