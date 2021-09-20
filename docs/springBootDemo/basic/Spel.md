@@ -20,6 +20,34 @@ SpEL支持如下表达式：
 
 !> SpEL表达式中的关键字是不区分大小写的。
 
+## 语法
+
+SpringEL基础语法格式为#{...}或者${...}。其中以$开头的被称为属性占位符 ，只能用来取值 ，
+不能进行表达式计算 ，比如我们常见的@Value(开头的被称为属性占位符，只能用来取值，不能进行表达式计算，
+比如我们常见的@Value(开头的被称为属性占位符，只能用来取值，不能进行表达式计算，
+比如我们常见的@Value({userName})就是从配置文件取值。
+以**#**开头的可以进行表达式计算，例如#{T(java.lang.Math).PI}
+
+SpringEL支持的操作符如下
+
+语法 | 说明 | 示例
+----|----|----
+字面量 | 使用单引号或者通过转义双引号。 | “null”, " “jack” "
+集合  (properties,lists,maps,arrays) | 像list,map,array等集合可以调用其方法 | “list.get(0)”
+索引器 | 使用符号[]可以访问其成员 | “list[0]”
+内部初始化(inner lists/maps) | 格式:{value}或{key:value},成员以逗号分隔 | " {0,1,2,3,4} “或” {0:name,1:age,3:gender} "
+数组构造器(new 操作符) | 直接在表达式中,可初始化并分配数组 | " new int[3] ";支持所有的数组初始化语法
+比较操作符 | 可使用比如>,<,=等等的比较运算符 | “3<5”
+逻辑操作符 | 表达式中的逻辑操作符,使用and,or和not | " ‘a’ =.= ‘a’ or ‘b’ =.=‘c’ "
+算术操作符 | 表达式支持的有+,-,*,/,%,^(平方)等等 | " 5+3+2*10 "
+instanceof操作符 | " obj instanceof Type ",返回Boolean类型 | “‘jack’ instanceof T(java.lang.String)”
+matches操作符 | 正则匹配,支持大部分的匹配符 | " str matches ‘regex expression’ "
+类型引用操作符 T() | 可以引用具体的类java.lang包中的引用不需全类名,反之使用. | " T(Math).random() "
+new操作符 | 使用new操作符可实例化对象,但应使用全类名 | " new java.util.ArrayLis() "
+变量引用操作符# | 与求值上下文有关,内置的有#this和#root | " #var "
+bean引用操作符@ | 可引用容器中注册的bean,依据beanName | " @beanName "
+三元操作符 ？： | 类似于java的三元操作符 | " 1+1 == 2 ? ‘y’:‘n’ "
+安全导航操作符? | 考虑空值异常的情况,若使用?操作符,遇到此异常时,不抛出,而是返回null. | " list?.get(12) "
 
 http://itmyhome.com/spring/expressions.html     --
 
