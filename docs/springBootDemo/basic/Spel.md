@@ -28,7 +28,7 @@ SpringEL基础语法格式为#{...}或者${...}。其中以$开头的被称为�
 比如我们常见的@Value({userName})就是从配置文件取值。
 以**#**开头的可以进行表达式计算，例如#{T(java.lang.Math).PI}
 
-SpringEL支持的操作符如下
+### SpringEL支持的操作符如下
 
 语法 | 说明 | 示例
 ----|----|----
@@ -49,10 +49,167 @@ bean引用操作符@ | 可引用容器中注册的bean,依据beanName | " @beanN
 三元操作符 ？： | 类似于java的三元操作符 | " 1+1 == 2 ? ‘y’:‘n’ "
 安全导航操作符? | 考虑空值异常的情况,若使用?操作符,遇到此异常时,不抛出,而是返回null. | " list?.get(12) "
 
-http://itmyhome.com/spring/expressions.html     --
+### 关系表达式
+序号 | 符号 | 示例
+----|----|----
+1 | 等于 | 1 EQ 2, 1 == 2   
+2 | 不等于 | 1 NE 2, 1 != 2
+3 | 大于 | 1 GT 2, 10 > 2 
+4 | 大于等于 | 1 GE 2, 10 >= 2 
+5 | 小于 | 1 LT 2, 10 < 2 
+6 | 小于等于 | 1 LE 2, 10 <= 2 
 
-https://www.cnblogs.com/yihuihui/p/12928323.html
+### 逻辑表达式
+序号 | 符号 | 示例
+----|----|----
+1 | 与(且) ，AND( && ) | true && false, true and false
+2 | 或，or(&#124;&#124;) | true &#124;&#124; false, true or false
+3 | 非，not（!） | not true,  ! true
 
-https://blog.csdn.net/zxcbnm7089/article/details/104770600
+### 集合过滤
+序号 | 表达式 | 说明
+----|----|----
+1 | ?[expression] | 选择符合条件的元素
+2 | ^ [expression] | 选择符合条件的第一个元素
+3 | $[expression] | 选择符合条件的最后一个元素
+4 | ![expression] | 可对集合中的元素挨个进行处理
 
-https://zhuanlan.zhihu.com/p/174786047
+```java
+// 集合
+parser.parseExpression("{1, 3, 5, 7}.?[#this > 3]").getValue(); // [5, 7] , 选择元素
+parser.parseExpression("{1, 3, 5, 7}.^[#this > 3]").getValue(); // 5 , 第一个
+parser.parseExpression("{1, 3, 5, 7}.$[#this > 3]").getValue(); // 7 , 最后一个
+parser.parseExpression("{1, 3, 5, 7}.![#this + 1]").getValue(); // [2, 4, 6, 8] ,每个元素都加1
+// map
+Map<Integer, String> map = Maps.newHashMap();
+map.put(1, "A");
+map.put(2, "B");
+map.put(3, "C");
+map.put(4, "D");
+parser.parseExpression("#map.?[key > 3]").getValue(context);             // {4=D}
+parser.parseExpression("#map.?[value == 'A']").getValue(context);        // {1=A}
+parser.parseExpression("#map.?[key > 2 and key < 4]").getValue(context); // {3=C}
+```
+
+### 测试用例
+```java
+@SpringBootTest
+public class spelTest {
+    @Value("#{5}")
+    private Integer num1;
+    @Value("#{'hello'}")
+    private String str1;
+    @Value("#{1.024E+3}")
+    private Long long1;
+    @Value("#{0xFFFF}")
+    private Integer num2;
+    @Value("#{'true'}")
+    private boolean bool1;
+    @Value("#{true}")
+    private String bool2;
+    @Value("#{2+2*3/2}")
+    private double dou1;
+    @Value("#{10 % 3}")
+    private double dou2;
+    @Value("#{10 MOD 3}")
+    private double dou3;
+    @Value("#{2 ^ 3}")
+    private double dou4;
+    @Value("#{'1 == 2'}")
+    private String bool3;
+    @Value("#{'1 EQ 2'}")
+    private String bool4;
+    @Value("#{1 EQ 2}")
+    private boolean bool5;
+    @Value("#{10 between {5,20}}")
+    private boolean bool6;
+    @Value("#{new int[3]}")
+    private int[] int1;
+    @Value("#{{'jack','rose','lili'}}")
+    private List<String> list1;
+    @Value("#{{0:'jack',1:'rose',2:'lili'}}")
+    private Map<String, Object> map1;
+    @Value("#{1+1>2 ? 'Y':'N'}")
+    private String str3;
+    @Value("#{T(Math).abs(-1)}")
+    private Integer int2;
+    @Value("#{'asdf' instanceof T(String)}")
+    private boolean bool7;
+    @Value("#{#name?.toUpperCase()}")
+    private String str4;
+    @Value("#{{1, 3, 5, 7}.?[#this > 3]}")//this表示当前的对象
+    private int[] int3;
+    @Value("#{not false}")
+    private boolean bool8;
+    @Value("#{! false}")
+    private String str5;
+    @Value("#{true && false}")
+    private String str6;
+    @Value("#{true || false}")
+    private String str7;
+
+    @Test
+    public void spel1() {
+        System.out.println(num1);
+        System.out.println(str1);
+        System.out.println(long1);
+        System.out.println(num2);
+        System.out.println(bool1);
+        System.out.println(bool2);
+        System.out.println(dou1);
+        System.out.println(dou2);
+        System.out.println(dou3);
+        System.out.println(dou4);
+        System.out.println(bool3);
+        System.out.println(bool4);
+        System.out.println(bool5);
+        System.out.println(bool6);
+        System.out.println(int1.length);
+        System.out.println(list1);
+        System.out.println(map1);
+        System.out.println(str3);
+        System.out.println(int2);
+        System.out.println(bool7);
+        System.out.println(str4);
+        System.out.println(int3.length);
+        System.out.println(bool8);
+        System.out.println(str5);
+        System.out.println(str6);
+        System.out.println(str7);
+    }
+}
+```
+
+## @Value注入
+```java
+    @Value("normal")
+    private String normal; // 注入普通字符串
+
+    @Value("#{systemProperties['os.name']}")
+    private String systemPropertiesName; // 注入操作系统属性
+
+    @Value("#{ T(java.lang.Math).random() * 100.0 }")
+    private double randomNumber; //注入表达式结果
+
+    @Value("#{beanInject.another}")
+    private String fromAnotherBean; // 注入其他Bean属性：注入beanInject对象的属性another，类具体定义见下面
+
+    @Value("classpath:com/tl/test.txt")
+    private Resource resourceFile; // 注入文件资源
+
+    @Value("http://www.baidu.com")
+    private Resource testUrl; // 注入URL资源
+
+    @Value("${app.name}")
+    private String appName; // 这里的值来自application.properties，spring boot启动时默认加载此文件
+
+    @Value("${spring.profiles.active:prod}")
+    private String profiles;//spring.profiles.active属性不存在时为true
+
+    @Value("#{dataSource.url}") //获取bean的属性  
+    private String jdbcUrl; 
+```
+
+## 参考文档
+* [http://itmyhome.com/spring/expressions.html](http://itmyhome.com/spring/expressions.html ':target=_blank')
+* [https://zhuanlan.zhihu.com/p/174786047](https://zhuanlan.zhihu.com/p/174786047 ':target=_blank')
