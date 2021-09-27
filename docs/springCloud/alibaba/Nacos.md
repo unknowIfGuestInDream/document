@@ -107,3 +107,37 @@ spring:
 优先级：
 
 file-extension > extension-configs > shared-configs  共享配置下标数字越大，优先级越高
+
+## nacos2.0长连接配置
+
+可通过指定nacos-client方式，提前使用Nacos2.0长连接功能
+```xml
+    <dependency>
+        <groupId>com.alibaba.cloud</groupId>
+        <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        <version>2.2.5.RELEASE</version>
+        <exclusions>
+            <exclusion>
+                <groupId>com.alibaba.nacos</groupId>
+                <artifactId>nacos-client</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+    <dependency>
+        <groupId>com.alibaba.cloud</groupId>
+        <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        <version>2.2.5.RELEASE</version>
+        <exclusions>
+            <exclusion>
+                <groupId>com.alibaba.nacos</groupId>
+                <artifactId>nacos-client</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+    <dependency>
+        <groupId>com.alibaba.nacos</groupId>
+        <artifactId>nacos-client</artifactId>
+        <version>2.0.1</version>
+    </dependency>
+```
+
