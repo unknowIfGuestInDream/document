@@ -141,3 +141,8 @@ file-extension > extension-configs > shared-configs  共享配置下标数字越
     </dependency>
 ```
 
+## nacos后台启动
+```shell script
+nohup sh startup.sh -m standalone &
+```
+
