@@ -130,3 +130,8 @@ logback-spring.xml
     </logger>
 </configuration>
 ```
+
+启动命令新增 -Dreactor.netty.http.server.accessLogEnabled=true 启动日志
+```shell script
+java -Dreactor.netty.http.server.accessLogEnabled=true -jar gateway.jar
+```
