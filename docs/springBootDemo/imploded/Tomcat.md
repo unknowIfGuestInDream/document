@@ -24,8 +24,8 @@ server.tomcat.accesslog.rotate = true | 启用访问日志轮换
 server.tomcat.accesslog.suffix = .log | 日志文件名后缀
 server.tomcat.additional-tld-skip-patterns | 匹配要忽略TLD扫描的jar的附加模式的逗号分隔列表
 server.tomcat.background-processor-delay = 10s	 | 匹配要忽略TLD扫描的jar的附加模式的逗号分隔列表
-$\color{red}{server.tomcat.basedir}$ | Tomcat基本目录。如果未指定，将使用临时目录
-server.tomcat.max-connections = 8192 | 服务器在任何给定时间接受和处理的最大连接数
+$\color{FF0000}{server.tomcat.basedir}$ | Tomcat基本目录。如果未指定，将使用临时目录
+server.tomcat.max-connections = 8192 | 服务器在任何给定时间接受和处理的最大连接数 
 server.tomcat.max-http-post-size = 2MB | HTTP帖子内容的最大大小
 server.tomcat.threads.max | 最大工作线程数
 server.tomcat.threads.min-spare | 最小工作线程数
