@@ -33,7 +33,7 @@
  * [Minio文件存储服务](springBootDemo/imploded/Minio.md)
  * [retry重试组件](springBootDemo/imploded/Retry.md)
  * [undertow服务器](springBootDemo/imploded/Undertow.md)
- * [内置tomcat](springBootDemo/imploded/Tomcat.md)
+ * [内嵌tomcat](springBootDemo/imploded/Tomcat.md)
 
 * 部署篇
  * [Nginx负载均衡](springBootDemo/deploy/Nginx.md)
