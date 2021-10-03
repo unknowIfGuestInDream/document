@@ -2,7 +2,8 @@
 >而且是内嵌式的 Tomcat。同时，Spring Boot 也支持 Undertow 容器，
 >我们可以很方便的用 Undertow 替换 Tomcat，而 Undertow 的性能和内存使用方面都优于Tomcat
 
-**1、引入maven依赖**
+**1、引入maven依赖**  
+版本2.5.1
 ```xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
