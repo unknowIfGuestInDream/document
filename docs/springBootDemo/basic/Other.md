@@ -205,5 +205,26 @@ public class RiderController {
 @RequiredArgsConstructor(onConstructor_ = {@Lazy, @Autowired})
 ```
 
+## jvm优化
+web服务可以使用G1收集器，G1推荐在内存大于4G的机器上启用
+
+```java
+-XX:+UseG1GC
+-XX:+UseStringDeduplication
+-XX:StringDeduplicationAgeThreshold=3
+-XX:MaxGCPauseMillis=200
+-XX:+DisableExplicitGC
+-XX:MetaspaceSize=256m
+-XX:MaxMetaspaceSize=256m
+-Xmx1g
+-Xms1g
+```
+
+* UseG1GC 启用G1收集器
+* UseStringDeduplication JVM消除重复自负参数 仅适用于G1 GC算法且功能仅受Java 8 update 20中支持
+* StringDeduplicationAgeThreshold 默认情况下，如果字符串在3次GC运行中幸存，则符合重复数据删除的条件。可以通过传递'-XX：StringDeduplicationAgeThreshold'来更改3次这个参数
+* MaxGCPauseMillis 每次GC最大的停顿毫秒数
+* Xmx和Xms大小设置相同，减少内存交换 Xmx调整为峰值*2至3即可
+
 
 
