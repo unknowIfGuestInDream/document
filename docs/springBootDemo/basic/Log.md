@@ -135,3 +135,78 @@ logging:
       sql:
         Statement: DEBUG
 ```
+
+## 异步日志
+系统中日志打印会严重影响到性能，所以通常要使用异步日志，此外，开发中会使用控制台输出日志，二生产中不需要，下面给出本人常用配置
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+    <!--应用名称-->
+    <property name="APP_NAME" value="gateway"/>
+    <!--日志文件保存路径-->
+    <property name="LOG_FILE_PATH" value="logs"/>
+    <contextName>${APP_NAME}</contextName>
+
+    <appender name="FILE_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>Error</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>logs/gateway/error/${APP_NAME}-%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+            <maxHistory>30</maxHistory>
+            <maxFileSize>2GB</maxFileSize>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="accessLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>logs/gateway/access/access-%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+            <maxHistory>30</maxHistory>
+            <maxFileSize>2GB</maxFileSize>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="async" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="accessLog"/>
+    </appender>
+
+    <logger name="reactor.netty.http.server.AccessLog" level="INFO" additivity="false">
+        <appender-ref ref="async"/>
+    </logger>
+
+    <!-- 异步处理文件日志，提高生产环境性能 -->
+    <appender name ="ASYNC_FILE" class= "ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>512</queueSize>
+        <neverBlock>true</neverBlock>
+        <appender-ref ref="FILE_ERROR"/>
+    </appender>
+
+    <root>
+        <springProfile name="dev">
+            <appender-ref ref="CONSOLE"/>
+        </springProfile>
+        <appender-ref ref="ASYNC_FILE"/>
+    </root>
+</configuration>
+```
+
+* springProfile: 读取spring.profiles.active设置的值，设置不同环境的不同逻辑。多环境用逗号隔开，也可使用 | !逻辑字符，如 springProfile name="dev | test"
+* discardingThreshold 丢弃日志的阈值，为防止队列满后发生阻塞。默认队列剩余容量 ＜ 队列长度的20%，就会丢弃TRACE、DEBUG和INFO级日志 为0时不会丢弃日志
+* includeCallerData 默认false：方法行号、方法名等信息不显示
+* queueSize 控制阻塞队列大小，使用的ArrayBlockingQueue阻塞队列，默认容量256：内存中最多保存256条日志
+* neverBlock 控制队列满时，加入的数据是否直接丢弃，不会阻塞等待，默认是false。队列满时，offer不阻塞，而put会阻塞;neverBlock为true时，使用offer
+
+queueSize、discardingThreshold和neverBlock三参密不可分，务必按业务需求设置：
+* 若优先绝对性能，设置neverBlock = true，永不阻塞
+* 若优先绝不丢数据，设置discardingThreshold = 0，即使≤INFO级日志也不会丢。但最好把queueSize设置大一点，毕竟默认的queueSize显然太小，太容易阻塞。
+* 若兼顾，可丢弃不重要日志，把queueSize设置大点，再设置合理的discardingThreshold
