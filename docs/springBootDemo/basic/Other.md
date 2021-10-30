@@ -2,6 +2,7 @@
 
 将自己的启动样式文件banner.txt放入默认路径resources下。  
 如果自定义文件位置&文件名的话 需要修改yml配置：
+
 ```yaml
 spring:
   banner:
@@ -36,7 +37,7 @@ spring:
   servlet:
     multipart:
       enabled: true
-      max-file-size: 10MB 
+      max-file-size: 10MB
       max-request-size: 20MB
 ```
 
@@ -104,10 +105,12 @@ public class GlobalCorsConfig {
 ## 批量下载文件并放到压缩包
 
 ```java
+
 @RestController
 @RequiredArgsConstructor
 public class RiderController {
     private final RiderService riderService;
+
     /**
      * 附件批量下载
      */
@@ -173,6 +176,7 @@ public class RiderController {
 ```
 
 ## 引入本地jar包打包部署
+
 当有的jar无法通过maven获取时，通过以下方式可以打包项目进行部署运行
 
 1、在resources下面新建lib文件夹，并把jar包文件放到这个目录下
@@ -182,18 +186,20 @@ public class RiderController {
 2、在pom文件定义几个依赖指向刚才引入的文件
 
 ```xml
-        <dependency>
-            <groupId>com.microsoft.sqlserver</groupId>
-            <artifactId>sqljdbc4</artifactId>
-            <version>4.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/src/main/resources/lib/sqljdbc4-4.0.jar</systemPath>
-        </dependency>
+
+<dependency>
+    <groupId>com.microsoft.sqlserver</groupId>
+    <artifactId>sqljdbc4</artifactId>
+    <version>4.0</version>
+    <scope>system</scope>
+    <systemPath>${project.basedir}/src/main/resources/lib/sqljdbc4-4.0.jar</systemPath>
+</dependency>
 ```
 
 3. 在maven的pom里给springboot的打包插件引入一下参数
 
 ```xml
+
 <includeSystemScope>true</includeSystemScope>
 ```
 
@@ -206,25 +212,67 @@ public class RiderController {
 ```
 
 ## jvm优化
+
 web服务可以使用G1收集器，G1推荐在内存大于4G的机器上启用
 
 ```java
 -XX:+UseG1GC
--XX:+UseStringDeduplication
--XX:StringDeduplicationAgeThreshold=3
--XX:MaxGCPauseMillis=200
--XX:+DisableExplicitGC
--XX:MetaspaceSize=256m
--XX:MaxMetaspaceSize=256m
--Xmx1g
--Xms1g
+        -XX:+UseStringDeduplication
+        -XX:StringDeduplicationAgeThreshold=3
+        -XX:MaxGCPauseMillis=200
+        -XX:+DisableExplicitGC
+        -XX:MetaspaceSize=256m
+        -XX:MaxMetaspaceSize=256m
+        -Xmx1g
+        -Xms1g
 ```
 
 * UseG1GC 启用G1收集器
 * UseStringDeduplication JVM消除重复自负参数 仅适用于G1 GC算法且功能仅受Java 8 update 20中支持
-* StringDeduplicationAgeThreshold 默认情况下，如果字符串在3次GC运行中幸存，则符合重复数据删除的条件。可以通过传递'-XX：StringDeduplicationAgeThreshold'来更改3次这个参数
+* StringDeduplicationAgeThreshold 默认情况下，如果字符串在3次GC运行中幸存，则符合重复数据删除的条件。可以通过传递'-XX：StringDeduplicationAgeThreshold'
+  来更改3次这个参数
 * MaxGCPauseMillis 每次GC最大的停顿毫秒数
 * Xmx和Xms大小设置相同，减少内存交换 Xmx调整为峰值*2至3即可
+
+## 循环依赖
+
+循环依赖就是多个bean之间相互依赖，形成了一个闭环。
+
+比如：A依赖于B、B依赖于C、C依赖于A。
+
+**解决方案**
+
+* 生成代理对象产生的循环依赖 这类循环依赖问题解决方法很多，主要有：
+
+1. 使用@Lazy注解，延迟加载
+2. 使用@DependsOn注解，指定加载先后关系
+3. 修改文件名称，改变循环依赖类的加载顺序
+
+* 使用@DependsOn产生的循环依赖  
+  这类循环依赖问题要找到@DependsOn注解循环依赖的地方，迫使它不循环依赖就可以解决问题。
+
+* 多例循环依赖  
+  这类循环依赖问题可以通过把bean改成单例的解决。
+
+* 构造器循环依赖  
+  这类循环依赖问题可以通过使用@Lazy注解解决。
+
+**构造器循环依赖解决示例**
+
+![](../../images/other/other1.png)
+![](../../images/other/other2.png)
+![](../../images/other/other3.png)
+![](../../images/other/other4.png)
+
+* webServiceServiceImpl 依赖于 workTicketDetailServiceImpl和workTicketServiceImpl 
+* workTicketDetailServiceImpl 依赖于 workTicketServiceImpl和webServiceServiceImpl
+* workTicketServiceImpl 依赖于 workTicketDetailServiceImpl
+
+在workTicketDetailServiceImpl类上修改为
+
+```java
+@RequiredArgsConstructor(onConstructor_ = {@Lazy, @Autowired})
+```
 
 
 
