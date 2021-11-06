@@ -197,3 +197,29 @@ select * from all_tab_columns; -- 所有用户的表的字段
 ```oracle
 update 表 t set t.字段 = lpad(t.字段,8,0)
 ```
+
+## 存在修改，不存在新增
+
+```oracle
+MERGE <hint> INTO <table_name> -- 表名称
+USING <table_view_or_query> -- 表查询信息
+ON (<condition>) -- 条件
+WHEN MATCHED THEN <update_clause> -- 更新操作
+DELETE <where_clause> -- 删除操作
+WHEN NOT MATCHED THEN <insert_clause> -- 插入操作
+[LOG ERRORS <log_errors_clause> <reject limit <integer | unlimited>]; 
+```
+
+示例:
+```oracle
+MERGE INTO BUD_DATAYEAR_PRODUCTION a
+USING (
+    SELECT '6d31d8406db423d848534147cc70901z' as UNAME
+    FROM dual
+) b
+ON (a.DATAYEAR_PRODUCTION_ID_ = b.UNAME)
+WHEN MATCHED THEN
+    UPDATE SET a.YEAR_ = 2022
+WHEN NOT MATCHED THEN
+    INSERT (a.DATAYEAR_PRODUCTION_ID_,a.YEAR_) VALUES ('6d31d8406db423d848534147cc70901z',2033);
+```
