@@ -10,4 +10,5 @@
 
  * [性能优化](database/oracle/Properties.md)
  * [sql调优](database/oracle/Sql.md)
+ * [正则](database/oracle/Regexp.md)
  * [常用方法](database/oracle/Methods.md)
