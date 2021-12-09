@@ -917,3 +917,6 @@ public String uid(HttpSession session) {
     return session.getId();
 }
 ```
+
+## Redisson简单用法
+https://www.cnblogs.com/cjsblog/p/11273205.html
