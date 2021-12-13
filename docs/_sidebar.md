@@ -36,6 +36,7 @@
  * [undertow服务器](springBootDemo/imploded/Undertow.md)
  * [内嵌tomcat](springBootDemo/imploded/Tomcat.md)
  * [获取git信息](springBootDemo/imploded/Git.md)
+ * [RMI](springBootDemo/imploded/Rmi.md)
 
 * 部署篇
  * [Nginx负载均衡](springBootDemo/deploy/Nginx.md)
