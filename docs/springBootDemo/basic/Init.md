@@ -62,6 +62,76 @@ public class KangBaHandler implements InitializingBean {
 **使用场景**：  
 如策略+工厂设计模式 策略接口继承InitializingBean 实现类在afterPropertiesSet中注册工厂
 
+## BeanPostProcessor
+> BeanPostProcessor 和 InitializingBean 有点类似，也是可以在 Bean 的生命周期执行自定义操作，一般称之为 Bean 的后置处理器，不同的是，
+> BeanPostProcessor 可以在 Bean 初始化前、后执行自定义操作，且针对的目标也不同，InitializingBean 针对的是实现 InitializingBean 接口的 Bean，而 BeanPostProcessor 针对的是所有的 Bean。
+
+```java
+public interface BeanPostProcessor {
+
+    // Bean 初始化前调用
+    default Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+        return bean;
+    }
+
+    // Bean 初始化后调用
+    default Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        return bean;
+    }
+}
+```
+
+所有的 Bean 在初始化前、后都会回调接口中的 postProcessBeforeInitialization 和 postProcessAfterInitialization 方法，入参是当前正在初始化的 Bean 对象和 BeanName。值得注意的是 Spring 内置了非常多的 BeanPostProcessor ，以此来完善自身功能
+
+BeanPostProcessor 使用场景其实非常多，因为它可以获取正在初始化的 Bean 对象，然后可以依据该 Bean 对象做一些定制化的操作，如：判断该 Bean 是否为某个特定对象、获取 Bean 的注解元数据等。事实上，Spring 内部也正是这样使用的
+
+## BeanFactoryPostProcessor
+> BeanFactoryPostProcessor 是 Bean 工厂的后置处理器，一般用来修改上下文中的 BeanDefinition，修改 Bean 的属性值。
+
+```java
+public interface BeanFactoryPostProcessor {
+
+    // 入参是一个 Bean 工厂：ConfigurableListableBeanFactory。该方法执行时，所有 BeanDefinition 都已被加载，但还未实例化 Bean。
+    // 可以对其进行覆盖或添加属性，甚至可以用于初始化 Bean。
+    void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException;
+}
+```
+
+BeanFactoryPostProcessor 源码非常简单，其提供了一个 postProcessBeanFactory 方法，当所有的 BeanDefinition 被加载时，该方法会被回调。值得注意的是，Spring 内置了许多 BeanFactoryPostProcessor 的实现，以此来完善自身功能。
+
+这里，我们来实现一个自定义的 BeanFactoryPostProcessor：
+
+```java
+@Component
+public class TestBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
+    @Override
+    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+        String beanNames[] = beanFactory.getBeanDefinitionNames();
+        for (String beanName : beanNames) {
+            BeanDefinition beanDefinition = beanFactory.getBeanDefinition(beanName);
+            System.out.println(beanDefinition);
+        }
+    }
+}
+```
+
+主要是通过 Bean 工厂获取所有的 BeanDefinition 。
+
+结果：
+
+```shell script
+2020-02-25 21:46:00.754  INFO 28907 --- [           main] ConfigServletWebServerApplicationContext : ...
+2020-02-25 21:46:01.815  INFO 28907 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : ...
+Root bean: class [org.springframework.context.annotation.ConfigurationClassPostProcessor]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null
+Root bean: class [org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor]; scope=; abstract=false; lazyInit=false; autowireMode=0; dependencyCheck=0; autowireCandidate=true; primary=false; factoryBeanName=null; factoryMethodName=null; initMethodName=null; destroyMethodName=null
+...
+2020-02-25 21:46:04.926  INFO 28907 --- [           main] o.s.j.e.a.AnnotationMBeanExporter        : ...
+2020-02-25 21:46:04.989  INFO 28907 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : ...
+2020-02-25 21:46:04.993  INFO 28907 --- [           main] com.loong.diveinspringboot.test.Main     : ...
+```
+
+可以看到，BeanDefinition 正确输出，里面是一些 Bean 的相关定义，如：是否懒加载、Bean 的 Class 以及 Bean 的属性等。
+
 ## PostConstruct注解
 
 > 被@PostConstruct修饰的方法会在服务器加载Servlet的时候运行，并且只会被服务器调用一次，类似于Serclet的inti()方法。被@PostConstruct修饰的方法会在构造函数之后，init()方法之前运行。
