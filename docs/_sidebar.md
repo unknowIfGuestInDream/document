@@ -40,5 +40,6 @@
 
 * 部署篇
  * [Nginx负载均衡](springBootDemo/deploy/Nginx.md)
+ * [shell脚本](springBootDemo/deploy/Shell.md)
  * [docsify文档](springBootDemo/deploy/docsify.md)
  * [工具网站](springBootDemo/deploy/Website.md)
