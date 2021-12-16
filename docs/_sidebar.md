@@ -13,6 +13,8 @@
  * [SPEL表达式](springBootDemo/basic/Spel.md)
  * [事务](springBootDemo/basic/Transaction.md)
  * [类型转换](springBootDemo/basic/Converter.md)
+ * [常用注解](springBootDemo/basic/Annotation.md)
+ * [常用接口](springBootDemo/basic/Interface.md)
  * [其他设置](springBootDemo/basic/Other.md)
  
 * springBoot集成功能

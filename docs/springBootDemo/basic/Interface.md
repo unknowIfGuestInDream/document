@@ -1,0 +1,10 @@
+## ImportSelector
+## ImportBeanDefinitionRegistrar
+## SmartLifecycle
+## ApplicationContextAware
+## ConfigurableApplicationContext
+## BeanNameAware
+## BeanFactoryAware
+## MessageSourceAware
+## ResourceLoaderAware
+## EnvironmentAware
