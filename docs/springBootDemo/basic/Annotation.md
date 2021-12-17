@@ -320,7 +320,37 @@ public class AccountController {
 过滤器方式适合于大范围的控制跨域，比如某个controller类的所有放大全部支持某个或几个具体的域名跨域访问的情形。而对于细粒度的跨域控制，比如一个 controller 类中 methodA 支持域名 originA 跨域访问， methodB 支持域名 originB 跨域访问的情况，当然过滤器方式也能实现，但适用注解的方式能轻松很多，尤其是上述情况比较多的情形。
 
 ## @MatrixVariable
+如果要处理这样的URL：/cars/cell;low=10;brand=a,b,c并获取变量的值
+
+这样的URL中分号后面的变量称为矩阵变量
+
+要在springboot中使用@MatrixVariable处理这样的变量，首先需要重写WebMvcConfigurer中的configurePathMatch方法：
+
+```java
+
+@Configuration
+public class WebConfig implements WebMvcConfigurer {
+    @Override
+    public void configurePathMatch(PathMatchConfigurer configurer) {
+        UrlPathHelper urlPathHelper = new UrlPathHelper();
+        urlPathHelper.setRemoveSemicolonContent(false);
+        configurer.setUrlPathHelper(urlPathHelper);
+    }
+```
+
+https://blog.csdn.net/qq_45833786/article/details/111998043
+
+https://blog.csdn.net/qq_45594990/article/details/117392074?spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~default-1.highlightwordscore&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~default-1.highlightwordscore
+
+https://my.oschina.net/u/2453016/blog/546724
+
+https://blog.csdn.net/securitit/article/details/110675867
+
 ## @RequestScope
+https://blog.csdn.net/xyjy11/article/details/114201623
 ## @SessionScope
 ## @ApplicationScope
 ## @Lookup
+https://blog.csdn.net/ydonghao2/article/details/90898845
+
+https://www.jianshu.com/p/fc574881e3a2
