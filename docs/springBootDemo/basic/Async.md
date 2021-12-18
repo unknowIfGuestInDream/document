@@ -187,3 +187,75 @@ public class AsyncExceptionHandler implements AsyncUncaughtExceptionHandler {
 
 此时再调用测试用例，观察日志会发现异步线程池生效。
 
+## 增强线程池
+希望执行异步时打印线程池信息或者其他增强功能，可以重写ThreadPoolTaskExecutor来实现
+
+```java
+@Slf4j
+public class VisiableThreadPoolTaskExecutor extends ThreadPoolTaskExecutor {
+
+    private void showThreadPoolInfo(String prefix) {
+        ThreadPoolExecutor threadPoolExecutor = getThreadPoolExecutor();
+        log.info("{}, {},taskCount [{}], completedTaskCount [{}], activeCount [{}], queueSize [{}]",
+                this.getThreadNamePrefix(),
+                prefix,
+                threadPoolExecutor.getTaskCount(),
+                threadPoolExecutor.getCompletedTaskCount(),
+                threadPoolExecutor.getActiveCount(),
+                threadPoolExecutor.getQueue().size());
+    }
+
+    @Override
+    public void execute(Runnable task) {
+        showThreadPoolInfo("1. do execute");
+        super.execute(task);
+    }
+
+    @Override
+    public void execute(Runnable task, long startTimeout) {
+        showThreadPoolInfo("2. do execute");
+        super.execute(task, startTimeout);
+    }
+
+    @Override
+    public Future<?> submit(Runnable task) {
+        showThreadPoolInfo("1. do submit");
+        return super.submit(task);
+    }
+
+    @Override
+    public <T> Future<T> submit(Callable<T> task) {
+        showThreadPoolInfo("2. do submit");
+        return super.submit(task);
+    }
+
+    @Override
+    public ListenableFuture<?> submitListenable(Runnable task) {
+        showThreadPoolInfo("1. do submitListenable");
+        return super.submitListenable(task);
+    }
+
+    @Override
+    public <T> ListenableFuture<T> submitListenable(Callable<T> task) {
+        showThreadPoolInfo("2. do submitListenable");
+        return super.submitListenable(task);
+    }
+}
+```
+
+AsyncPoolConfig配置类中改为实例化VisiableThreadPoolTaskExecutor类
+```java
+@Configuration
+public class AsyncPoolConfig implements AsyncConfigurer {
+    ...
+    @Override
+    public Executor getAsyncExecutor() {
+        ThreadPoolTaskExecutor executor = new VisiableThreadPoolTaskExecutor();
+        ...
+```
+
+结果如下
+![](../../images/async/async_log.png)
+
+
+
