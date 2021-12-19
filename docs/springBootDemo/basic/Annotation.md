@@ -76,7 +76,7 @@
 如果参数时放在请求体中，application/json传入后台的话，那么后台要用@RequestBody才能接收到；如果不是放在请求体中的话，那么后台接收前台传过来的参数时，要用@RequestParam来接收，或在形参前 什么也不写也能接收
 
 ```java
-    @PostMapping(value = "getCache}")
+    @PostMapping(value = "getCache")
     public Map<String, Object> getCache(@RequestBody User user, RequestParam("token") String token) {
     }
 ```
@@ -320,14 +320,24 @@ public class AccountController {
 过滤器方式适合于大范围的控制跨域，比如某个controller类的所有放大全部支持某个或几个具体的域名跨域访问的情形。而对于细粒度的跨域控制，比如一个 controller 类中 methodA 支持域名 originA 跨域访问， methodB 支持域名 originB 跨域访问的情况，当然过滤器方式也能实现，但适用注解的方式能轻松很多，尤其是上述情况比较多的情形。
 
 ## @MatrixVariable
-如果要处理这样的URL：/cars/cell;low=10;brand=a,b,c并获取变量的值
+@MatrixVariable用来将请求URI矩阵变量映射到控制器处理方法的参数中。
 
-这样的URL中分号后面的变量称为矩阵变量
+URL的一般语法是：protocol://hostname[:port]/path[;parameters][?query]#fragment,其中[;parameter]即常被称为矩阵参数。  
+示例URL：/cars/cell;low=10;brand=a,b,c并获取变量的值
 
-要在springboot中使用@MatrixVariable处理这样的变量，首先需要重写WebMvcConfigurer中的configurePathMatch方法：
+要在springboot中使用@MatrixVariable处理这样的变量，首先需要重写WebMvcConfigurer中的configurePathMatch方法：主要设置removeSemicolonContent属性为false，默认为true
+
+注解详情
+* value属性表示将要接收的变量的名字，可以和name属性混用
+* name属性也表示接收的变量名字，可以和value属性混用
+* pathVar属性适用于特定的一些场景，即当我们的矩阵变量中有着相同的字段变量时，我们需要通过此属性区分它们。举个例子。
+/cars/boss;age=20/employee;age=18
+以上的路径中有两个变量名都是age,在客户端获取它们的值时，我们需要这样做:
+@MatrixVariable(pathVar=“boss”,value=“age”),@MatrixVariable(pathVar=“employee”,value=“age”)
+* required属性表示路径中是否一定需要带上该字段，默认值为true.
+* defaultValue属性可以为字段设置一个默认值
 
 ```java
-
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
     @Override
@@ -338,18 +348,41 @@ public class WebConfig implements WebMvcConfigurer {
     }
 ```
 
-https://blog.csdn.net/qq_45833786/article/details/111998043
+或者
+```java
+@Configuration
+public class CustomMvcConfiguration implements InitializingBean {
+    @Autowired
+    private RequestMappingHandlerMapping requestMappingHandlerMapping;
+ 
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        requestMappingHandlerMapping.setRemoveSemicolonContent(false);
+    }
+}
+```
 
-https://blog.csdn.net/qq_45594990/article/details/117392074?spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~default-1.highlightwordscore&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~default-1.highlightwordscore
+控制器对应方法
+```java
+    @RequestMapping("/cars/{path}")
+    public Map ca(@MatrixVariable(value = "low",pathVar = "path")int low,
+                  @MatrixVariable("brand")List<String> brand){
+        HashMap<String, Object> objectObjectHashMap = new HashMap<>();
+        objectObjectHashMap.put("low",low);
+        objectObjectHashMap.put("brand",brand);
+        return objectObjectHashMap;
+    }
+```
 
-https://my.oschina.net/u/2453016/blog/546724
+@MatrixVariable的pathVar属性会绑定到路径中的path上 此类被@RestController标注，因此会返回json数据：
+```json
+{"low": 12,"brand": ["a","b","c"]}
+```
+
+涉及到需要涉及负责的REST风格API时，@MatrixVariable是十分有用处的，可以在URL的路径中针对特定路径添加着重的描述，以便后端进行丰富的处理。 此外除非有很特殊的需要，否则不建议使用@MatrixVariable。
 
 https://blog.csdn.net/securitit/article/details/110675867
 
-## @RequestScope
-https://blog.csdn.net/xyjy11/article/details/114201623
-## @SessionScope
-## @ApplicationScope
 ## @Lookup
 https://blog.csdn.net/ydonghao2/article/details/90898845
 
