@@ -244,3 +244,83 @@ public class ResourceConfig implements WebMvcConfigurer {
     <input type="submit" value="提交" />
 </form>
 ```
+
+## 拓展: Java8时间作为控制层参数
+
+> Springboot项目中在controller层直接使用时间作为参数
+
+### 方法1
+
+```yaml
+spring:
+  mvc:
+    format:
+      date: yyyy-MM-dd
+      date-time: yyyy-MM-dd HH:mm:ss
+      time: HH:mm:ss
+```
+
+### 方法2
+```java
+    @Bean
+    public Converter<String, LocalDateTime> localDateTimeConverter() {
+        return new Converter<String,LocalDateTime>() {
+            @Override
+            public LocalDateTime convert(String source) {
+                return LocalDateTime.parse(source, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            }
+        };
+    }
+
+    @Bean
+    public Converter<String, LocalDate> localDateConverter() {
+        return new Converter<String, LocalDate>() {
+            @Override
+            public LocalDate convert(String source) {
+                return LocalDate.parse(source, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            }
+        };
+    }
+
+    @Bean
+    public Converter<String, LocalTime> localTimeConverter() {
+        return new Converter<String, LocalTime>() {
+            @Override
+            public LocalTime convert(String source) {
+                return LocalTime.parse(source, DateTimeFormatter.ofPattern("HH:mm:ss"));
+            }
+        };
+    }
+
+    @Bean
+    public Converter<String, Date> dateConverter() {
+        return new Converter<String, Date>() {
+            @Override
+            public Date convert(String source) {
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                try {
+                    return format.parse(source);
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
+    }
+```
+
+!> 上述代码不可以使用lamada简写，会导致springBoot解析失败
+
+### 注意
+
+> [!CAUTION]
+> 上面方法结果一样, 直接使用对应类接参即可，注意使用方法1时如果使用了dateConverter即Date类型的自定义消息类型，那么接取值也要符合上述规范，不能使用@DateTimeFormat注解接取其他规范的数据，而方法2则对Date类型无影响  
+> 此外，前台Date对象直接往后台传的话会接取失败，最好是符合规范的字符串数据
+
+接参示例：
+```java
+    @GetMapping("selectDataBaseInfo")
+    public Map<String, Object> selectDataBaseInfo(LocalDate date) {
+        System.out.println(date);
+        return BaseUtils.success();
+    }
+```
