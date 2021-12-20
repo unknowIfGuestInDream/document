@@ -381,8 +381,6 @@ public class CustomMvcConfiguration implements InitializingBean {
 
 涉及到需要涉及负责的REST风格API时，@MatrixVariable是十分有用处的，可以在URL的路径中针对特定路径添加着重的描述，以便后端进行丰富的处理。 此外除非有很特殊的需要，否则不建议使用@MatrixVariable。
 
-https://blog.csdn.net/securitit/article/details/110675867
-
 ## @Lookup
 https://blog.csdn.net/ydonghao2/article/details/90898845
 
