@@ -257,5 +257,30 @@ public class AsyncPoolConfig implements AsyncConfigurer {
 结果如下
 ![](../../images/async/async_log.png)
 
+## 不使用注解
+使用springBoot自带的封装好的线程池ThreadPoolTaskExecutor，注意，此线程池最大线程数为2的32次方-1，建议自己配置一个bean
+
+```java
+@RestController
+@RequiredArgsConstructor
+public class AsyncController {
+    private final ThreadPoolTaskExecutor applicationTaskExecutor;
+
+    @GetMapping("do1")
+    @Log
+    public Map<String, Object> do1() throws ExecutionException, InterruptedException {
+        CompletableFuture<Void> async1 = CompletableFuture.runAsync(() -> {
+            //
+        }, applicationTaskExecutor);
+
+        CompletableFuture<Void> async2 = CompletableFuture.runAsync(() -> {
+            //
+        }, applicationTaskExecutor);
+        CompletableFuture.allOf(async1, async2).get();
+        return BaseUtils.success();
+    }
+}
+```
+
 
 
