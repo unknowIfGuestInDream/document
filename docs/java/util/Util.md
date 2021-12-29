@@ -838,3 +838,359 @@ public class util{
     }
 }
 ```
+
+## list转换tree
+主要处理List<Map<String, Object>>结构数据，来源为数据库查询结果
+
+```java
+public class ListToTreeUtil {
+    /**
+     * 并发除法阈值，容器大于此值走并发流提高性能
+     */
+    private static final int FILL_PALL = 100;
+    /**
+     * 默认是否进行深拷贝，false不进行深拷贝
+     */
+    private static final boolean DEFAULT_DEEP = false;
+
+    /**
+     * list转换为tree结构数据
+     *
+     * @param list      数据
+     * @param isRoot    判断为根节点的函数
+     * @param idFun     id函数
+     * @param pidFun    上级id函数
+     * @param deepClone 是否进行深克隆，默认为否
+     */
+    public static List<Map<String, Object>> listToTree(List<Map<String, Object>> list, Predicate<Map<String, Object>> isRoot, Function<Map<String, Object>, ?> idFun, Function<Map<String, Object>, ?> pidFun, boolean deepClone) {
+        if (Objects.isNull(list) || Objects.isNull(isRoot) || Objects.isNull(idFun) || Objects.isNull(pidFun)) {
+            return new ArrayList<>();
+        }
+        List<Map<String, Object>> cloneList = list;
+        if (deepClone) {
+            cloneList = (List<Map<String, Object>>) BaseUtils.deepClone(list);
+        }
+        //方法复杂度为O(n2)数据量超过一百条时走并发流优化性能
+        List<Map<String, Object>> children;
+        if (list.size() > FILL_PALL) {
+            children = Collections.synchronizedList(new ArrayList<>());
+            List<Map<String, Object>> finalCloneList = Collections.synchronizedList(cloneList);
+            cloneList.parallelStream()
+                    .filter(isRoot).forEachOrdered(s -> {
+                children.add(s);
+                fillChild(s, finalCloneList, idFun, pidFun);
+            });
+        } else {
+            children = new ArrayList<>();
+            for (Map<String, Object> child : cloneList) {
+                if (isRoot.test(child)) {
+                    children.add(child);
+                    fillChild(child, cloneList, idFun, pidFun);
+                }
+            }
+        }
+
+        return children;
+    }
+
+    /**
+     * list转换为tree结构数据
+     *
+     * @param list      数据
+     * @param isRoot    判断为根节点的函数
+     * @param idField   id字段
+     * @param pidField  上级id字段
+     * @param deepClone 是否进行深克隆，默认为否
+     */
+    public static List<Map<String, Object>> listToTree(List<Map<String, Object>> list, Predicate<Map<String, Object>> isRoot, String idField, String pidField, boolean deepClone) {
+        return listToTree(list, isRoot, (m) -> m.get(idField), (n) -> n.get(pidField), deepClone);
+    }
+
+    public static List<Map<String, Object>> listToTree(List<Map<String, Object>> list, Predicate<Map<String, Object>> isRoot, String idField, String pidField) {
+        return listToTree(list, isRoot, idField, pidField, DEFAULT_DEEP);
+    }
+
+    public static List<Map<String, Object>> listToTree(List<Map<String, Object>> list, Predicate<Map<String, Object>> isRoot, Function<Map<String, Object>, ?> idFun, Function<Map<String, Object>, ?> pidFun) {
+        return listToTree(list, isRoot, idFun, pidFun, DEFAULT_DEEP);
+    }
+
+    /**
+     * 递归生成树节点
+     *
+     * @param child  每个元素
+     * @param list   数据集
+     * @param idFun  id函数
+     * @param pidFun 上级id函数
+     */
+    private static void fillChild(Map<String, Object> child, List<Map<String, Object>> list, Function<Map<String, Object>, ?> idFun, Function<Map<String, Object>, ?> pidFun) {
+        List<Map<String, Object>> children;
+        if (list.size() > FILL_PALL) {
+            children = Collections.synchronizedList(new ArrayList<>());
+            list.parallelStream().filter(s -> idFun.apply(child).equals(pidFun.apply(s))).forEachOrdered(s -> {
+                children.add(s);
+                fillChild(s, list, idFun, pidFun);
+            });
+        } else {
+            children = new ArrayList<>();
+            for (Map<String, Object> childDiv : list) {
+                if (idFun.apply(child).equals(pidFun.apply(childDiv))) {
+                    children.add(childDiv);
+                    fillChild(childDiv, list, idFun, pidFun);
+                }
+            }
+        }
+
+        child.put("children", children);
+    }
+}
+```
+
+测试类
+```java
+@SpringBootTest
+public class ListToTreeTest {
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Test
+    public void listToTree() throws JsonProcessingException {
+        List<Map<String, Object>> list = new ArrayList<>();
+        init(list);
+        List<Map<String, Object>> children = ListToTreeUtil.listToTree(list, (m) -> "-1".equals(m.get("PID")), "ID", "PID", true);
+        List<Map<String, Object>> children1 = ListToTreeUtil.listToTree(list, (m) -> "-1".equals(m.get("PID")), (m) -> m.get("ID"), (n) -> n.get("PID"), true);
+        System.out.println(objectMapper.writeValueAsString(list));
+        System.out.println(objectMapper.writeValueAsString(children));
+        System.out.println(objectMapper.writeValueAsString(children1));
+    }
+
+    public void init(List<Map<String, Object>> list) {
+        Map<String, Object> map1 = new HashMap<>();
+        map1.put("ID", "1");
+        map1.put("PID", "-1");
+        list.add(map1);
+        Map<String, Object> map2 = new HashMap<>();
+        map2.put("ID", "2");
+        map2.put("PID", "1");
+        list.add(map2);
+        Map<String, Object> map3 = new HashMap<>();
+        map3.put("ID", "3");
+        map3.put("PID", "2");
+        list.add(map3);
+        Map<String, Object> ma4 = new HashMap<>();
+        ma4.put("ID", "4");
+        ma4.put("PID", "2");
+        list.add(ma4);
+    }
+
+}
+```
+
+## BigDecimal批量计算
+由于除法涉及精度，需要传int类型的参数，故无int类型的批量除法，只能单个相除
+
+```java
+public class BigDecimalBuilder {
+    private BigDecimal bigDecimal;
+    /**
+     * 默认除法运算精度
+     */
+    private final int DEF_DIV_SCALE = 2;
+
+    //构造器
+    private BigDecimalBuilder(int i) {
+        this.bigDecimal = new BigDecimal(i);
+    }
+
+    private BigDecimalBuilder(String str) {
+        this.bigDecimal = new BigDecimal(str);
+    }
+
+    private BigDecimalBuilder(double d) {
+        this.bigDecimal = new BigDecimal(d);
+    }
+
+    private void set(BigDecimal decimal) {
+        this.bigDecimal = decimal;
+    }
+
+    public static BigDecimalBuilder builder(int i) {
+        return new BigDecimalBuilder(i);
+    }
+
+    public static BigDecimalBuilder builder(String str) {
+        return new BigDecimalBuilder(str);
+    }
+
+    public static BigDecimalBuilder builder(double d) {
+        return new BigDecimalBuilder(d);
+    }
+
+    public BigDecimalBuilder add(String... strs) {
+        for (String str : strs) {
+            set(bigDecimal.add(new BigDecimal(str)));
+        }
+        return this;
+    }
+
+    public BigDecimalBuilder add(double... doubles) {
+        for (double d : doubles) {
+            set(bigDecimal.add(BigDecimal.valueOf(d)));
+        }
+        return this;
+    }
+
+    public BigDecimalBuilder add(int... ints) {
+        for (int i : ints) {
+            set(bigDecimal.add(BigDecimal.valueOf(i)));
+        }
+        return this;
+    }
+
+    public BigDecimalBuilder sub(String... strs) {
+        for (String str : strs) {
+            set(bigDecimal.subtract(new BigDecimal(str)));
+        }
+        return this;
+    }
+
+    public BigDecimalBuilder sub(double... doubles) {
+        for (double d : doubles) {
+            set(bigDecimal.subtract(BigDecimal.valueOf(d)));
+        }
+        return this;
+    }
+
+    public BigDecimalBuilder sub(int... ints) {
+        for (int i : ints) {
+            set(bigDecimal.subtract(BigDecimal.valueOf(i)));
+        }
+        return this;
+    }
+
+    public BigDecimalBuilder mul(String... strs) {
+        for (String str : strs) {
+            set(bigDecimal.multiply(new BigDecimal(str)));
+        }
+        return this;
+    }
+
+    public BigDecimalBuilder mul(double... doubles) {
+        for (double d : doubles) {
+            set(bigDecimal.multiply(BigDecimal.valueOf(d)));
+        }
+        return this;
+    }
+
+    public BigDecimalBuilder mul(int... ints) {
+        for (int i : ints) {
+            set(bigDecimal.multiply(BigDecimal.valueOf(i)));
+        }
+        return this;
+    }
+
+    /**
+     * 提供（相对）精确的除法运算。当发生除不尽的情况时，由scale参数指
+     * 定精度(默认2位)，以后的数字四舍五入。
+     */
+    public BigDecimalBuilder div(String... strs) {
+        div(DEF_DIV_SCALE, strs);
+        return this;
+    }
+
+    public BigDecimalBuilder div(double... doubles) {
+        div(DEF_DIV_SCALE, doubles);
+        return this;
+    }
+
+    public BigDecimalBuilder div(int scale, String... strs) {
+        for (String str : strs) {
+            set(bigDecimal.divide(new BigDecimal(str), scale, RoundingMode.HALF_UP));
+        }
+        return this;
+    }
+
+    public BigDecimalBuilder div(int scale, double... doubles) {
+        for (double d : doubles) {
+            set(bigDecimal.divide(BigDecimal.valueOf(d), scale, RoundingMode.HALF_UP));
+        }
+        return this;
+    }
+
+    /**
+     * 由于需要传入小数精度，故int的类型入参不支持批量相除
+     */
+    public BigDecimalBuilder div(int scale, int i) {
+        set(bigDecimal.divide(BigDecimal.valueOf(i), scale, RoundingMode.HALF_UP));
+        return this;
+    }
+
+    /**
+     * 提供精确的小数位四舍五入处理。
+     *
+     * @param scale 小数点后保留几位, 默认2位
+     * @return 四舍五入后的结果
+     */
+    public BigDecimalBuilder round(int scale) {
+        if (scale < 0) {
+            throw new IllegalArgumentException(
+                    "The scale must be a positive integer or zero");
+        }
+        set(bigDecimal.divide(BigDecimal.ONE, scale, RoundingMode.HALF_UP));
+        return this;
+    }
+
+    public BigDecimalBuilder round() {
+        round(DEF_DIV_SCALE);
+        return this;
+    }
+
+    public BigDecimal build() {
+        return bigDecimal;
+    }
+}
+```
+
+测试类
+```java
+@SpringBootTest
+public class BigDecimalBuilderTest {
+
+    @Test
+    public void addTest() {
+        BigDecimal bigDecimal = BigDecimalBuilder.builder(1).add("2", "3").add(3.2, 2.1).build();
+        System.out.println(bigDecimal);
+    }
+
+    @Test
+    public void subTest() {
+        BigDecimal bigDecimal = BigDecimalBuilder.builder(2).sub(1).sub(1.1).sub("3").build();
+        System.out.println(bigDecimal);
+    }
+
+    @Test
+    public void mulTest() {
+        BigDecimal bigDecimal = BigDecimalBuilder.builder(2).mul(2, 3, 4).mul("2", "2").build();
+        System.out.println(bigDecimal);
+    }
+
+    @Test
+    public void divTest() {
+        BigDecimal bigDecimal1 = BigDecimalBuilder.builder(64).div("2", "2").build();
+        System.out.println(bigDecimal1);
+        BigDecimal bigDecimal2 = BigDecimalBuilder.builder(64).div(4, "2", "2").build();
+        System.out.println(bigDecimal2);
+    }
+
+    @Test
+    public void roundTest() {
+        BigDecimal bigDecimal1 = BigDecimalBuilder.builder(64).div(4, "2", "2").round().build();
+        System.out.println(bigDecimal1);
+    }
+
+    @Test
+    public void airthTest() {
+        BigDecimal bigDecimal1 = BigDecimalBuilder.builder(1).add(2, 3).sub(2, 0).div("3").build();
+        System.out.println(bigDecimal1);
+    }
+}
+```
