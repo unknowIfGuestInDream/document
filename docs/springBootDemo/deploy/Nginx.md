@@ -698,6 +698,12 @@ server {
 }
 ```
 
+另一种是利用meta的刷新作用将http跳转到https
+```html
+<meta http-equiv="refresh" content="0;url=https://www.xxx.com">
+```
+
+
 ### 泛域名路径分离
 
 这是一个非常实用的技能，经常有时候我们可能需要配置一些二级或者三级域名，希望通过 Nginx 自动指向对应目录，比如：
