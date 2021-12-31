@@ -205,12 +205,6 @@ public class RiderController {
 
 ![](../../images/jar/jar2.png)
 
-## 构造器注入解决循环依赖
-
-```markdown
-@RequiredArgsConstructor(onConstructor_ = {@Lazy, @Autowired})
-```
-
 ## jvm优化
 
 web服务可以使用G1收集器，G1推荐在内存大于4G的机器上启用
@@ -257,7 +251,7 @@ web服务可以使用G1收集器，G1推荐在内存大于4G的机器上启用
 * 构造器循环依赖  
   这类循环依赖问题可以通过使用@Lazy注解解决。
 
-**构造器循环依赖解决示例**
+### 构造器注入解决循环依赖
 
 ![](../../images/other/other1.png)
 ![](../../images/other/other2.png)
