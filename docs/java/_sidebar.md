@@ -1,15 +1,13 @@
-* Map
 
- * [WeakHashMap](java/map/WeakHashMap.md)
+* 基础
 
-* Optional
+ * [安装多版本的java](java/base/MuiliJava.md)
+ * [SimpleDateFormat的线程安全问题](java/base/SimpleDateFormat.md)
+ * [WeakHashMap](java/base/map/WeakHashMap.md)
+ * [TreeMap](java/base/map/TreeMap.md)
+ * [Optional](java/base/optional/Optional.md)
+ * [Stream流](java/base/stream/Stream.md)
 
- * [Optional](java/optional/Optional.md)
-
-* Stream流
- 
- * [Stream流](java/stream/Stream.md)
- 
 * 并发包
 
  * [可重入锁](java/current/ReEnter.md)
@@ -25,4 +23,5 @@
 
 * 工具
 
- * [工具类](java/util/Util.md)
+ * [工具类](java/other/Util.md)
+
