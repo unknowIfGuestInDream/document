@@ -585,6 +585,10 @@ public class TaskInitRunner implements CommandLineRunner {
 
 > Task的运用到这里就结束了，springTask定时任务相比较quartz更轻量，如果单机部署的话建议使用springTask，分布式的话建议使用quartz，xxl-job等框架,或者将项目中的定时任务抽取出来成一个项目，在使用springTask。
 
+### xxl-job-oracle
+如有使用xxl-job的想要oracle数据库版本的可以看
+[xxl-job-2.3.0-oracle](https://gitee.com/tanglchen/xxl-job-oracle ':target=_blank')
+
 
 
 
