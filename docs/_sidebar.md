@@ -40,7 +40,8 @@
  * [获取git信息](springBootDemo/imploded/Git.md)
  * [RMI](springBootDemo/imploded/Rmi.md)
 
-* 部署篇
+* 进阶篇
+ * [使用Gradle构建](springBootDemo/deploy/Gradle.md)
  * [Nginx负载均衡](springBootDemo/deploy/Nginx.md)
  * [部署shell脚本](springBootDemo/deploy/Shell.md)
  * [docsify文档](springBootDemo/deploy/docsify.md)
