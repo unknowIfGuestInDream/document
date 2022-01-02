@@ -71,6 +71,34 @@ maxmemory | XXX <bytes> | 指定 Redis 最大内存限制，Redis 在启动时�
 ps -aux | grep redis
 ```
 
+**redis启动但是连接校验失败解决方法**
+通过redis-cli手动设置密码
+
+```shell
+cd /usr/local/redis/bin
+```
+```shell
+./redis-cli
+```
+不重启Redis设置密码
+```shell
+config set requirepass 123456
+```
+查询密码：
+```shell
+config get requirepass
+```
+(error) ERR operation not permitted  
+密码验证：
+```shell
+auth 123456
+```
+OK  
+再次查询：
+```shell
+config get requirepass
+```
+
 **关闭运行中的Redis服务**
 
 输入redis-cli 进入控制台后输入命令shutdown即可关闭运行中的Redis服务了。如下图:
