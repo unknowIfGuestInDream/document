@@ -3,6 +3,7 @@
 1. 执行以下命令，下载 Node.js Linux 64位二进制安装包。或者自己从官网下载安装包后通过Xftp等工具上传到服务器。
 
 ```
+cd /usr/local
 wget https://nodejs.org/dist/v15.9.0/node-v15.9.0-linux-x64.tar.gz
 ```
 
@@ -10,13 +11,14 @@ wget https://nodejs.org/dist/v15.9.0/node-v15.9.0-linux-x64.tar.gz
 
 ```
 tar xvf node-v15.9.0-linux-x64.tar.xz
+mv node-v15.9.0-linux-x64.tar.xz node
 ```
 
 3. 依次执行以下命令，创建软链接。
 
 ```
-ln -s /root/node-v10.16.3-linux-x64/bin/node /usr/local/bin/node
-ln -s /root/node-v10.16.3-linux-x64/bin/npm /usr/local/bin/npm
+ln -s /usr/local/node/bin/node /usr/local/bin/node
+ln -s /usr/local/node/bin/npm /usr/local/bin/npm
 ```
 
 成功创建软链接后，即可在云服务器任意目录下使用 node 及 npm 命令。
@@ -25,8 +27,5 @@ ln -s /root/node-v10.16.3-linux-x64/bin/npm /usr/local/bin/npm
 
 ```
 node -v
-```
-
-```
 npm -v
 ```
