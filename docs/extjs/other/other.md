@@ -87,10 +87,32 @@ Ext.util.Format.number(21000000,Ext.util.Format.thousandSeparator)
 extjs的千分位格式化不会保留小数，如需保留小数采用如下方法
 
 ```javascript
+/**
+ * 金额保留两位并添加千位分隔符
+ * @param num
+ * @returns {string}
+ */
 function moneyformat(num) {
+    if (Ext.isEmpty(num)) {
+        return num;
+    }
     return (num.toFixed(2) + '').replace(/(\d{1,3})(?=(\d{3})+(?:$|\.))/g, '$1,');
 }
+
+/**
+ * 单耗保留六位并添加千位分隔符
+ * @param num
+ * @returns {string}
+ */
+function unitConsumptionFormat(num) {
+    if (Ext.isEmpty(num)) {
+        return num;
+    }
+    return (num.toFixed(6) + '').replace(/(\d{1,3})(?=(\d{3})+(?:\.))/g, '$1,');
+}
 ```
+
+可以对上述方法小数位数再做一次方法封装
 
 ## 数组去重
 
@@ -268,3 +290,56 @@ document.location.href = '/download'
 ```  
   
 </details>
+
+## 复制内容到剪切板
+
+```javascript
+//复制内容到剪切板
+function _copyText(text) {
+    var tag = document.createElement('textarea');
+    tag.setAttribute('id', 'cp_hgz_textarea');
+    tag.value = text;
+    document.getElementsByTagName('body')[0].appendChild(tag);
+    document.getElementById('cp_hgz_textarea').select();
+    document.execCommand('copy');
+    document.getElementById('cp_hgz_textarea').remove();
+    Toast.alert('信息', '已复制到剪切板', 2000);
+}
+```
+
+## window.open
+有时会出现window.open被拦截的问题，所以很多企业禁用此方法，下面给出一个替代方法
+
+```javascript
+/**
+ * 新窗口打开, 代替window.open
+ * 通过创建a标签以及单击a标签事件完成
+ * @param id a标签id
+ * @param href a标签路径
+ * @private
+ */
+function _openLink(id, href) {
+    var a = document.createElement("a");
+    a.id = id;
+    a.target = '_blank';
+    a.href = href;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
+```
+
+## 获取当前页面路径前缀
+```javascript
+function getPath() {
+    var _location = document.location.toString();
+    var applicationNameIndex = _location.indexOf('/',
+        _location.indexOf('://') + 3);
+    var applicationName = _location.substring(0, applicationNameIndex) + '/';
+    var webFolderIndex = _location.indexOf('/', _location
+            .indexOf(applicationName)
+        + applicationName.length);
+    var webFolderFullPath = _location.substring(0, webFolderIndex);
+    return webFolderFullPath;
+}
+```

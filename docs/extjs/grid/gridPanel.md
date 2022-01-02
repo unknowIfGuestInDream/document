@@ -293,6 +293,15 @@ renderer: function (value, metaData, record, rowIndex, colIndex) {
                 }
 ```
 
+由于Extjs自动忽略空格，所以希望数据不忽略的时候可以修改下value处理
+```javascript
+renderer: function (value, metaData, record, rowIndex, colIndex) {
+                    metaData.tdAttr = 'qclass="x-tip" data-qwidth="200" data-qtip="'
+                        + value + '"';
+                    return value.replace(/\s/g, '&nbsp;');
+                }
+```
+
 ## 显示总和平均数
 
 ```
@@ -337,6 +346,50 @@ Ext.onReady(function(){
 			]
 		});
 	});
+```
+
+## 显示总和时计算精度问题
+
+```html
+var gridPanel = Ext.create('Ext.grid.Panel', {
+            id: 'gridPanel',
+            store: budgetYearCostStore,
+            columnLines: true,
+            frame: true,
+            selModel: {
+                selType: 'checkboxmodel',
+                mode: 'SINGLE'
+            },
+            features: [{
+                ftype: 'summary'
+            }],
+            columns: {
+                items: [{
+                    xtype: 'rownumberer',
+                    align: 'center',
+                    width: 50,
+                    summaryRenderer: function (value) {
+                        return '总计';
+                    }
+                }, {
+                    text: '调整金额（元）',
+                    width: 150,
+                    dataIndex: 'F_MONEY',
+                    align: 'right',
+                    summaryRenderer: function (value, record) {
+                        var sum = 0;
+                        Ext.getCmp('gridPanel').getStore().each(function (record) {
+                            sum += Number(record.data.F_MONEY);
+                        });
+                        return Ext.util.Format.number(sum, '0.00');
+                    }
+                }]
+            },
+            viewConfig: {
+                emptyText: '<div style="text-align: center; padding-top: 50px; font: italic bold 20px Microsoft YaHei;">没有数据</div>',
+                enableTextSelection: true
+            }
+        });
 ```
 
 ## grid不让取消选中
