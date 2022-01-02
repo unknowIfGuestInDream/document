@@ -399,7 +399,7 @@ public class SpringRetryIntegrationTest {
 ```
 
 ## 参考
-![参考文档](https://www.baeldung.com/spring-retry)
+[参考文档](https://www.baeldung.com/spring-retry ':target=_blank')
 
 
 

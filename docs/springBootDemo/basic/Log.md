@@ -242,10 +242,10 @@ MDC 可以看成是一个与当前线程绑定的哈希表，可以往其中添�
 ## logj2
 参考页面
 
-[Spring Boot 2.x中如何使用Log4j2记录日志](https://mp.weixin.qq.com/s/3zE4B1n80gJkP4j0oheaFw ':target=_blank')
-[springboot使用log4j2](https://blog.csdn.net/weixin_45414738/article/details/108874711 ':target=_blank')
-[Springboot 2.x 使用 Log4j2 异步打印日志](https://cloud.tencent.com/developer/article/1767713 ':target=_blank')
-[配置Log4j2，实现不同环境日志打印](https://www.cnblogs.com/cicada-smile/p/10992157.html ':target=_blank')
+[Spring Boot 2.x中如何使用Log4j2记录日志](https://mp.weixin.qq.com/s/3zE4B1n80gJkP4j0oheaFw ':target=_blank')  
+[springboot使用log4j2](https://blog.csdn.net/weixin_45414738/article/details/108874711 ':target=_blank')  
+[Springboot 2.x 使用 Log4j2 异步打印日志](https://cloud.tencent.com/developer/article/1767713 ':target=_blank')  
+[配置Log4j2，实现不同环境日志打印](https://www.cnblogs.com/cicada-smile/p/10992157.html ':target=_blank')  
 [springboot log4j2.xml读取application.yml中的属性值](https://blog.csdn.net/ajdxwz/article/details/92101822 ':target=_blank')
 
 
