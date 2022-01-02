@@ -30,5 +30,5 @@ nginx配置:
 ```
 
 ## 参考网站
-[Document](https://www.tlcsdm.com/)  
-[mall-learning](http://www.macrozheng.com/)
+[Document](https://www.tlcsdm.com/ ':target=_blank')  
+[mall-learning](http://www.macrozheng.com/ ':target=_blank')
