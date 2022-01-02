@@ -922,5 +922,13 @@ public String uid(HttpSession session) {
 
 Redisson - 是一个高级的分布式协调Redis客服端，能帮助用户在分布式环境中轻松实现一些Java的对象 (Bloom filter, BitSet, Set, SetMultimap, ScoredSortedSet, SortedSet, Map, ConcurrentMap, List, ListMultimap, Queue, BlockingQueue, Deque, BlockingDeque, Semaphore, Lock, ReadWriteLock, AtomicLong, CountDownLatch, Publish / Subscribe, HyperLogLog)。
 
-https://www.cnblogs.com/cjsblog/p/11273205.html  
-https://blog.csdn.net/u010963948/article/details/79240050
+[Redisson基本用法](https://www.cnblogs.com/cjsblog/p/11273205.html ':target=_blank')   
+[Redis分布式客户端之Redisson的基本使用](https://blog.csdn.net/u010963948/article/details/79240050 ':target=_blank')   
+[spring boot集成redisson的最佳实践](https://cloud.tencent.com/developer/article/1096793 ':target=_blank')   
+[springBoot集成redisson实现分布式锁](https://my.oschina.net/u/2329318/blog/4279235 ':target=_blank')   
+[springboot整合redisson（一）搭建Redisson环境](https://zhuanlan.zhihu.com/p/380530036 ':target=_blank')   
+[springboot整合redisson（二）实现超强的分布式锁](https://zhuanlan.zhihu.com/p/384416364 ':target=_blank')   
+
+
+
+
