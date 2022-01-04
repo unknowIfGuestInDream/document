@@ -1,5 +1,14 @@
 > 工作过程中常用的方法
 
+## 分页查询
+```oracle
+select * from (select ROW_NUMBER() OVER(order by T.ID asc) R, T.* from DATABASE_INFO T) where R between 1 and 5
+```
+
+```oracle
+select * from (select FULLTABLE.*, ROWNUM RN from (select * from DATABASE_INFO order by id) FULLTABLE where ROWNUM <= 5) where RN >= 1
+```
+
 ## 递归查询
 
 ```oracle
