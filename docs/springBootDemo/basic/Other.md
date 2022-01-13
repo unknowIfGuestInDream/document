@@ -209,16 +209,37 @@ public class RiderController {
 
 web服务可以使用G1收集器，G1推荐在内存大于4G的机器上启用
 
-```java
+```shell script
 -XX:+UseG1GC
-        -XX:+UseStringDeduplication
-        -XX:StringDeduplicationAgeThreshold=3
-        -XX:MaxGCPauseMillis=200
-        -XX:+DisableExplicitGC
-        -XX:MetaspaceSize=256m
-        -XX:MaxMetaspaceSize=256m
-        -Xmx1g
-        -Xms1g
+-XX:+UseStringDeduplication
+-XX:StringDeduplicationAgeThreshold=3
+-XX:MaxGCPauseMillis=200
+-XX:+DisableExplicitGC
+-XX:MetaspaceSize=256m
+-XX:MaxMetaspaceSize=256m
+-Xmx1g
+-Xms1g
+```
+
+非G1收集器参考
+```shell script
+-Xms1200M
+-Xmx1200M 
+-Xmn450M 
+-XX:MetaspaceSize=256m
+-Xss300K 
+-XX:+DisableExplicitGC 
+-XX:SurvivorRatio=4 
+-XX:+UseParNewGC 
+-XX:+UseConcMarkSweepGC 
+-XX:CMSInitiatingOccupancyFraction=70 
+-XX:+CMSParallelRemarkEnabled 
+-XX:LargePageSizeInBytes=128M 
+-XX:+UseFastAccessorMethods 
+-XX:+UseCMSInitiatingOccupancyOnly 
+-XX:+PrintGCDetails 
+-XX:+PrintGCTimeStamps 
+-XX:+PrintHeapAtGC
 ```
 
 * UseG1GC 启用G1收集器
@@ -227,6 +248,8 @@ web服务可以使用G1收集器，G1推荐在内存大于4G的机器上启用
   来更改3次这个参数
 * MaxGCPauseMillis 每次GC最大的停顿毫秒数
 * Xmx和Xms大小设置相同，减少内存交换 Xmx调整为峰值*2至3即可
+* -Xss300K：设置每个线程的堆栈大小。JDK5.0以后每个线程堆栈大小为1M，以前每个线程堆栈大小为256K。更具应用的线程所需内存大小进行调整。在相同物理内存下，减小这个值能生成更多的线程。但是操作系统对一个进程内的线程数还是有限制的，不能无限生成，经验值在3000~5000左右
+* -Xmn450M：设置年轻代大小为350M。整个JVM内存大小=年轻代大小 + 年老代大小 + 持久代大小。持久代一般固定大小为64m，所以增大年轻代后，将会减小年老代大小。此值对系统性能影响较大，Sun官方推荐配置为整个堆的3/8。
 
 ## 循环依赖
 
