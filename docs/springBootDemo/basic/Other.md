@@ -251,6 +251,207 @@ web服务可以使用G1收集器，G1推荐在内存大于4G的机器上启用
 * -Xss300K：设置每个线程的堆栈大小。JDK5.0以后每个线程堆栈大小为1M，以前每个线程堆栈大小为256K。更具应用的线程所需内存大小进行调整。在相同物理内存下，减小这个值能生成更多的线程。但是操作系统对一个进程内的线程数还是有限制的，不能无限生成，经验值在3000~5000左右
 * -Xmn450M：设置年轻代大小为350M。整个JVM内存大小=年轻代大小 + 年老代大小 + 持久代大小。持久代一般固定大小为64m，所以增大年轻代后，将会减小年老代大小。此值对系统性能影响较大，Sun官方推荐配置为整个堆的3/8。
 
+## jvm查看命令
+查看java默认jvm参数
+```shell script
+java -XX:+PrintCommandLineFlags
+```
+
+查看java默认jvm参数(带条件)  
+查看元空间相关属性
+```shell script
+java -XX:+PrintFlagsFinal | grep Meta
+```
+查看堆空间相关属性
+```shell script
+java -XX:+PrintFlagsFinal | grep HeapSize
+```
+
+查看指定程序jvm参数
+```shell script
+jinfo -flags <PID>
+```
+```shell script
+jinfo -flag MaxHeapSize <PID>
+```
+
+### jmap 
+生成堆快照和对象的统计信息
+
+通过可查看堆内存的配置情况及使用情况
+```shell script
+jmap -heap pid
+```
+统计对象的创建数量
+```shell script
+jmap -histo pid
+```
+生成dump文件与jhat配合使用
+```shell script
+jmap -dump:format=b,file=heapDump pid
+```
+
+### jps 
+类似Linux的ps，但jps只列出Java的进程。可方便查看Java进程的启动类、传入参数和JVM参数。直接运行，不加参数，列出Java程序的进程ID及Main函数名称
+
+查看进程pid及main方法参数
+```shell script
+jps -m
+```
+
+查看pid及JVM参数
+```shell script
+jps -v
+```
+
+查看pid及程序所在包名
+```shell script
+jps -l
+``` 
+
+### jstat
+观察Java应用程序运行时信息的工具，详细查看堆使用情况以及GC情况  
+垃圾回收统计
+```shell script
+jstat -gc <pid> 
+```
+```markdown
+- S0C：第一个幸存区的大小
+- S1C：第二个幸存区的大小
+- S0U：第一个幸存区的使用大小
+- S1U：第二个幸存区的使用大小
+- EC：伊甸园区的大小
+- EU：伊甸园区的使用大小
+- OC：老年代大小
+- OU：老年代使用大小
+- MC：方法区大小
+- MU：方法区使用大小
+- CCSC:压缩类空间大小
+- CCSU:压缩类空间使用大小
+- YGC：年轻代垃圾回收次数
+- YGCT：年轻代垃圾回收消耗时间
+- FGC：老年代垃圾回收次数
+- FGCT：老年代垃圾回收消耗时间
+- GCT：垃圾回收消耗总时间
+```
+
+总结垃圾回收统计  
+```shell script
+stat -gcutil <pid>
+```
+```markdown
+S0：幸存1区当前使用比例
+S1：幸存2区当前使用比例
+E：伊甸园区使用比例
+O：老年代使用比例
+M：元数据区使用比例
+CCS：压缩使用比例
+YGC：年轻代垃圾回收次数
+FGC：老年代垃圾回收次数
+FGCT：老年代垃圾回收消耗时间
+GCT：垃圾回收消耗总时间
+```
+
+新生代垃圾回收统计
+```shell script
+jstat -gcnew <pid>
+```
+```markdown
+- S0C：第一个幸存区大小
+- S1C：第二个幸存区的大小
+- S0U：第一个幸存区的使用大小
+- S1U：第二个幸存区的使用大小
+- TT:对象在新生代存活的次数
+- MTT:对象在新生代存活的最大次数
+- DSS:期望的幸存区大小
+- EC：伊甸园区的大小
+- EU：伊甸园区的使用大小
+- YGC：年轻代垃圾回收次数
+- YGCT：年轻代垃圾回收消耗时间
+```
+
+堆内存统计
+```shell script
+jstat -gccapacity <pid>
+```
+```markdown
+NGCMN：新生代最小容量
+NGCMX：新生代最大容量
+NGC：当前新生代容量
+S0C：第一个幸存区大小
+S1C：第二个幸存区的大小
+EC：伊甸园区的大小
+OGCMN：老年代最小容量
+OGCMX：老年代最大容量
+OGC：当前老年代大小
+OC:当前老年代大小
+MCMN:最小元数据容量
+MCMX：最大元数据容量
+MC：当前元数据空间大小
+CCSMN：最小压缩类空间大小
+CCSMX：最大压缩类空间大小
+CCSC：当前压缩类空间大小
+YGC：年轻代gc次数
+FGC：老年代GC次数
+```
+
+元数据空间统计
+```shell script
+jstat -gcmetacapacity <pid>
+```
+```markdown
+   MCMN:最小元数据容量
+   MCMX：最大元数据容量
+   MC：当前元数据空间大小
+   CCSMN：最小压缩类空间大小
+   CCSMX：最大压缩类空间大小
+   CCSC：当前压缩类空间大小
+   YGC：年轻代垃圾回收次数
+   FGC：老年代垃圾回收次数
+   FGCT：老年代垃圾回收消耗时间
+   GCT：垃圾回收消耗总时间
+```
+
+新生代内存空间统计
+```shell script
+jstat -gcnewcapacity <pid>
+```
+```markdown
+NGCMN：新生代最小容量
+NGCMX：新生代最大容量
+NGC：当前新生代容量
+S0CMX：最大幸存1区大小
+S0C：当前幸存1区大小
+S1CMX：最大幸存2区大小
+S1C：当前幸存2区大小
+ECMX：最大伊甸园区大小
+EC：当前伊甸园区大小
+YGC：年轻代垃圾回收次数
+FGC：老年代回收次数
+```
+
+老年代内存空间统计
+```shell script
+jstat -gcoldcapacity <pid>
+```
+```markdown
+OGCMN：老年代最小容量
+OGCMX：老年代最大容量
+OGC：当前老年代大小
+OC：老年代大小
+YGC：年轻代垃圾回收次数
+FGC：老年代垃圾回收次数
+FGCT：老年代垃圾回收消耗时间
+GCT：垃圾回收消耗总时间
+```
+
+### jstack 
+导出Java应用程序的线程堆栈,jstack可以检测死锁
+
+```shell script
+jstack -l <pid>
+```
+
 ## 循环依赖
 
 循环依赖就是多个bean之间相互依赖，形成了一个闭环。
@@ -290,6 +491,58 @@ web服务可以使用G1收集器，G1推荐在内存大于4G的机器上启用
 ```java
 @RequiredArgsConstructor(onConstructor_ = {@Lazy, @Autowired})
 ```
+
+## git操作
+
+强制从远程pull并覆盖当前仓库所有的改动
+```shell script
+git fetch --all
+git reset --hard origin/master
+git pull
+```
+
+开发分支（dev）上的代码达到上线的标准后，要合并到 master 分支
+```shell script
+git checkout dev
+git pull
+git checkout master
+git merge dev
+git push -u origin master
+```
+
+下载指定分支代码
+```shell script
+git clone -b v2.8.1 https://git.oschina.net/oschina/android-app.git
+git clone -b 分支名 仓库地址
+```
+
+git切到历史版本并push
+```shell script
+查看版本号列表
+git reflog
+使用reset方法
+git reset 版本号
+之后执行push HEAD
+git push origin HEAD --force
+```
+
+git远程仓库回滚代码
+```shell script
+用命令行打开git项目路径，输入git log命令查看commit记录，如下：
+git log
+找到需要回滚的commit，输入git reset --hard {commitId}，将本地文件回滚： 
+git reset --hard  d580ea7dab097d8ea6d658adbc7e9d57ef22669a
+3、此时本地文件已经回滚到刚刚commit d580ea7dab097d8ea6d658adbc7e9d57ef22669a之后的状态，但是服务器仍然没有改变，需要继续远程回滚：
+git push -f
+```
+
+git上传出现rejected
+```shell script
+git push --all project_name -f
+```
+
+修改git提交日志  
+[参考](https://www.cnblogs.com/libra13179/p/11429302.html ':target=_blank')
 
 
 
