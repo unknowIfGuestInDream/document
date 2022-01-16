@@ -52,3 +52,9 @@ chmod +x mc
 nohup ./mc mirror --overwrite --remove --watch /home/deptthree/data/minioClient/data/ minio80/78file/ &
 ```
 更多参数执行 -h查看
+
+## 其他API
+节点健康检查
+```javascript
+http://localhost:9000/minio/health/live
+```
