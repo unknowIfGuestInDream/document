@@ -105,6 +105,17 @@ public class HttpConfig {
                 messageConverters.set(i, new StringHttpMessageConverter(StandardCharsets.UTF_8));
             }
         }
+        //请求工厂类是否应用缓冲请求正文内部，默认值为true，
+        // 当post或者put大文件的时候会造成内存溢出情况，设置为false将数据直接流入底层HttpURLConnection。
+        HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
+        factory.setBufferRequestBody(true);
+        //设置客户端和服务端建立连接的超时时间
+        requestFactory.setConnectTimeout(5000);
+        //设置客户端从服务端读取数据的超时时间
+        requestFactory.setReadTimeout(5000);
+        //设置从连接池获取连接的超时时间，不宜过长
+        requestFactory.setConnectionRequestTimeout(200);
+        restTemplate.setRequestFactory(factory);
         return restTemplate;
     }
 }
