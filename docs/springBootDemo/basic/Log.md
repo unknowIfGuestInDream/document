@@ -226,6 +226,11 @@ MDC 可以看成是一个与当前线程绑定的哈希表，可以往其中添�
 * 使代码简洁、日志风格统一
 
 ### 使用
+* clear() => 移除所有MDC
+* get (String key) => 获取当前线程MDC中指定key的值
+* getContext() => 获取当前线程MDC的MDC
+* put(String key, Object o) => 往当前线程的MDC中存入指定的键值对
+* remove(String key) => 删除当前线程MDC中指定的键值对
 ```java
             MDC.put("TRACEID",BaseUtils.getUuid());
             result = (Map<String, Object>) pjd.proceed();
@@ -238,6 +243,257 @@ MDC 可以看成是一个与当前线程绑定的哈希表，可以往其中添�
             <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{50} - %msg%n - %X{TRACEID}</pattern>
         </encoder>
 ```
+
+### 示例-链路追踪
+在微服务中，链路追踪实现大致有两种，以ziplin为代表的日志链路追踪和以SkyWalking,pinpoing为代表的javaagent实现
+
+使用MDC可以简单实现日志链路追踪，大致如下：
+
+前台请求时在header中添加traceId属性，携带唯一id来到后台，通过日志记录的方式完成链路追踪
+
+<details>
+  <summary>MDC实现链路追踪</summary>
+
+1. 项目中添加拦截器
+```java
+public class LogInterceptor implements HandlerInterceptor {
+      @Override
+      public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+          //如果有上层调用就用上层的ID
+          String traceId = request.getHeader(BaseUtils.TRACE_ID);
+          if (traceId == null) {
+              traceId = BaseUtils.getUuid();
+          }
+          MDC.put(BaseUtils.TRACE_ID, traceId);
+          return true;
+      }
+  
+      @Override
+      public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView)
+              throws Exception {
+      }
+  
+      @Override
+      public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
+              throws Exception {
+          //调用结束后删除
+          MDC.remove(BaseUtils.TRACE_ID);
+      }
+  }
+```
+此时，可以在aop中处理日志时获取traceId,记录日志
+
+2. 解决子线程打印日志丢失traceId问题
+子线程在打印日志的过程中traceId将丢失，解决方式为重写线程池.
+```java
+@Slf4j
+public class VisiableThreadPoolTaskExecutor extends ThreadPoolTaskExecutor {
+
+    private void showThreadPoolInfo(String prefix) {
+        ThreadPoolExecutor threadPoolExecutor = getThreadPoolExecutor();
+        log.info("{}, {},taskCount [{}], completedTaskCount [{}], activeCount [{}], queueSize [{}]",
+                this.getThreadNamePrefix(),
+                prefix,
+                threadPoolExecutor.getTaskCount(),
+                threadPoolExecutor.getCompletedTaskCount(),
+                threadPoolExecutor.getActiveCount(),
+                threadPoolExecutor.getQueue().size());
+    }
+
+    @Override
+    public void execute(Runnable task) {
+        showThreadPoolInfo("1. do execute");
+        super.execute(ThreadMdcUtil.wrap(task, MDC.getCopyOfContextMap()));
+    }
+
+    @Override
+    public void execute(Runnable task, long startTimeout) {
+        showThreadPoolInfo("2. do execute");
+        super.execute(task, startTimeout);
+    }
+
+    @Override
+    public Future<?> submit(Runnable task) {
+        showThreadPoolInfo("1. do submit");
+        return super.submit(ThreadMdcUtil.wrap(task, MDC.getCopyOfContextMap()));
+    }
+
+    @Override
+    public <T> Future<T> submit(Callable<T> task) {
+        showThreadPoolInfo("2. do submit");
+        return super.submit(ThreadMdcUtil.wrap(task, MDC.getCopyOfContextMap()));
+    }
+
+    @Override
+    public ListenableFuture<?> submitListenable(Runnable task) {
+        showThreadPoolInfo("1. do submitListenable");
+        return super.submitListenable(task);
+    }
+
+    @Override
+    public <T> ListenableFuture<T> submitListenable(Callable<T> task) {
+        showThreadPoolInfo("2. do submitListenable");
+        return super.submitListenable(task);
+    }
+
+}
+```
+说明：
+* 继承ThreadPoolExecutor类，重新执行任务的方法
+* 通过ThreadMdcUtil对任务进行一次包装
+* 线程traceId封装工具类：ThreadMdcUtil.java
+```java
+public class ThreadMdcUtil {
+    public static void setTraceIdIfAbsent() {
+        if (MDC.get(BaseUtils.TRACE_ID) == null) {
+            MDC.put(BaseUtils.TRACE_ID, BaseUtils.getUuid());
+        }
+    }
+
+    public static <T> Callable<T> wrap(final Callable<T> callable, final Map<String, String> context) {
+        return () -> {
+            if (context == null) {
+                MDC.clear();
+            } else {
+                MDC.setContextMap(context);
+            }
+            setTraceIdIfAbsent();
+            try {
+                return callable.call();
+            } finally {
+                MDC.clear();
+            }
+        };
+    }
+
+    public static Runnable wrap(final Runnable runnable, final Map<String, String> context) {
+        return () -> {
+            if (context == null) {
+                MDC.clear();
+            } else {
+                MDC.setContextMap(context);
+            }
+            setTraceIdIfAbsent();
+            try {
+                runnable.run();
+            } finally {
+                MDC.clear();
+            }
+        };
+    }
+}
+```
+说明【以封装Runnable为例】：
+* 判断当前线程对应MDC的Map是否存在，存在则设置
+* 设置MDC中的traceId值，不存在则新生成，针对不是子线程的情况，如果是子线程，MDC中traceId不为null
+* 执行run方法
+
+3. 解决HTTP调用丢失traceId
+在使用HTTP调用第三方服务接口时traceId将丢失，需要对HTTP调用工具进行改造，在发送时在request header中添加traceId，在下层被调用方添加拦截器获取header中的traceId添加到MDC中  
+HTTP调用有多种方式，比较常见的有HttpClient、OKHttp、RestTemplate，所以只给出这几种HTTP调用的解决方式 
+
+**HttpClient**  
+实现HttpClient拦截器
+```java
+public class HttpClientTraceIdInterceptor implements HttpRequestInterceptor {
+    @Override
+    public void process(HttpRequest httpRequest, HttpContext httpContext) throws HttpException, IOException {
+        String traceId = MDC.get(BaseUtils.TRACE_ID);
+        //当前线程调用中有traceId，则将该traceId进行透传
+        if (traceId != null) {
+            //添加请求体
+            httpRequest.addHeader(BaseUtils.TRACE_ID, traceId);
+        }
+    }
+}
+```
+实现HttpRequestInterceptor接口并重写process方法
+
+如果调用线程中含有traceId，则需要将获取到的traceId通过request中的header向下透传下去
+
+为HttpClient添加拦截器  
+```java
+ private static CloseableHttpClient httpClient = HttpClientBuilder.create()
+              .addInterceptorFirst(new HttpClientTraceIdInterceptor())
+              .build();
+```
+
+**OKHttp**  
+实现OKHttp拦截器  
+```java
+ public class OkHttpTraceIdInterceptor implements Interceptor {
+      @Override
+      public Response intercept(Chain chain) throws IOException {
+          String traceId = MDC.get(BaseUtils.TRACE_ID);
+          Request request = null;
+          if (traceId != null) {
+              //添加请求体
+              request = chain.request().newBuilder().addHeader(BaseUtils.TRACE_ID, traceId).build();
+          }
+          Response originResponse = chain.proceed(request);
+          return originResponse;
+      }
+  }
+```
+实现Interceptor拦截器，重写interceptor方法，实现逻辑和HttpClient差不多，如果能够获取到当前线程的traceId则向下透传  
+为OkHttp添加拦截器  
+```java
+ private static OkHttpClient client = new OkHttpClient.Builder()
+              .addNetworkInterceptor(new OkHttpTraceIdInterceptor())
+              .build();
+```
+
+**RestTemplate**  
+实现RestTemplate拦截器  
+```java
+ public class RestTemplateTraceIdInterceptor implements ClientHttpRequestInterceptor {
+      @Override
+      public ClientHttpResponse intercept(HttpRequest httpRequest, byte[] bytes, ClientHttpRequestExecution clientHttpRequestExecution) throws IOException {
+          String traceId = MDC.get(BaseUtils.TRACE_ID);
+          if (traceId != null) {
+              httpRequest.getHeaders().add(BaseUtils.TRACE_ID, traceId);
+          }
+          return clientHttpRequestExecution.execute(httpRequest, bytes);
+      }
+  }
+```
+实现ClientHttpRequestInterceptor接口，并重写intercept方法，其余逻辑都是一样的  
+为RestTemplate添加拦截器  
+```java
+ restTemplate.setInterceptors(Arrays.asList(new RestTemplateTraceIdInterceptor()));
+```
+
+**第三方服务拦截器**  
+HTTP调用第三方服务接口全流程traceId需要第三方服务配合，第三方服务需要添加拦截器拿到request header中的traceId并添加到MDC中
+
+```java
+public class LogInterceptor implements HandlerInterceptor {
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        //如果有上层调用就用上层的ID
+        String traceId = request.getHeader(BaseUtils.TRACE_ID);
+        if (traceId == null) {
+            traceId = TraceIdUtils.getTraceId();
+        }
+        
+        MDC.put(BaseUtils.TRACE_ID, traceId);
+        return true;
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView)
+            throws Exception {
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
+            throws Exception {
+        MDC.remove(BaseUtils.TRACE_ID);
+    }
+}
+```
+
+</details> 
 
 ## logj2
 参考页面
