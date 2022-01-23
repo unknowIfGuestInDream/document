@@ -544,5 +544,156 @@ git push --all project_name -f
 修改git提交日志  
 [参考](https://www.cnblogs.com/libra13179/p/11429302.html ':target=_blank')
 
+## @Scope("prototype")的正确用法
+value分为4类：
+* ConfigurableBeanFactory.SCOPE_PROTOTYPE，即"prototype"
+* ConfigurableBeanFactory.SCOPE_SINGLETON，即"singleton"
+* WebApplicationContext.SCOPE_REQUEST，即"request"
+* WebApplicationContext.SCOPE_SESSION，即"session"
+
+singleton和prototype分别代表单例和多例；  
+request表示请求，即在一次http请求中，被注解的Bean都是同一个Bean，不同的请求是不同的Bean；  
+session表示会话，即在同一个会话中，被注解的Bean都是使用的同一个Bean，不同的会话使用不同的Bean。
+
+使用session和request产生了一个新问题，生成controller的时候需要service作为controller的成员，但是service只在收到请求（可能是request也可能是session）时才会被实例化，controller拿不到service实例。为了解决这个问题，@Scope注解添加了一个proxyMode的属性，有两个值ScopedProxyMode.INTERFACES和ScopedProxyMode.TARGET_CLASS，前一个表示表示Service是一个接口，后一个表示Service是一个类。
+
+<details>
+  <summary>示例：@Scope("prototype")的正确用法</summary>
+
+**1、使用实现ApplicationContextAware接口的实现类调用多例bean**
+
+```java
+@RestController
+@RequestMapping(value = "/testScope")
+public class TestScope {
+
+  private String name;
+
+  //分别发送请求http://localhost:8080/learn/testScope/aaa和http://localhost:8080/learn/testScope/bbb
+  @RequestMapping(value = "/{username}", method = RequestMethod.GET)
+  public void userProfile(@PathVariable("username") String username) {
+    name = username;
+    Order order = SpringContextUtils.getBean(Order.class);
+    order.setOrderNum(name);
+    try {
+      for (int i = 0; i < 100; i++) {
+        System.out.println(
+                Thread.currentThread().getId()
+                        + "name:" + name
+                        + "--order:"
+                        + order.getOrderNum());
+        Thread.sleep(2000);
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return;
+  }
+}
+```
+```java
+@Service
+@Scope("prototype")
+public class Order {
+    private String orderNum;
+
+    public String getOrderNum() {
+        return orderNum;
+    }
+
+    public void setOrderNum(String orderNum) {
+        this.orderNum = orderNum;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "orderNum='" + orderNum + '\'' +
+                '}';
+    }
+}
+```
+```java
+@Component
+public class SpringContextUtils implements ApplicationContextAware {
+
+    private static ApplicationContext applicationContext;
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext)
+            throws BeansException {
+        SpringContextUtils.applicationContext = applicationContext;
+    }
+
+    public static Object getBean(String name) {
+        return applicationContext.getBean(name);
+    }
+
+    public static <T> T getBean(Class<T> requiredType) {
+        return applicationContext.getBean(requiredType);
+    }
+
+    public static <T> T getBean(String name, Class<T> requiredType) {
+        return applicationContext.getBean(name, requiredType);
+    }
+
+    public static boolean containsBean(String name) {
+        return applicationContext.containsBean(name);
+    }
+
+    public static boolean isSingleton(String name) {
+        return applicationContext.isSingleton(name);
+    }
+
+    public static Class<? extends Object> getType(String name) {
+        return applicationContext.getType(name);
+    }
+}
+```
+
+**2、修改scope注解属性（Spring给出的解决问题的办法）**
+
+```java
+@RestController
+@RequestMapping(value = "/testScope")
+public class TestScope {
+
+    private String name;
+    @Autowired
+    private Order order;
+
+    //分别发送请求http://localhost:8080/learn/testScope/aaa和http://localhost:8080/learn/testScope/bbb
+    @RequestMapping(value = "/{username}", method = RequestMethod.GET)
+    public void userProfile(@PathVariable("username") String username) {
+        name = username;
+        order.setOrderNum(name);
+        try {
+            for (int i = 0; i < 100; i++) {
+                System.out.println(
+                        Thread.currentThread().getId()
+                                + "name:" + name
+                                + "--order:"
+                                + order.getOrderNum());
+                Thread.sleep(2000);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return;
+    }
+}
+```
+```java
+@Service
+@Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
+//@Scope("prototype")
+public class Order {
+  ...
+}
+```
+
+proxyMode属性注入的是接口可以用INTERFACES，方法用TARGET_CLASS
+
+</details>
 
 
