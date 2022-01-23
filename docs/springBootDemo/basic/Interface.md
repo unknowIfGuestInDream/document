@@ -243,6 +243,8 @@ https://blog.csdn.net/Heron22/article/details/109532698
 ## HandlerMethodArgumentResolver
 参数解析器
 
+https://cloud.tencent.com/developer/article/1808370
+
 ## DisposableBean
 bean销毁（other文档）
 https://www.jianshu.com/p/6f2cbbbc8781
