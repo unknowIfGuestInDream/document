@@ -232,3 +232,8 @@ WHEN MATCHED THEN
 WHEN NOT MATCHED THEN
     INSERT (a.DATAYEAR_PRODUCTION_ID_,a.YEAR_) VALUES ('6d31d8406db423d848534147cc70901z',2033);
 ```
+
+## 查询某一字段重复的数据
+```oracle
+select a.*  from ASSET_MAINTAIN a inner join ASSET_MAINTAIN b on a.asset_id=b.asset_id and a.rowid!=b.rowid
+```
