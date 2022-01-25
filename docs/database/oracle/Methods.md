@@ -237,3 +237,8 @@ WHEN NOT MATCHED THEN
 ```oracle
 select a.*  from ASSET_MAINTAIN a inner join ASSET_MAINTAIN b on a.asset_id=b.asset_id and a.rowid!=b.rowid
 ```
+
+## 去除字段中的空串
+```oracle
+update BASE_DEPT set I_ID = REGEXP_REPLACE(I_ID, '\s')
+```
