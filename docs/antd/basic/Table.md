@@ -43,3 +43,9 @@
       ),
     },
 ```
+
+## 表格内容完全展开，出现滚动条
+```typescript
+<ProTable
+  scroll={{ x: 'max-content' }}
+```
