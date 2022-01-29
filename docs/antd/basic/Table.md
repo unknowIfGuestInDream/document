@@ -21,6 +21,24 @@
     },
 ```
 
+```typescript
+{
+    title: (
+      <>
+        创建时间
+        <Tooltip placement="top" title="这是一段描述">
+          <QuestionCircleOutlined style={{ marginLeft: 4 }} />
+        </Tooltip>
+      </>
+    ),
+    width: 140,
+    key: 'since',
+    dataIndex: 'createdAt',
+    valueType: 'date',
+    sorter: (a, b) => a.createdAt - b.createdAt,
+  },
+```
+
 ## 单元格弹出全部内容
 ```typescript
     {
