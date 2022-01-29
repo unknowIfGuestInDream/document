@@ -49,3 +49,12 @@
 <ProTable
   scroll={{ x: 'max-content' }}
 ```
+
+## 超链接
+```typescript
+{
+    title: '应用名称',
+    dataIndex: 'name',
+    render: (_) => <a>{_}</a>,
+  }
+```
