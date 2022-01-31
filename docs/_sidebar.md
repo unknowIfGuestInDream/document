@@ -34,6 +34,7 @@
  * [集成Redis](springBootDemo/imploded/Redis.md)
  * [集成MongoDb](springBootDemo/imploded/Mongodb.md)
  * [集成ElasticSearch](springBootDemo/imploded/ElasticSearch.md)
+ * [集成RabbitMq](springBootDemo/imploded/RabbitMq.md)
  * [集成WebService](springBootDemo/imploded/WebService.md)
  * [Minio文件存储服务](springBootDemo/imploded/Minio.md)
  * [retry重试组件](springBootDemo/imploded/Retry.md)
