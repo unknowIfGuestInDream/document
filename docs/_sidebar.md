@@ -33,6 +33,7 @@
  * [邮件](springBootDemo/imploded/Mail.md)
  * [集成Redis](springBootDemo/imploded/Redis.md)
  * [集成MongoDb](springBootDemo/imploded/Mongodb.md)
+ * [集成ElasticSearch](springBootDemo/imploded/ElasticSearch.md)
  * [Minio文件存储服务](springBootDemo/imploded/Minio.md)
  * [retry重试组件](springBootDemo/imploded/Retry.md)
  * [undertow服务器](springBootDemo/imploded/Undertow.md)
