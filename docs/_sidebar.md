@@ -40,6 +40,7 @@
  * [内嵌tomcat](springBootDemo/imploded/Tomcat.md)
  * [获取git信息](springBootDemo/imploded/Git.md)
  * [RMI](springBootDemo/imploded/Rmi.md)
+ * [集成flowable](springBootDemo/imploded/Flowable.md)
 
 * 进阶篇
  * [使用Gradle构建](springBootDemo/deploy/Gradle.md)
