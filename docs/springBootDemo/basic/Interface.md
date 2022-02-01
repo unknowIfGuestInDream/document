@@ -245,6 +245,10 @@ https://blog.csdn.net/Heron22/article/details/109532698
 
 https://cloud.tencent.com/developer/article/1808370
 
+## BeanPostProcessor
+
+## BeanFactoryPostProcessor
+
 ## DisposableBean
 bean销毁（other文档）
 https://www.jianshu.com/p/6f2cbbbc8781
