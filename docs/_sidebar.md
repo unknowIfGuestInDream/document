@@ -50,3 +50,4 @@
  * [部署shell脚本](springBootDemo/deploy/Shell.md)
  * [docsify文档](springBootDemo/deploy/docsify.md)
  * [工具网站](springBootDemo/deploy/Website.md)
+ * [项目打包成.exe程序](springBootDemo/deploy/Exe.md)
