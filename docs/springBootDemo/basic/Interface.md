@@ -228,6 +228,12 @@ public class CustomMvcConfig implements WebMvcConfigurer {
 </details> 
 
 ## RequestMappingHandlerMapping
+RequestMappingHandlerMapping，主要做的工作是将Contoller的带RequestMapping方法，添加到处理方法映射器和路径方法解决器中。
+
+RequestMappingHandlerAdapter主要是解决请求的，会话，请求头部处理，数据的绑定等，然后从容器中，获取handlerMethod，处理业务逻辑，获取数据，并渲染视图，返回。
+
+https://blog.csdn.net/bingguang1993/article/details/88059533
+
 如果要提供RequestMappingHandlerMapping，RequestMappingHandlerAdapter或ExceptionHandlerExceptionResolver的自定义实例，并且仍然保留Spring Boot MVC自定义，则可以声明WebMvcRegistrations类型的bean，并使用它提供这些组件的自定义实例。
 
 [https://blog.csdn.net/kaerbuka/article/details/105399821](https://blog.csdn.net/kaerbuka/article/details/105399821 ':target=_blank')  
@@ -240,18 +246,28 @@ https://blog.csdn.net/Heron22/article/details/109532698
 
 </details> 
 
+## WebMvcRegistrations
+https://xhope.top/?p=1486
+
 ## HandlerMethodArgumentResolver
 参数解析器
 
 https://cloud.tencent.com/developer/article/1808370
 
 ## BeanPostProcessor
+BeanPostProcessor 接口是 Spring 提供的众多接口之一，他的作用主要是如果我们需要在Spring 容器完成 Bean 的实例化、配置和其他的初始化前后添加一些自己的逻辑处理，我们就可以定义一个或者多个 BeanPostProcessor 接口的实现，然后注册到容器中。
+
 
 ## BeanFactoryPostProcessor
 
+## BeanFactory
+
+## FactoryBean
+
+## ObjectFactory
+
 ## DisposableBean
-bean销毁（other文档）
-https://www.jianshu.com/p/6f2cbbbc8781
+DisposableBean 接口为单例 bean 提供了在容器销毁 bean 时的处理方法，它只有 destroy 一个方法，凡是实现此接口的类，在 bean 被销毁时都会执行该方法。
 
 ## ImportSelector
 [https://www.jianshu.com/p/5e7752c42a0d](https://www.jianshu.com/p/5e7752c42a0d ':target=_blank')  
