@@ -463,6 +463,34 @@ public class HttpClientTraceIdInterceptor implements HttpRequestInterceptor {
  restTemplate.setInterceptors(Arrays.asList(new RestTemplateTraceIdInterceptor()));
 ```
 
+**feign**  
+```java
+@Configuration
+public class FeignConfig implements RequestInterceptor {
+    @Override
+    public void apply(RequestTemplate requestTemplate) {
+        String traceId = MDC.get(BaseUtils.TRACE_ID);
+        //当前线程调用中有traceId，则将该traceId进行透传
+        if (traceId != null) {
+            requestTemplate.header(BaseUtils.TRACE_ID, traceId);
+        }
+    }
+}
+```
+
+需要配置Hystrix隔离策略  
+Hystrix提供了两个隔离策略：THREAD、SEMAPHORE。其默认的策略为THREAD（线程池）。
+```yaml
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          strategy: SEMAPHORE
+          semaphore:
+            maxConcurrentRequests: 100
+```
+
 **第三方服务拦截器**  
 HTTP调用第三方服务接口全流程traceId需要第三方服务配合，第三方服务需要添加拦截器拿到request header中的traceId并添加到MDC中
 
