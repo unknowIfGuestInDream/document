@@ -8,3 +8,5 @@
 [Nginx在线配置生成工具](https://www.nginxedit.cn/ ':target=_blank')  
 [Spring官网项目文档](https://spring.io/projects ':target=_blank')  
 [清华大学开源软件镜像站](https://mirrors.tuna.tsinghua.edu.cn/ ':target=_blank')  
+[word转换html](http://www.docpe.com/word/word-to-html.aspx ':target=_blank')  
+[json转换excel](https://uutool.cn/json2excel/ ':target=_blank')  

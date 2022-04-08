@@ -76,3 +76,20 @@
     render: (_) => <a>{_}</a>,
   }
 ```
+
+## 根据名称判断是否是图片
+```typescript
+          {(/(?:jpg|gif|png|jpeg)$/i.test(record.V_FILENAME)) &&
+          (<>
+              <Divider type="vertical"/>
+              <a key={record.I_ID} onClick={() => {
+                setImageUrl(getDownloadUrl('/api/contract-system/downloadContractRider', {
+                  I_ID: record.I_ID,
+                  V_FILEPATH: record.V_FILEPATH,
+                  V_FILENAME: record.V_FILENAME
+                }));
+                setVisible(true);
+              }}>预览</a>
+            </>
+          )}
+```

@@ -242,3 +242,27 @@ select a.*  from ASSET_MAINTAIN a inner join ASSET_MAINTAIN b on a.asset_id=b.as
 ```oracle
 update BASE_DEPT set I_ID = REGEXP_REPLACE(I_ID, '\s')
 ```
+
+## 去重
+```oracle
+
+--方法1：
+--常用的关键字：distinct
+--缺点：方法局限性很大，因为它只能对全部查询的列做去重。如果我想对col_2,col3去重，那我的结果集中就只能有col_2,col_3列，而不能有col_1列。
+select distinct t.user_name, t.user_age from TEST_USER t;
+ 
+--方法2：
+--思路：给重复的数据建立有序下标，然后只查询下标为：1的数据即可
+select f.user_name, f.user_age
+  from (select t.*,
+               row_number() over(partition by user_name order by user_name) as group_idx
+          from TEST_USER t) f
+ where f.group_idx = 1;
+
+--方法3：
+select *
+  from (select t1.*,
+               count(1) over(partition by t1.col_2, t1.col_3) rn
+          from nayi224_180824 t1) t1
+ where t1.rn > 1;
+```
