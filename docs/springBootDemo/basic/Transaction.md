@@ -119,6 +119,27 @@ public @interface Transactional {
 和编程式事务相比，声明式事务唯一不足地方是，后者的最细粒度只能作用到方法级别，无法做到像编程式事务那样可以作用到代码块级别。但是即便有这样的需求，也存在很多变通的方法，比如，可以将需要进行事务管理的代码块独立为方法等等。
 
 ```java
+/**
+    * 定义事务管理bean
+    */
+   @Bean
+   public PlatformTransactionManager transactionManager() {
+   	DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
+   	transactionManager.setDataSource(dataSource());// 注入dataSource
+   	return transactionManager;
+   }
+   /**
+    * 定义TransactionTemplate类型的bean
+    */
+   @Bean
+   public TransactionTemplate transactionTemplate() {
+   	TransactionTemplate transactionTemplate=new TransactionTemplate();
+   	transactionTemplate.setTransactionManager(transactionManager());//注入事务管理器
+   	return transactionTemplate;
+   }
+```
+
+```java
 private final TransactionTemplate transactionTemplate;
         //无返回值
         transactionTemplate.execute(new TransactionCallbackWithoutResult() {
