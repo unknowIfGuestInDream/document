@@ -20,7 +20,6 @@ public class ApplicationRunnerTest implements ApplicationRunner {
 ```
 
 **CommandLineRunner**
-
 ```java
 @Component
 @Order(1)
@@ -33,7 +32,7 @@ public class CommandLineRunnerTest implements CommandLineRunner {
 }
 ```
 
-对于这两个接口而言，我们可以通过Order注解或者使用Ordered接口来指定调用顺序，@Order()中的值越小，优先级越高  
+对于这两个接口而言，都是在项目启动后执行，我们可以通过Order注解或者使用Ordered接口来指定调用顺序，@Order()中的值越小，优先级越高  
 Order值相同ApplicationRunner的实现优先执行
 
 **两者的联系与区别**
