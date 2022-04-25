@@ -19,6 +19,7 @@
  * [localStorage和SessionStorage](extjs/other/storage.md)
  * [IndexedDB](extjs/other/indexedDB.md)
  * [WebSql](extjs/other/webSql.md)
+ * [禁用开发工具等](extjs/other/disabled.md)
 
 * 工具
  
