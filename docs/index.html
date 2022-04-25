@@ -43,6 +43,7 @@
 <div id="app"></div>
 <script>
     document.oncontextmenu = function () {
+        Toast('右键菜单已禁用', 1000);
         event.returnValue = false;
     };
     //禁用开发者工具F12
@@ -50,6 +51,7 @@
         let e = event || window.event || arguments.callee.caller.arguments[0];
         if (e && e.keyCode === 123) {
             e.returnValue = false;
+            Toast('开发工具已禁用', 1000);
             return false;
         }
     };
@@ -233,6 +235,22 @@
                 });
             }
         ]
+    }
+
+    //提示信息 封装
+    function Toast(msg, duration) {
+        duration = isNaN(duration) ? 3000 : duration;
+        var m = document.createElement('div');
+        m.innerHTML = msg;
+        m.style.cssText = "font-size: .32rem;color: rgb(255, 255, 255);background-color: rgba(0, 0, 0, 0.6);padding: 10px 15px;margin: 0 0 0 -60px;border-radius: 4px;position: fixed;    top: 50%;left: 50%;width: 130px;text-align: center;";
+        document.body.appendChild(m);
+        setTimeout(function () {
+            var d = 0.5;
+            m.style.opacity = '0';
+            setTimeout(function () {
+                document.body.removeChild(m)
+            }, d * 1000);
+        }, duration);
     }
 </script>
 <!-- docsify的js依赖 -->
