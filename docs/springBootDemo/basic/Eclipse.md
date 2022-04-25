@@ -17,6 +17,8 @@ Alt+↓  | 当前行和下面一行交互位置
 Alt+↑  | 当前行和上面一行交互位置
 Ctrl+Alt+↓ | 复制当前行到下一行
 Ctrl+Alt+↑ | 复制当前行到上一行
+ctrl+shift+x | 转为大写
+ctrl+shift+y | 转为小写
 Shift+Enter | 在当前行的下一行插入空行（这时鼠标可以在当前行的任一位置，不一定是最后）
 Ctrl+/ | 注释当前行，再按则取消注释
 Alt+Shift+↑ | 选择封装元素
@@ -75,5 +77,8 @@ https://blog.csdn.net/qidasheng2012/article/details/78148379
 
 https://blog.csdn.net/ssxueyi/article/details/97014673
 
-### 打开文件设置为单机打开
+### 打开文件设置为单击打开
 
+### 显示代码行号设置
+
+代码左侧 右键 show Line Numbers
