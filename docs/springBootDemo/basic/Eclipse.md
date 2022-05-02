@@ -37,6 +37,7 @@ Ctrl+Shift+J | 反向增量查找（和上条相同，只不过是从后往前�
 Ctrl+Shift+U | 列出所有包含字符串的行
 Ctrl+H | 打开搜索对话框
 Ctrl+G | 工作区中的声明
+Ctrl+L | 跳转到某行
 Ctrl+Shift+G | 工作区中的引用
 debug-F5 | 单步跳入
 debug-F6 | 单步跳过
@@ -54,31 +55,103 @@ Alt+Shift+I | 合并变量
 Alt+Shift+V | 移动函数和变量（不常用）
 Alt+Shift+Z | 撤销（重构的后悔药）
 
-### 设置编码格式
+### 自动提示
+Window > Preferences > Java > Editor > Content Assist
 
-https://blog.csdn.net/lanmuhhh2015/article/details/79366872
+设置为：
+```
+.abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
+```
+
 ![](../../images/eclipse/eclipse1.png)
 
-https://blog.csdn.net/chinaxiaofeng8/article/details/82378736
-
-https://blog.csdn.net/zengsange/article/details/83338392
-
-### 自动提示
-
-### 护眼模式
-
-https://blog.csdn.net/qq1808814025/article/details/105929920
-
 ### 配置JDK
+Window > Preferences > Java > Installed JRES  
+![](../../images/eclipse/eclipse2.png)  
+![](../../images/eclipse/eclipse3.png)  
+选择你的jdk安装目录位置  
+![](../../images/eclipse/eclipse4.png)
 
-https://blog.csdn.net/qidasheng2012/article/details/78148379
+jdk已经添加成功,如果想使用这个版本的jdk,直接勾选前面的勾选框,再点击Apply即可
 
 ### 显示内存使用情况
-
-https://blog.csdn.net/ssxueyi/article/details/97014673
+Window > Preferences > General  
+![](../../images/eclipse/eclipse5.png)
 
 ### 打开文件设置为单击打开
+Window > Preferences > General > Open mode  
+![](../../images/eclipse/eclipse6.png)
 
 ### 显示代码行号设置
+代码面板左边栏右键 show Line Numbers  
+![](../../images/eclipse/eclipse7.png)  
+或者 Window > Prefences > General > Editors > Text Editors > show line numbers  
+![](../../images/eclipse/eclipse8.png)
 
-代码左侧 右键 show Line Numbers
+### 护眼模式
+背景色推荐两种:豆沙绿和暗黑色  
+Window > Preferences > General > Editors > Text Editors  
+![](../../images/eclipse/eclipse9.png)  
+点击color,之后弹出一个颜色面板,然后自定义颜色
+色调：85；饱和度：123；亮度：205； 非常柔和的豆沙绿色，这个色调是眼科专家配置的
+最后添加到自定义颜色，点击确定，点击Apply；  
+![](../../images/eclipse/eclipse10.png)  
+
+背景色设置好之后，接下来设置字体颜色；需要在Java里面设置；  
+![](../../images/eclipse/eclipse11.png)  
+豆沙绿背景下颜色设置数据:
+```
+Annotations(注释): 107, 147, 186  浅蓝色
+brackets(方括号):255, 128, 0  橙色
+Deprecated members(不建议使用的成员): 0, 0, 0  
+Fields(字段): 128, 0, 128  紫色
+KeyWord 'return'(关键字'return'): 255, 0, 0   红色
+Keyword excluding 'return'(除了关键字以外的return): 255, 128 ,0  橙色
+Local variable declarations(局部变量声明): 128, 128, 128   灰色
+Method declarations(方法声明): 255, 128, 64    橙色
+Method(方法): 0, 48, 96 暗浅蓝色
+Operators(运算符): 255, 128, 0  橙色
+Others(其他): 96 153, 0   深绿色
+Static fields(静态字段): 33, 0, 189  深蓝色
+Static Method invocations(静态方法调用): 77, 166 255  天蓝色 
+Strings(字符串): 132, 26, 238   中天蓝色
+Type variables(类型变量): 128, 0, 25   红罗色
+```
+![](../../images/eclipse/eclipse12.png)  
+接下来是暗黑色背景色  
+![](../../images/eclipse/eclipse13.png)  
+详细配色方案:  
+```
+选Current line highlight 来改变 当前选中行 的颜色
+Annotations(注释): 107, 147, 186 
+Deprecated members(不建议使用的成员): 0, 0, 0 
+Fields(字段):128,255,0 绿色
+KeyWord 'return'(关键字'return'): 255, 0, 0  红色
+Keyword excluding 'return'(除了关键字以外的return): 255,80, 0  深深橘色
+Local variable declarations(局部变量声明): 70,140,179  深蓝色
+Method declarations(方法声明): 247,197,39  淡橘色
+Method(方法): 241,196,54  深淡橘色
+Operators and brackets(运算符与方括号): 255, 128, 0   深橘色
+Others(其他): 126, 202, 0  淡绿色
+Static fields(静态字段): 128,255,0 绿色
+Static Method invocations(静态方法调用): 77, 166 255  
+Strings(字符串):  89,196,196  墨蓝色
+Type variables(类型变量): 222, 0, 25  红色
+```
+![](../../images/eclipse/eclipse14.png)
+## 设置字体大小
+![](../../images/eclipse/eclipse15.png)
+
+### 设置编码格式
+1、设置工作空间编码格式  
+Window > Preferences > General > Workspace下，面板Text file encoding 选择UTF-8格式  
+![](../../images/eclipse/eclipse16.png)  
+2、设置JSP页面编码格式  
+Window > Preferences > Web > JSP Files 面板选择 ISO 10646/Unicode(UTF-8)格式编码  
+![](../../images/eclipse/eclipse17.png)  
+3、设置文档编码格式  
+Window > Preferences > General > Content Type > Text的最下面设置为编码格式为UTF-8  
+![](../../images/eclipse/eclipse18.png)  
+4、设置项目的文档编码格式  
+选择项目 > 右键 > Properties > Resource 设置编码为UTF-8格式  
+![](../../images/eclipse/eclipse19.png)
