@@ -21,7 +21,8 @@
  * [线程同步器](java/current/ThreadSynchronizer.md)
  * [CompletableFuture](java/current/CompletableFuture.md)
 
-* 工具
+* 其他
 
  * [工具类](java/other/Util.md)
+ * [Java11相对于8的新特性](java/other/JavaCompair.md)
 
