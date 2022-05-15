@@ -102,6 +102,24 @@ public class GlobalCorsConfig {
 }
 ```
 
+### 注意
+!> SpringBoot升级2.4.0所出现的问题：When allowCredentials is true, allowedOrigins cannot contain the specia
+
+解决方式如下：
+
+将.allowedOrigins替换成.allowedOriginPatterns即可。
+
+方式一改动:
+```java
+//.allowedOrigins("*")
+.allowedOriginPatterns("*")
+```
+方式二改动:
+```java
+//config.addAllowedOrigin("*");
+config.addAllowedOriginPattern("*");
+```
+
 ## 批量下载文件并放到压缩包
 
 ```java
