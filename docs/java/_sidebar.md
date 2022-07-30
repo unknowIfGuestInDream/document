@@ -7,6 +7,7 @@
  * [TreeMap](java/base/map/TreeMap.md)
  * [Optional](java/base/optional/Optional.md)
  * [Stream流](java/base/stream/Stream.md)
+ * [Math](java/base/math/Math.md)
 
 * 并发包
 
