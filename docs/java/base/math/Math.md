@@ -112,3 +112,5 @@ static double log10(double a) | 返回以 10 为底 a 的对数
 //        16 的平方根：4.0
 //        10 为底 2 的对数：0.3010299956639812
 ```
+
+[Math API](https://www.apiref.com/java11-zh/java.base/java/lang/Math.html ':target=_blank')
