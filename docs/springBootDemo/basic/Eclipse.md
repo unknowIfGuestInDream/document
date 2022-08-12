@@ -155,3 +155,7 @@ Window > Preferences > General > Content Type > Text的最下面设置为编码�
 4、设置项目的文档编码格式  
 选择项目 > 右键 > Properties > Resource 设置编码为UTF-8格式  
 ![](../../images/eclipse/eclipse19.png)
+
+### 保存自动格式化代码
+Window > Preferences > Java > Editor > Save Action  
+![](../../images/eclipse/eclipse20.png)
