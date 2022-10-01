@@ -8,7 +8,7 @@
 * 后端框架：springBoot2.3.0
 * 其他技术：minio、MongoDB4.2.5、mysql5.7、elasticsearch7.6.2、logstash7.6.2、rabbitmq3.7.14、redis5.0
 
-[Gitee](https://gitee.com/tanglchen/springBootDemo)
+[Gitee](https://gitee.com/unknowIfGuestInDream/springBootDemo)
 [Get Started](README.md)
 <!-- 背景色 -->
 <!--  ![color](#00D945) -->

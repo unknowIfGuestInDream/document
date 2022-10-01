@@ -192,7 +192,7 @@ public class SwaggerConfig {
                 // 描述
                 .description("springBoot的学习项目")
                 // 作者信息
-                .contact(new Contact("唐亮", "https://gitee.com/tanglchen", "tang97155@163.com"))
+                .contact(new Contact("唐亮", "https://github.com/unknowIfGuestInDream", "tang97155@163.com"))
                 // 版本
                 .version("版本号:" + "1.1")
                 .build();
