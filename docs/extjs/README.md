@@ -8,7 +8,7 @@ Ext JS是一个流行的JavaScript框架，它为使用跨浏览器功能构建W
 Ext JS基本上用于创建桌面应用程序它支持所有现代浏览器，如IE6 +，FF，Chrome，safari 6+ 等。  
 Ext JS基于MVC / MVVM架构。
 
-![Extjs4.x中文文档](http://extjs-doc-cn.github.io/ext4api/)
+[Extjs4.x中文文档](http://extjs-doc-cn.github.io/ext4api/ ':target=_blank')
 
 **特征**  
 这些是Ext JS的突出特性

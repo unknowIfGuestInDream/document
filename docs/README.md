@@ -20,6 +20,6 @@ Druid | 1.1.9 | 数据库连接池
 Lombok | 1.18.12 | 简化对象封装工具
 
 ## 项目地址
-- 博客地址：[https://blog.tlcsdm.com](https://blog.tlcsdm.com)
-- github地址：[https://github.com/unknowIfGuestInDream](https://github.com/unknowIfGuestInDream)
-- 码云地址：[https://gitee.com/unknowIfGuestInDream](https://gitee.com/unknowIfGuestInDream)
+- 博客地址：[https://blog.tlcsdm.com](https://blog.tlcsdm.com ':target=_blank')
+- github地址：[https://github.com/unknowIfGuestInDream](https://github.com/unknowIfGuestInDream ':target=_blank')
+- 码云地址：[https://gitee.com/unknowIfGuestInDream](https://gitee.com/unknowIfGuestInDream ':target=_blank')
