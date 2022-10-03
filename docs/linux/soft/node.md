@@ -11,7 +11,7 @@ wget https://nodejs.org/dist/v15.9.0/node-v15.9.0-linux-x64.tar.gz
 
 ```
 tar xvf node-v15.9.0-linux-x64.tar.gz
-mv node-v15.9.0-linux-x64.tar.gz node
+mv node-v15.9.0-linux-x64 node
 ```
 
 3. 依次执行以下命令，创建软链接。
