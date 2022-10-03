@@ -8,5 +8,5 @@
  * [设计模式](/designPattern/)
  * [ANTD](/antd/)
 
-* [🐮🐮 TangLiang's Blog](https://blog.tlcsdm.com)
-* [❤️❤️ Gitee](https://gitee.com/unknowIfGuestInDream)
+* [🐮🐮 TangLiang's Blog](https://blog.tlcsdm.com  ':target=_blank')
+* [❤️❤️ Gitee](https://gitee.com/unknowIfGuestInDream  ':target=_blank')
