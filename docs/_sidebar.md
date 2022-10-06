@@ -55,3 +55,4 @@
  * [项目打包成.exe程序](springBootDemo/deploy/Exe.md)
  * [Office文档在线预览](springBootDemo/deploy/Office.md)
  * [开源项目申请Jerbrain](springBootDemo/deploy/Jerbrain.md)
+ * [解决连接github失败问题](springBootDemo/deploy/Github.md)
