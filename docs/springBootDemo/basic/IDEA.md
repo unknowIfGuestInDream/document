@@ -263,3 +263,44 @@ Idea Deployment是一个方便的工具，将你的项目直接部署到服务�
 ### Maven Helper
 
 > pom文件位置显示出相关依赖关系，且对于冲突的依赖进行标红，极大方便了排除冲突依赖的工作。
+
+### Auto filling Java call arguments
+> 自动补全参数
+
+调用一个函数，使用 Alt+Enter 组合键，调出 “Auto fill call parameters” 自动使用该函数定义的参数名填充。
+
+### VisualVM Launcher
+> 运行java程序的时候启动visualvm，方便查看jvm的情况 比如堆内存大小的分配
+某个对象占用了多大的内存，jvm调优必备工具
+
+### jclasslib bytecode viewer
+> 查看字节码
+
+view > show Bytecode With jclasslib
+
+可以看到整个class文件里面的所有信息，包含常量池、接口、方法、字段等信息。
+
+### Key promoter
+> 快捷键使用提示
+
+当您在 IDE 内部的按钮上 使用鼠标时，Key Promoter X 会显示您应该使用的键盘快捷键
+
+### Gsonformat
+> 可以根据json快速生成需要的bean类
+
+alt + enter > Generate > GsonFormat > 填入json
+
+### Codota
+> 智能代码补全以及代码示例搜索
+
+### Alibaba Java Coding Guidelines
+> 阿里代码规范插件
+
+### Stack trace to UML
+> 根据 JVM 异常堆栈画 UML时序图和通信图
+
+打开方式：Analyze > Open Stack trace to UML plugin + Generate UML diagrams from stacktrace from debug
+
+### Statistic
+> 项目信息统计
+
