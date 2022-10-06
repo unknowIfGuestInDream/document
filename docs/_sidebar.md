@@ -54,3 +54,4 @@
  * [工具网站](springBootDemo/deploy/Website.md)
  * [项目打包成.exe程序](springBootDemo/deploy/Exe.md)
  * [Office文档在线预览](springBootDemo/deploy/Office.md)
+ * [开源项目申请Jerbrain](springBootDemo/deploy/Jerbrain.md)
