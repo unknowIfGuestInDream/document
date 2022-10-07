@@ -5,7 +5,7 @@
 首先通过[Ping.cn](https://www.ping.cn/dns/github.com ':target=_blank') 在检测详情中找到解析时间最短的地址(注意选择运营商)
 
 **修改配置文件**  
-在`C:\Windows\System32\drivers\etc`文件夹下修改或者添加host
+在`C:\Windows\System32\drivers\etc`文件夹下修改hosts文件
 
 `
 xxx.xxx.xxx.xxx github.com
