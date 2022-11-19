@@ -46,5 +46,6 @@ jobs:
         uses: github/super-linter@v4
         env:
           VALIDATE_MARKDOWN: true
+          FILTER_REGEX_EXCLUDE: .*docs/images/.*, .*docs/lib/.*,
           DEFAULT_BRANCH: master
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
