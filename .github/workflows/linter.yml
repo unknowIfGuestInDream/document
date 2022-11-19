@@ -14,6 +14,8 @@ on:
     # Remove the line above to run when pushing to master
   pull_request:
     branches: [ master ]
+    paths-ignore:
+      - '.github/**'
 
 ###############
 # Set the Job #
