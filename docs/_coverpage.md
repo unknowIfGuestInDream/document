@@ -1,14 +1,15 @@
 ![logo](images/logo.png)
-# springBootDemo<small>1.1.2</small>
+# document<small>1.1.2</small>
 
 > 本文档是作者从事java工程师以来的学习历程，旨在为大家提供一个较详细的学习教程，
 侧重点更倾向于java服务端所涉及的技术栈，希望本文能为您得到帮助。
 
 
-* 后端框架：springBoot2.3.0
-* 其他技术：minio、MongoDB4.2.5、mysql5.7、elasticsearch7.6.2、logstash7.6.2、rabbitmq3.7.14、redis5.0
+* 后端：springBoot, springCloud, java, oracle, mysql
+* 前端：antd, extjs, 
+* 其他：linux, japanese, designPattern
 
-[Gitee](https://gitee.com/unknowIfGuestInDream/springBootDemo)
+[Github](https://github.com/unknowIfGuestInDream/document)
 [Get Started](README.md)
 <!-- 背景色 -->
 <!--  ![color](#00D945) -->
