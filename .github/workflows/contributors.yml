@@ -4,8 +4,9 @@ on:
     - cron: "0 0 1 * *"
   workflow_dispatch:
   push:
-    branches:
-      - master
+    branches: [ "master" ]
+    paths-ignore:
+      - 'CONTRIBUTORS.md'
 jobs:
   main:
     runs-on: ubuntu-latest
