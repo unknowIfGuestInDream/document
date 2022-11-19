@@ -3,10 +3,7 @@ on:
   schedule:
     - cron: "0 0 1 * *"
   workflow_dispatch:
-  push:
-    branches: [ "master" ]
-    paths-ignore:
-      - 'CONTRIBUTORS.md'
+
 jobs:
   main:
     runs-on: ubuntu-latest
@@ -22,7 +19,7 @@ jobs:
         uses: peter-evans/create-pull-request@v4.2.0
         with:
           commit-message: Update Contributors
-          title: "[Bot] Update Contributors File"
+          title: "bot: Update Contributors File"
           token: ${{ secrets.GITHUB_TOKEN }}
           signoff: true
           labels: automerge
