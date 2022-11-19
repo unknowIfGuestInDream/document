@@ -67,3 +67,4 @@ automerge:
   - all: [ 'README.md' ]
   - all: [ 'LICENSE' ]
   - all: [ 'docs/LICENSE.txt' ]
+  - all: [ 'CONTRIBUTORS.md' ]
