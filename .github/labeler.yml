@@ -1,0 +1,69 @@
+springBoot:
+  - docs/springBootDemo/**
+  - docs/_navbar.md
+  - docs/_sidebar.md
+  - docs/README.md
+  - docs/images/actuator/**
+  - docs/images/async/**
+  - docs/images/autoConfigure/**
+  - docs/images/binder/**
+  - docs/images/conditional/**
+  - docs/images/eclipse/**
+  - docs/images/event/**
+  - docs/images/exe/**
+  - docs/images/git/**
+  - docs/images/idea/**
+  - docs/images/init/**
+  - docs/images/jar/**
+  - docs/images/init/**
+  - docs/images/nginx/**
+  - docs/images/other/**
+  - docs/images/task/**
+  - docs/images/web/**
+
+antd:
+  - docs/antd/**
+
+database:
+  - docs/database/**
+
+designPattern:
+  - docs/designPattern/**
+
+japanese:
+  - docs/japanese/**
+  - docs/images/japanese/**
+
+java:
+  - docs/java/**
+  - docs/images/java/**
+
+linux:
+  - docs/linux/**
+  - docs/images/linux/**
+
+springCloud:
+  - docs/springCloud/**
+
+workflow:
+  - .github/**
+
+docsify:
+  - docs/_coverpage.md
+  - docs/index.html
+  - docs/favicon.ico
+  - docs/404.md
+
+dependencies:
+  - docs/lib/**
+
+theme:
+  - docs/themes/**
+
+image:
+  - docs/images/**
+
+automerge:
+  - all: [ 'README.md' ]
+  - all: [ 'LICENSE' ]
+  - all: [ 'docs/LICENSE.txt' ]

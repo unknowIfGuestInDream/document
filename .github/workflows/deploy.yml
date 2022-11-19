@@ -1,0 +1,27 @@
+name: CI
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # 切换分支
+      - name: Checkout
+        uses: actions/checkout@master
+      #      # 下载 git submodule
+      #      - uses: srt32/git-actions@v0.0.3
+      #        with:
+      #          args: git submodule update --init --recursive
+      # Deploy
+      - name: Deploy to Server
+        uses: easingthemes/ssh-deploy@v3.0.1
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.ACCESS_TOKEN }}
+          ARGS: "-avzr --delete"
+          SOURCE: "docs/"
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          TARGET: ${{ secrets.TARGET }}
