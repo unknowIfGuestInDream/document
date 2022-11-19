@@ -3,9 +3,7 @@ on:
   schedule:
     - cron: "0 0 1 * *"
   workflow_dispatch:
-  push:
-    branches:
-      - master
+
 jobs:
   main:
     runs-on: ubuntu-latest
@@ -16,10 +14,12 @@ jobs:
         env:
           CONTRIB_REPOSITORY: 'unknowIfGuestInDream/document'
           CONTRIB_OUTPUT_FILE: 'CONTRIBUTORS.md'
-          CONTRIB_IGNORE: github-actions[bot],renovate-bot,dependabot,imgbot,deepsourcebot
+          CONTRIB_IGNORE: github-actions[bot],renovate-bot,dependabot,imgbot,deepsourcebot,ImgBotApp
       - name: Create a PR
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v4.2.0
         with:
           commit-message: Update Contributors
-          title: "[Bot] Update Contributors File"
+          title: "bot: Update Contributors File"
           token: ${{ secrets.GITHUB_TOKEN }}
+          signoff: true
+          labels: automerge
