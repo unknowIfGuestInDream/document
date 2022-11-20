@@ -68,3 +68,4 @@ automerge:
   - all: [ 'LICENSE' ]
   - all: [ 'docs/LICENSE.txt' ]
   - all: [ 'CONTRIBUTORS.md' ]
+  - all: [ '.github/**' ]
