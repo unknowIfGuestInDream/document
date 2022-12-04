@@ -181,21 +181,22 @@ pull_request_rules:
           Thank you @{{author}} for your contributions!
       merge:
         method: squash
-    - name: Automatic merge
-      conditions:
-        - author=unknowIfGuestInDream
-        - status-success=Title Validator
-        - status-success=GitGuardian Security Checks
-        - status-success=mergefreeze
-        - status-success=WIP
-        - label!=invalid
-        - "-closed"
-        - "-draft"
-        - "-conflict"
-        - "-merged"
-      actions:
-        merge:
-          method: squash
+  - name: Automatic merge
+    conditions:
+      - author=unknowIfGuestInDream
+      - status-success=Hound
+      - status-success=Title Validator
+      - status-success=GitGuardian Security Checks
+      - status-success=mergefreeze
+      - status-success=WIP
+      - label!=invalid
+      - "-closed"
+      - "-draft"
+      - "-conflict"
+      - "-merged"
+    actions:
+      merge:
+        method: squash
   - name: automatic merge for ImgBot pull requests
     conditions:
       - author=imgbot[bot]
