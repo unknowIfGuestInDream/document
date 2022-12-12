@@ -189,6 +189,7 @@ pull_request_rules:
       - status-success=GitGuardian Security Checks
       - status-success=mergefreeze
       - status-success=WIP
+      - status-success=Vercel
       - label!=invalid
       - "-closed"
       - "-draft"
