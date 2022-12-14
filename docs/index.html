@@ -24,6 +24,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <!-- 默认主题 -->
     <link rel="stylesheet" href="themes/vue.css">
+<!--    <link rel="stylesheet" href="lib/docsify-top-banner-plugin.css">-->
     <!-- 评论插件-->
     <!--    <script charset="utf-8" type="text/javascript" src="https://cy-cdn.kuaizhan.com/upload/changyan.js"></script>-->
     <!--    <script type="text/javascript">-->
@@ -196,6 +197,16 @@
             tabComments: true,      // default
             tabHeadings: true       // default
         },
+        // topBanner: {
+        //     content: 'Welcome to my website',
+        //     defaultTag: 'span',
+        //     position: 'fixed',
+        //     backgroundColor: '#deebff',
+        //     zIndex: '99',
+        //     textColor: '#091E42',
+        //     linkColor: '#091E42',
+        //     textAlign: 'center'
+        // },
         // pagination: {
         //     previousText: '上一章节',
         //     nextText: '下一章节',
@@ -244,7 +255,7 @@
                     );
                 });
             }
-        ]
+        ],
     }
 
     //提示信息 封装
@@ -267,12 +278,13 @@
 <script src="lib/docsify.min.js"></script>
 <!-- emoji表情支持 -->
 <script src="lib/emoji.min.js"></script>
+<!-- top banner -->
+<!--<script src="lib/docsify-top-banner-plugin.js"></script>-->
 <!-- tab插件 -->
-<script src="lib/docsify-tabs-min.js"></script>
+<script src="lib/docsify-tabs-min.js" defer></script>
 <!-- pdf支持 -->
-<script src="lib/pdfobject.min.js"></script>
-<script src="lib/docsify-pdf-embed.js"></script>
-<script src="lib/docsify-tabs-min.js"></script>
+<script src="lib/pdfobject.min.js" defer></script>
+<script src="lib/docsify-pdf-embed.js" defer></script>
 <!-- 图片放大缩小支持 -->
 <script src="lib/zoom-image.min.js" defer></script>
 <!-- 搜索功能支持 -->
