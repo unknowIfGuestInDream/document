@@ -13,3 +13,4 @@
 [PDF转换为word](https://www.camscanner.com/pdftoword ':target=_blank')  
 [PNG转换svg](https://products.aspose.app/svg/zh/conversion/png-to-svg ':target=_blank')  
 [在线抠图工具](https://www.aigei.com/tool/image/ai ':target=_blank')  
+[在线MP4压缩](https://products.aspose.app/video-app/zh-cn/compress-video/mp4 ':target=_blank')  
