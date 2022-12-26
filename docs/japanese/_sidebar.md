@@ -6,3 +6,5 @@
  * [第1课](japanese/junior/1.md)
  * [第2课](japanese/junior/2.md)
  * [第25课](japanese/junior/25.md)
+ * [第26课](japanese/junior/26.md)
+ * [第27课](japanese/junior/27.md)
