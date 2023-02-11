@@ -1,19 +1,16 @@
+- Linux基础使用
+  - [Linux常用命令](linux/basic/BASIC.md)
 
-* Linux基础使用
- 
- * [Linux常用命令](linux/basic/BASIC.md)
- 
-* Linux下载软件
- 
- * [安装java](linux/soft/java.md)
- * [安装tomcat](linux/soft/tomcat.md)
- * [安装node](linux/soft/node.md)
- * [安装mysql](linux/soft/mysql.md)
- * [安装RabbitMQ](linux/soft/rabbit.md)
- * [安装elasticsearch](linux/soft/elasticsearch.md)
- * [安装logstash](linux/soft/logstash.md)
- * [安装redis](linux/soft/redis.md)
- * [安装mongodb](linux/soft/mongodb.md)
- * [安装minio](linux/soft/minio.md)
- * [安装nginx](linux/soft/nginx.md)
- * [安装oracle](linux/soft/oracle.md)
+- Linux下载软件
+  - [安装java](linux/soft/java.md)
+  - [安装tomcat](linux/soft/tomcat.md)
+  - [安装node](linux/soft/node.md)
+  - [安装mysql](linux/soft/mysql.md)
+  - [安装RabbitMQ](linux/soft/rabbit.md)
+  - [安装elasticsearch](linux/soft/elasticsearch.md)
+  - [安装logstash](linux/soft/logstash.md)
+  - [安装redis](linux/soft/redis.md)
+  - [安装mongodb](linux/soft/mongodb.md)
+  - [安装minio](linux/soft/minio.md)
+  - [安装nginx](linux/soft/nginx.md)
+  - [安装oracle](linux/soft/oracle.md)
