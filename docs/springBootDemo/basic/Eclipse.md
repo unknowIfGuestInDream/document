@@ -139,7 +139,7 @@ Strings(字符串):  89,196,196  墨蓝色
 Type variables(类型变量): 222, 0, 25  红色
 ```
 ![](../../images/eclipse/eclipse14.png)
-## 设置字体大小
+### 设置字体大小
 ![](../../images/eclipse/eclipse15.png)
 
 ### 设置编码格式
@@ -156,6 +156,25 @@ Window > Preferences > General > Content Type > Text的最下面设置为编码�
 选择项目 > 右键 > Properties > Resource 设置编码为UTF-8格式  
 ![](../../images/eclipse/eclipse19.png)
 
-### 保存自动格式化代码
+### 保存时自动格式化代码
 Window > Preferences > Java > Editor > Save Action  
 ![](../../images/eclipse/eclipse20.png)
+
+### 设置代码格式化使用空格代替TAB
+Window > Preferences > Java > Code Style > Formatter，点击图片中的New.(eclipse自带的formatter无法修改, 因为那是模板, 自定义就只能新建模板)  
+![](../../images/eclipse/eclipse21.png)  
+给配置起一个名字后，修改配置，找到 Indentation，在Tab policy上选择Spaces only，确定  
+![](../../images/eclipse/eclipse22.png)  
+
+### XML格式化设置
+Window > Preferences > XML > XML Files > Editor，选择 Indent using spaces，下面 Indentation size填4 
+![](../../images/eclipse/eclipse23.png)  
+
+### 注释的代码格式化时不换行
+Window > Preferences > Java > Code Style > Formatter，点击图片中的New.(eclipse自带的formatter无法修改, 因为那是模板, 自定义就只能新建模板)  
+![](../../images/eclipse/eclipse21.png)  
+选择comments标签>取消勾选以下两项:  
+* 文档注释[Enable Javadoc comments formatting]
+* 块注释[Enable block comments formatting]
+
+![](../../images/eclipse/eclipse24.png)
