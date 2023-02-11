@@ -24,6 +24,9 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <!-- 默认主题 -->
     <link rel="stylesheet" href="themes/vue.css">
+    <!-- Theme: Simple (light + dark) -->
+    <link rel="stylesheet" media="(prefers-color-scheme: light)" href="lib/theme-simple.css">
+    <link rel="stylesheet" media="(prefers-color-scheme: dark)" href="lib/theme-simple-dark.css">
 <!--    <link rel="stylesheet" href="lib/docsify-top-banner-plugin.css">-->
     <!-- 评论插件-->
     <!--    <script charset="utf-8" type="text/javascript" src="https://cy-cdn.kuaizhan.com/upload/changyan.js"></script>-->
@@ -190,6 +193,10 @@
             color: 'rgb(90,90,90)',
             language: 'chinese'
         },
+        themeable: {
+            readyTransition : true, // default
+            responsiveTables: true  // default
+        },
         tabs: {
             persist: true,      // default
             sync: true,      // default
@@ -276,6 +283,8 @@
 </script>
 <!-- docsify的js依赖 -->
 <script src="lib/docsify.min.js"></script>
+<!-- 主题 -->
+<script src="lib/docsify-themeable.min.js"></script>
 <!-- emoji表情支持 -->
 <script src="lib/emoji.min.js"></script>
 <!-- top banner -->
