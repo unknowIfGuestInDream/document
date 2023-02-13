@@ -194,6 +194,13 @@
             color: 'rgb(90,90,90)',
             language: 'chinese'
         },
+        scrollToTop: {
+            auto: true,
+            text: 'Top',
+            right: 15,
+            bottom: 15,
+            offset: 500
+        },
         themeable: {
             readyTransition : true, // default
             responsiveTables: true  // default
@@ -303,6 +310,8 @@
 <script src="lib/docsify-copy-code.min.js" defer></script>
 <!-- 字数统计 -->
 <script src="lib/countable.js" defer></script>
+<!-- 回到顶部 -->
+<script src="lib/docsify-scroll-to-top.min.js" defer></script>
 <!--Java代码高亮-->
 <script src="lib/prism-java.js" defer></script>
 <script src="lib/prism-sql.js" defer></script>
@@ -310,6 +319,12 @@
 <script src="lib/prism-bash.js" defer></script>
 <script src="lib/prism-markdown.min.js" defer></script>
 <script src="lib/prism-nginx.min.js" defer></script>
+<script src="lib/prism-c.min.js" defer></script>
+<script src="lib/prism-cpp.min.js" defer></script>
+<script src="lib/prism-csharp.min.js" defer></script>
+<script src="lib/prism-javascript.min.js" defer></script>
+<script src="lib/prism-php.min.js" defer></script>
+<script src="lib/prism-python.min.js" defer></script>
 <!-- 聊天室 -->
 <!--<script>-->
 <!--((window.gitter = {}).chat = {}).options = {-->
@@ -320,6 +335,6 @@
 <!-- 分页 -->
 <!--<script src="//unpkg.com/docsify-pagination/dist/docsify-pagination.min.js"></script>-->
 <!-- 百度统计 -->
-<script src="lib/baiduTj.js" defer></script>
+<script src="lib/baiduTj.js" async></script>
 </body>
 </html>
