@@ -587,7 +587,7 @@ public class TaskInitRunner implements CommandLineRunner {
 
 ### xxl-job-oracle
 如有使用xxl-job的想要oracle数据库版本的可以看
-[xxl-job-2.3.0-oracle](https://github.com/unknowIfGuestInDream/xxl-job-oracle ':target=_blank')
+[xxl-job-2.3.0-oracle](https://github.com/tlcsdm/xxl-job-oracle ':target=_blank')
 
 
 
