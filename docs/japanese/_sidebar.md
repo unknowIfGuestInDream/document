@@ -1,4 +1,4 @@
-- 标准日本语初级上
+- 标准日本语初级
   - [五十音图](japanese/junior/Basic.md)
   - [语法](japanese/junior/Grammar.md)
   - [听力材料](japanese/junior/Materials.md)
@@ -7,3 +7,14 @@
   - [第25课](japanese/junior/25.md)
   - [第26课](japanese/junior/26.md)
   - [第27课](japanese/junior/27.md)
+  - [第28课](japanese/junior/28.md)
+  - [第29课](japanese/junior/29.md)
+  - [第30课](japanese/junior/30.md)
+  - [第31课](japanese/junior/31.md)
+  - [第32课](japanese/junior/32.md)
+  - [第34课](japanese/junior/34.md)
+  - [第35课](japanese/junior/35.md)
+  - [第36课](japanese/junior/36.md)
+  - [第37课](japanese/junior/37.md)
+  - [第38课](japanese/junior/38.md)
+  - [第39课](japanese/junior/39.md)
