@@ -18,3 +18,6 @@
   - [第37课](japanese/junior/37.md)
   - [第38课](japanese/junior/38.md)
   - [第39课](japanese/junior/39.md)
+  - [第40课](japanese/junior/40.md)
+  - [第47课](japanese/junior/47.md)
+  - [第48课](japanese/junior/48.md)
