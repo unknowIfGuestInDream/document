@@ -178,3 +178,13 @@ Window > Preferences > Java > Code Style > Formatter，点击图片中的New.(ec
 * 块注释[Enable block comments formatting]
 
 ![](../../images/eclipse/eclipse24.png)
+
+### Eclipse设置Organize Import, 与IDEA同步
+在团队协作中，必须统一Import的组织格式，避免因为eclipse，idea各自不同的导入顺序造成代码经常性变更，导致相互合并代码出现不必要的冲突。
+因为这边以idea的导入规则为准，所以eclipse必须参照idea的导入规则进行相应的修改。
+
+IDEA导入规则
+![](../../images/eclipse/eclipse25.png)
+
+修改eclipse导入规则
+![](../../images/eclipse/eclipse26.png)
