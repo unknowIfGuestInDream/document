@@ -1,4 +1,5 @@
 - 标准日本语初级
+  - [首页](japanese/README.md)
   - [五十音图](japanese/junior/Basic.md)
   - [语法](japanese/junior/Grammar.md)
   - [听力材料](japanese/junior/Materials.md)
