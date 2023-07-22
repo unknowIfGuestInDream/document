@@ -38,6 +38,10 @@ java:
   - docs/java/**
   - docs/images/java/**
 
+javafx:
+  - docs/javafx/**
+  - docs/images/javafx/**
+
 linux:
   - docs/linux/**
   - docs/images/linux/**

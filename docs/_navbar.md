@@ -8,6 +8,7 @@
  * [设计模式](/designPattern/)
  * [ANTD](/antd/)
  * [日语](/japanese/)
+ * [Javafx](/javafx/)
 
 * [🐮🐮 TangLiang's Blog](https://blog.tlcsdm.com  ':target=_blank')
 * [❤️❤️ Gitee](https://gitee.com/unknowIfGuestInDream  ':target=_blank')
