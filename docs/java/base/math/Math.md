@@ -14,20 +14,20 @@ System.out.println("PI 常量的值：" + Math.PI);
 ## 求最大值、最小值和绝对值
 在程序中常见的就是求最大值、最小值和绝对值问题，如果使用 Math 类提供的方法可以很容易实现。
 
-方法 | 说明
-----|----
-static int abs(int a) | 返回 a 的绝对值
-static long abs(long a) | 返回 a 的绝对值
-static float abs(float a) | 返回 a 的绝对值
-static double abs(double a) | 返回 a 的绝对值
-static int max(int x,int y) | 返回 x 和 y 中的最大值
-static double max(double x,double y) | 返回 x 和 y 中的最大值
-static long max(long x,long y) | 返回 x 和 y 中的最大值
-static float max(float x,float y) | 返回 x 和 y 中的最大值
-static int min(int x,int y) | 返回 x 和 y 中的最小值
-static long min(long x,long y) | 返回 x 和 y 中的最小值
-static double min(double x,double y) | 返回 x 和 y 中的最小值
-static float min(float x,float y) | 返回 x 和 y 中的最小值
+| 方法                                   | 说明             |
+|--------------------------------------|----------------|
+| static int abs(int a)                | 返回 a 的绝对值      |
+| static long abs(long a)              | 返回 a 的绝对值      |
+| static float abs(float a)            | 返回 a 的绝对值      |
+| static double abs(double a)          | 返回 a 的绝对值      |
+| static int max(int x,int y)          | 返回 x 和 y 中的最大值 |
+| static double max(double x,double y) | 返回 x 和 y 中的最大值 |
+| static long max(long x,long y)       | 返回 x 和 y 中的最大值 |
+| static float max(float x,float y)    | 返回 x 和 y 中的最大值 |
+| static int min(int x,int y)          | 返回 x 和 y 中的最小值 |
+| static long min(long x,long y)       | 返回 x 和 y 中的最小值 |
+| static double min(double x,double y) | 返回 x 和 y 中的最小值 |
+| static float min(float x,float y)    | 返回 x 和 y 中的最小值 |
 
 求 10 和 20 的较大值、15.6 和 15 的较小值、-12 的绝对值，代码如下：
 ```java
@@ -41,13 +41,13 @@ System.out.println("-12 的绝对值：" + Math.abs(-12));
 
 ## 求整运算
 
-方法 | 说明
-----|----
-static double ceil(double a) | 返回大于或等于 a 的最小整数
-static double floor(double a) | 返回小于或等于 a 的最大整数
-static double rint(double a) | 返回最接近 a 的整数值，如果有两个同样接近的整数，则结果取偶数
-static int round(float a) | 将参数加上 1/2 后返回与参数最近的整数
-static long round(double a) | 将参数加上 1/2 后返回与参数最近的整数，然后强制转换为长整型
+| 方法                            | 说明                               |
+|-------------------------------|----------------------------------|
+| static double ceil(double a)  | 返回大于或等于 a 的最小整数                  |
+| static double floor(double a) | 返回小于或等于 a 的最大整数                  |
+| static double rint(double a)  | 返回最接近 a 的整数值，如果有两个同样接近的整数，则结果取偶数 |
+| static int round(float a)     | 将参数加上 1/2 后返回与参数最近的整数            |
+| static long round(double a)   | 将参数加上 1/2 后返回与参数最近的整数，然后强制转换为长整型 |
 
 ```java
         Scanner input = new Scanner(System.in);
@@ -66,16 +66,16 @@ static long round(double a) | 将参数加上 1/2 后返回与参数最近的整
 ```
 
 ## 三角函数运算
-方法 | 说明
-----|----
-static double sin(double a) | 返回角的三角正弦值，参数以孤度为单位
-static double cos(double a) | 返回角的三角余弦值，参数以孤度为单位
-static double asin(double a) | 返回一个值的反正弦值，参数域在 [-1,1]，值域在 [-PI/2,PI/2]
-static double acos(double a) | 返回一个值的反余弦值，参数域在 [-1,1]，值域在 [0.0,PI]
-static double tan(double a) | 返回角的三角正切值，参数以弧度为单位
-static double atan(double a) | 返回一个值的反正切值，值域在 [-PI/2,PI/2]
-static double toDegrees(double angrad) | 将用孤度表示的角转换为近似相等的用角度表示的角
-staticdouble toRadians(double angdeg) | 将用角度表示的角转换为近似相等的用弧度表示的角
+| 方法                                     | 说明                                      |
+|----------------------------------------|-----------------------------------------|
+| static double sin(double a)            | 返回角的三角正弦值，参数以孤度为单位                      |
+| static double cos(double a)            | 返回角的三角余弦值，参数以孤度为单位                      |
+| static double asin(double a)           | 返回一个值的反正弦值，参数域在 [-1,1]，值域在 [-PI/2,PI/2] |
+| static double acos(double a)           | 返回一个值的反余弦值，参数域在 [-1,1]，值域在 [0.0,PI]     |
+| static double tan(double a)            | 返回角的三角正切值，参数以弧度为单位                      |
+| static double atan(double a)           | 返回一个值的反正切值，值域在 [-PI/2,PI/2]             |
+| static double toDegrees(double angrad) | 将用孤度表示的角转换为近似相等的用角度表示的角                 |
+| staticdouble toRadians(double angdeg)  | 将用角度表示的角转换为近似相等的用弧度表示的角                 |
 
 每个方法的参数和返回值都是 double 类型，参数以弧度代替角度来实现，其中 1 度等于 π/180 弧度，因此平角就是 π 弧度。
 
@@ -95,14 +95,14 @@ staticdouble toRadians(double angdeg) | 将用角度表示的角转换为近似�
 即 Math.PI/180*90，故转换后的弧度为 Math.PI/2，然后调用 Math 类中的 sin() 方法计算其正弦值。
 
 ## 指数运算
-方法 | 说明
-----|----
-static double exp(double a) | 返回 e 的 a 次幂
-static double pow(double a,double b) | 返回以 a 为底数，以 b 为指数的幂值
-static double sqrt(double a) | 返回 a 的平方根
-static double cbrt(double a) | 返回 a 的立方根
-static double log(double a) | 返回 a 的自然对数，即 lna 的值
-static double log10(double a) | 返回以 10 为底 a 的对数
+| 方法                                   | 说明                   |
+|--------------------------------------|----------------------|
+| static double exp(double a)          | 返回 e 的 a 次幂          |
+| static double pow(double a,double b) | 返回以 a 为底数，以 b 为指数的幂值 |
+| static double sqrt(double a)         | 返回 a 的平方根            |
+| static double cbrt(double a)         | 返回 a 的立方根            |
+| static double log(double a)          | 返回 a 的自然对数，即 lna 的值  |
+| static double log10(double a)        | 返回以 10 为底 a 的对数      |
 
 ```java
         System.out.println("4 的立方值：" + Math.pow(4, 3));

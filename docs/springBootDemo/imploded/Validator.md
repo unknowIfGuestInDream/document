@@ -13,28 +13,28 @@
 
 ## 校验注解
 
-注解 | 描述
-----|----
-@Null | 限制只能为null
-@NotNull | 限制必须不为null
-@AssertFalse | 限制必须为false
-@AssertTrue | 	限制必须为true
-@DecimalMax(value) | 限制必须为一个不大于指定值的数字
-@DecimalMin(value) | 限制必须为一个不小于指定值的数字
-@Digits(integer,fraction) | 限制必须为一个小数，且整数部分的位数不能超过integer， 小数部分的位数不能超过fraction
-@Future | 限制必须是一个将来的日期
-@Past | 限制必须是一个过去的日期
-@Max(value) | 限制必须为一个不大于指定值的数字
-@Min(value) | 限制必须为一个不小于指定值的数字
-@Past | 限制必须是一个过去的日期
-@Pattern(value) | 限制必须符合指定的正则表达式
-@Size(max,min) | 限制字符长度必须在min到max之间
-@SafeHtml | 字符串是安全的html
-@URL | 字符串是合法的URL
-@NotBlank | 字符串必须有字符
-@NotEmpty | 字符串不为NULL，集合有字符
-@AssertFalse | 必须是false
-@AssertTrue | 必须是true
+| 注解                        | 描述                                                 |
+|---------------------------|----------------------------------------------------|
+| @Null                     | 限制只能为null                                          |
+| @NotNull                  | 限制必须不为null                                         |
+| @AssertFalse              | 限制必须为false                                         |
+| @AssertTrue               | 	限制必须为true                                         |
+| @DecimalMax(value)        | 限制必须为一个不大于指定值的数字                                   |
+| @DecimalMin(value)        | 限制必须为一个不小于指定值的数字                                   |
+| @Digits(integer,fraction) | 限制必须为一个小数，且整数部分的位数不能超过integer， 小数部分的位数不能超过fraction |
+| @Future                   | 限制必须是一个将来的日期                                       |
+| @Past                     | 限制必须是一个过去的日期                                       |
+| @Max(value)               | 限制必须为一个不大于指定值的数字                                   |
+| @Min(value)               | 限制必须为一个不小于指定值的数字                                   |
+| @Past                     | 限制必须是一个过去的日期                                       |
+| @Pattern(value)           | 限制必须符合指定的正则表达式                                     |
+| @Size(max,min)            | 限制字符长度必须在min到max之间                                 |
+| @SafeHtml                 | 字符串是安全的html                                        |
+| @URL                      | 字符串是合法的URL                                         |
+| @NotBlank                 | 字符串必须有字符                                           |
+| @NotEmpty                 | 字符串不为NULL，集合有字符                                    |
+| @AssertFalse              | 必须是false                                           |
+| @AssertTrue               | 必须是true                                            |
 
 ## 示例
 

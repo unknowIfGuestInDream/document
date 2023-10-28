@@ -9,13 +9,13 @@
 
 下面对比下传统URL请求和RESTful风格请求的区别：
 
-描述 | 传统请求 | 方法 | RESTful请求 | 方法
-----|----|----|----|----
-查询 | /user/query?name=mrbird | GET | /user?name=mrbird | GET
-详情 | /user/getInfo?id=1 | GET | /user/1 | GET
-创建 | /user/create?name=mrbird | GET | /user | POST
-修改 | /user/update?name=mrbird&id=1 | GET | /user | PUT
-删除 | /user/delete?id=1 | GET | /user | DELETE
+| 描述 | 传统请求                          | 方法  | RESTful请求         | 方法     |
+|----|-------------------------------|-----|-------------------|--------|
+| 查询 | /user/query?name=mrbird       | GET | /user?name=mrbird | GET    |
+| 详情 | /user/getInfo?id=1            | GET | /user/1           | GET    |
+| 创建 | /user/create?name=mrbird      | GET | /user             | POST   |
+| 修改 | /user/update?name=mrbird&id=1 | GET | /user             | PUT    |
+| 删除 | /user/delete?id=1             | GET | /user             | DELETE |
 
 从上面这张表，我们大致可以总结下传统请求和RESTful请求的几个区别：
 

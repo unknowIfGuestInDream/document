@@ -4,24 +4,24 @@
 
 ### 常用默认快捷键
 
-快捷键 | 描述
-----|----
-alt+f7 | 查找方法在哪里调用.变量在哪里被使用
-ctrl+shift+f | 全局搜索
-ctrl+shift+f | 全局替換
-ctrl+f | 当前文件搜索
-ctrl+f | 当前文件替換
-alt+insert | 生成getter,setter,tostring等
-ctrl+d | 复制当前行到下一行
-ctrl+alt+l | 代码格式化
-ctrl+alt+o | 格式化import引用
-alt+enter | 提示可能的操作
-ctrl+g | 跳转到指定行
-ctrl+shift+i | 查看方法定义
-Ctrl+y | 删除当前行
-Ctrl+F6 | 重构函数
-Shift+F6 | 重命名
-ctrl+shift+u | 切换大小写
+| 快捷键          | 描述                        |
+|--------------|---------------------------|
+| alt+f7       | 查找方法在哪里调用.变量在哪里被使用        |
+| ctrl+shift+f | 全局搜索                      |
+| ctrl+shift+f | 全局替換                      |
+| ctrl+f       | 当前文件搜索                    |
+| ctrl+f       | 当前文件替換                    |
+| alt+insert   | 生成getter,setter,tostring等 |
+| ctrl+d       | 复制当前行到下一行                 |
+| ctrl+alt+l   | 代码格式化                     |
+| ctrl+alt+o   | 格式化import引用               |
+| alt+enter    | 提示可能的操作                   |
+| ctrl+g       | 跳转到指定行                    |
+| ctrl+shift+i | 查看方法定义                    |
+| Ctrl+y       | 删除当前行                     |
+| Ctrl+F6      | 重构函数                      |
+| Shift+F6     | 重命名                       |
+| ctrl+shift+u | 切换大小写                     |
 
 ### 配置IDEA运行内存
 
