@@ -16,19 +16,19 @@ RestTemplate能大幅简化了提交表单数据的难度，并且附带了自�
 
 该类的入口主要是根据HTTP的六个方法制定：
 
-HTTP method | RestTemplate methods
-----|----
-DELETE | delete
-GET | getForObject
-GET | getForEntity
-HEAD | headForHeaders
-OPTIONS | optionsForAllow
-POST | postForLocation
-POST | postForObject
-POST | postForEntity
-PUT | put
-any | exchange
-any | execute
+| HTTP method | RestTemplate methods |
+|-------------|----------------------|
+| DELETE      | delete               |
+| GET         | getForObject         |
+| GET         | getForEntity         |
+| HEAD        | headForHeaders       |
+| OPTIONS     | optionsForAllow      |
+| POST        | postForLocation      |
+| POST        | postForObject        |
+| POST        | postForEntity        |
+| PUT         | put                  |
+| any         | exchange             |
+| any         | execute              |
 
 ## 配置
 需要配置后才可以使用RestTemplate
