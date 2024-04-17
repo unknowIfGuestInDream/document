@@ -250,3 +250,65 @@ git lfs track "*.psd"
 ```shell
 git add .gitattributes
 ```
+
+## 使用 GPG 签名 Git 提交
+> 使用 GPG 或 S/MIME，您可以在本地对标记和提交进行签名。 这些标记或提交在 GitHub 上标示为已验证，便于其他人信任更改来自可信的来源。
+GitHub官方文档：https://docs.github.com/cn/authentication/managing-commit-signature-verification/about-commit-signature-verification
+
+**1、在Windows环境下安装GPG**
+
+下载地址\
+https://www.gnupg.org/download/index.html  
+配置系统环境变量
+![配置系统环境变量](../../images/git/gpg1.png)
+检查环境变量是否生效\
+`gpg --version`
+
+**2、使用GPG生成密钥**
+
+`gpg --full-generate-key`
+![使用GPG生成密钥](../../images/git/gpg2.png)
+
+设置生成密钥
+![设置生成密钥](../../images/git/gpg3.png)
+> 由于GitHub签名认证密钥必须使用 RSA
+所以我们选择（1）RSA and RSA (default)
+设置密钥尺寸选择4096，密钥尺寸越长加密越强。
+设置密钥的有效期限，这里我选择的是密钥永不过期。
+
+设置密钥的姓名，邮箱，描述, 建议设置为GitHub用户名，GitHub绑定的邮箱。检查无误后输入O下一步
+![设置密钥的姓名](../../images/git/gpg4.png)
+
+这时会弹窗提示你设置管理密钥的密码, 此密码以后提交代码时候也要输入，请记牢
+![设置管理密钥的密码](../../images/git/gpg5.png)
+
+**3、新增 GPG 密钥到 GitHub 帐户**
+
+查看密钥\
+`gpg --list-secret-keys --keyid-format=long`
+![查看密钥](../../images/git/gpg6.png)
+
+> 图中 sec 所在行 rsa4096为你的密钥尺寸/后面为你的密钥ID, 这里是3BECCAC113E09805
+
+在终端中输入\
+`gpg --armor --export 密钥ID`
+![查看密钥](../../images/git/gpg7.png)
+
+> 复制 GPG 密钥，从 -----BEGIN PGP PUBLIC KEY BLOCK----- 开始，到 -----END PGP PUBLIC KEY BLOCK----- 结束。
+
+**4、在本地Git中配置密钥**
+
+查找你的GPG 密钥 ID\
+`gpg --list-secret-keys --keyid-format=long`
+![查找你的GPG](../../images/git/gpg8.png)
+在 Git 中设置 GPG 签名密钥\
+`git config --global user.signingkey 3BECCAC113E09805`
+
+设置Git提交时使用签名密钥\
+全局设置\
+`git config --global commit.gpgsign true`
+
+!> 若提交代码时报错 gpg: skipped “3BECCAC113E09805”: No secret key
+
+在Git中设置gpg的启动路径\
+`git config --global gpg.program "C:\Program Files (x86)\GnuPG\bin\gpg.exe"`
