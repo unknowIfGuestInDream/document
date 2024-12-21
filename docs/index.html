@@ -139,6 +139,7 @@
     //     };
     //     ConsoleManager.init();
     // }
+    var num = 0;
     window.$docsify = {
         themeColor: '#42b983',//主题颜色
         // 项目名称
@@ -214,6 +215,18 @@
             tabComments: true,      // default
             tabHeadings: true       // default
         },
+        markdown: {
+            renderer: {
+                code: function(code, lang) {
+                    if (lang === "mermaid") {
+                        return (
+                            '<div class="mermaid">' + mermaid.render('mermaid-svg-' + num++, code) + "</div>"
+                        );
+                    }
+                    return this.origin.code.apply(this, arguments);
+                }
+            }
+        }
         mermaidConfig: {
             querySelector: ".mermaid",
         },
