@@ -54,3 +54,4 @@
   - [Office文档在线预览](springBootDemo/deploy/Office.md)
   - [开源项目申请Jerbrain](springBootDemo/deploy/Jerbrain.md)
   - [解决连接github失败问题](springBootDemo/deploy/Github.md)
+  - [Mermaid](springBootDemo/deploy/Mermaid.md)
