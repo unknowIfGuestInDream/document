@@ -139,9 +139,6 @@
     //     };
     //     ConsoleManager.init();
     // }
-    var num = 0;
-    mermaid.initialize({ startOnLoad: true });
-    window.mermaid = mermaid;
     window.$docsify = {
         themeColor: '#42b983',//主题颜色
         // 项目名称
@@ -216,18 +213,6 @@
             theme: 'classic', // default
             tabComments: true,      // default
             tabHeadings: true       // default
-        },
-        markdown: {
-            renderer: {
-                code: function(code, lang) {
-                    if (lang === "mermaid") {
-                        return (
-                            '<div class="mermaid">' + mermaid.render('mermaid-svg-' + num++, code) + "</div>"
-                        );
-                    }
-                    return this.origin.code.apply(this, arguments);
-                }
-            }
         },
         mermaidConfig: {
             querySelector: ".mermaid",
@@ -366,6 +351,11 @@
 <script src="lib/mermaid.min.js" defer></script>
 <script src="lib/docsify-mermaid.js" defer></script>
 <script src="lib/docsify-mermaid-zoom.js" defer></script>
+<script type="module">
+    import mermaid from "lib/mermaid.min.js";
+    mermaid.initialize({ startOnLoad: true });
+    window.mermaid = mermaid;
+</script>
 <!-- 百度统计 -->
 <script src="lib/baiduTj.js" async></script>
 </body>
