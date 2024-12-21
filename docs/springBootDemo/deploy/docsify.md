@@ -75,7 +75,20 @@ Introduction text for the FAQ page.
 
   Answer 2
 
+### docsify-terminal-block
+为您的文档添加漂亮的接线端子。它也具有 复制到剪贴板 功能。
 
+ ```terminal
+    npm run start
+    $|npm run start
+    $|warning|npm run build
+    >|info|npm run start
+     |...
+    >|error|npm run start
+    >|success|npm run start
+
+    warning|npm run build
+```
 
 ## 参考网站
 [Document](https://www.tlcsdm.com/ ':target=_blank')  

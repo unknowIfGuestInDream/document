@@ -239,11 +239,6 @@
         //     crossChapter: true,
         //     crossChapterText: true,
         // },
-        progress: {
-            position: "top",
-            color: "var(--theme-color,#42b983)",
-            height: "3px",
-        },
         plugins: [
             // mermaid显示
             function (hook, vm) {
@@ -317,6 +312,32 @@
                 }
             }
         },
+        ads: [
+            {
+                img: 'https://dn-lego-static.qbox.me/cps/1638355965-480x300.jpg',
+                href: 'https://s.qiniu.com/zqiMBz'
+            },
+            {
+                img: 'https://dn-lego-static.qbox.me/cps/1638355965-480x300.jpg',
+                href: 'https://s.qiniu.com/VJFJvi'
+            },
+            {
+                img: 'https://dn-lego-static.qbox.me/cps/1638355799-480300.jpg',
+                href: 'https://s.qiniu.com/7nM3uy'
+            },
+            {
+                img: 'https://dn-lego-static.qbox.me/cps/1638268412-480x300.jpg',
+                href: 'https://s.qiniu.com/VZvaii'
+            },
+            {
+                img: 'https://dn-lego-static.qbox.me/cps/1638268217-480x300.jpg',
+                href: 'https://s.qiniu.com/nMnaQj'
+            },
+            {
+                img: 'https://dn-lego-static.qbox.me/cps/1638267917-480x300.jpg',
+                href: 'https://s.qiniu.com/aqAneu'
+            }
+        ]
     }
 
     //提示信息 封装
@@ -393,10 +414,13 @@
 <script src="lib/mermaid.min.js" defer></script>
 <script src="lib/docsify-mermaid.js" defer></script>
 <script src="lib/docsify-mermaid-zoom.js" defer></script>
+<!-- 广告支持 -->
+<script src="lib/docsify-ads.min.js" defer></script>
+<!-- 广告支持 -->
+<script src="lib/docsify-terminal-block.js" defer></script>
 <!-- drawio支持 -->
 <script src="lib/drawio-viewer.min.js" defer></script>
 <script src="lib/drawio.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/docsify-progress@latest/dist/progress.min.js"></script>
 <!-- 百度统计 -->
 <script src="lib/baiduTj.js" async></script>
 </body>
