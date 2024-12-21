@@ -240,6 +240,13 @@
         //     crossChapter: true,
         //     crossChapterText: true,
         // },
+        auth: {
+            enable: true, // 是否开启
+            use: "sha256",
+            password: "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92", // md5密码
+            title: "请输入密码以访问文档：", // 设置标题
+            paths: ["^/antd"] // 需要认证的路径，支持正则表达式匹配
+        },
         plugins: [
             // mermaid显示
             function (hook, vm) {
@@ -419,6 +426,9 @@
 <script src="lib/docsify-ads.min.js" defer></script>
 <!-- 广告支持 -->
 <script src="lib/docsify-terminal-block.js" defer></script>
+<!-- 身份校验 -->
+<script src="lib/sha256.min.js" defer></script>
+<script src="lib/docsify-auth.min.js" defer></script>
 <!-- drawio支持 -->
 <script src="lib/drawio-viewer.min.js" defer></script>
 <script src="lib/drawio.js" defer></script>
