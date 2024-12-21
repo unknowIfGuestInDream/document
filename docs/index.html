@@ -244,9 +244,9 @@
                 hook.ready(function () {
                     mermaid.initialize({ startOnLoad: true });
                 });
-                // hook.doneEach(function () {
-                //     mermaid.init(undefined, '.mermaid');
-                // });
+                hook.doneEach(function () {
+                    mermaid.init(undefined, '.mermaid');
+                });
             },
             function (hook) {
                 //header模块暂时隐藏
