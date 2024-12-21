@@ -242,7 +242,7 @@
             // mermaid显示
             function (hook, vm) {
                 hook.ready(function () {
-                    mermaid.initialize({ startOnLoad: false });
+                    mermaid.initialize({ startOnLoad: true });
                 });
                 hook.doneEach(function () {
                     mermaid.init(undefined, '.mermaid');
