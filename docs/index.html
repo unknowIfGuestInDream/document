@@ -139,7 +139,7 @@
     //     };
     //     ConsoleManager.init();
     // }
-    var num = 0;
+    var mermaidNum = 0;
     window.$docsify = {
         themeColor: '#42b983',//主题颜色
         // 项目名称
@@ -220,13 +220,13 @@
                 code: function(code, lang) {
                     if (lang === "mermaid") {
                         return (
-                            '<div class="mermaid">' + mermaid.render('mermaid-svg-' + num++, code) + "</div>"
+                            '<div class="mermaid">' + mermaid.render('mermaid-svg-' + mermaidNum++, code) + "</div>"
                         );
                     }
                     return this.origin.code.apply(this, arguments);
                 }
             }
-        }
+        },
         mermaidConfig: {
             querySelector: ".mermaid",
         },
