@@ -139,7 +139,6 @@
     //     };
     //     ConsoleManager.init();
     // }
-    var mermaidNum = 0;
     window.$docsify = {
         themeColor: '#42b983',//主题颜色
         // 项目名称
@@ -243,7 +242,7 @@
             // mermaid显示
             function (hook, vm) {
                 hook.ready(function () {
-                    mermaid.initialize({ startOnLoad: true });
+                    mermaid.initialize({ startOnLoad: false });
                 });
                 hook.doneEach(function () {
                     mermaid.init(undefined, '.mermaid');
