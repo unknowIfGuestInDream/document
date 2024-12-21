@@ -93,4 +93,5 @@ Introduction text for the FAQ page.
 ## 参考网站
 [Document](https://www.tlcsdm.com/ ':target=_blank')  
 [mall-learning](http://www.macrozheng.com/ ':target=_blank')  
-[hashiqube](https://github.com/star3am/hashiqube ':target=_blank')
+[hashiqube](https://github.com/star3am/hashiqube ':target=_blank')  
+[weharmony](https://weharmony.github.io ':target=_blank')  
