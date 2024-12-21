@@ -221,7 +221,7 @@
                     if (lang === "mermaid") {
                         console.log( mermaid.render('mermaid-svg-' + mermaidNum++, code));
                         return (
-                            '<div class="mermaid" data-processed="true">' + mermaid.render('mermaid-svg-' + mermaidNum++, code) + "</div>"
+                            '<div class="mermaid">' + mermaid.render('mermaid-svg-' + mermaidNum++, code) + "</div>"
                         );
                     }
                     return this.origin.code.apply(this, arguments);
