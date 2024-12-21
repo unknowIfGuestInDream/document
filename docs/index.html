@@ -239,6 +239,15 @@
         //     crossChapterText: true,
         // },
         plugins: [
+            // mermaid显示
+            function (hook, vm) {
+                hook.ready(function () {
+                    mermaid.initialize({ startOnLoad: false });
+                });
+                hook.doneEach(function () {
+                    mermaid.init(undefined, '.mermaid');
+                });
+            },
             function (hook) {
                 //header模块暂时隐藏
                 var header = [
@@ -286,27 +295,34 @@
         markdown: {
             renderer: {
                 code: function(code, lang) {
-                    if (lang === "mermaid") {
-                        return (
-                            '<div class="mermaid">' + mermaid.render('mermaid-svg-' + mermaidNum++, code) + "</div>"
-                        );
+                    // if (lang === "mermaid") {
+                    //     return (
+                    //         '<div class="mermaid">' + mermaid.render('mermaid-svg-' + mermaidNum++, code) + "</div>"
+                    //     );
+                    // }
+                    // if (lang === 'drawio') {
+                    //     if (window.drawioConverter) {
+                    //         console.log('drawio')
+                    //         return window.drawioConverter(code)
+                    //     } else {
+                    //         return `<div class='drawio-code'>${code}</div>`
+                    //     }
+                    // }
+                    // return this.origin.code.apply(this, arguments);
+                    var html = '';
+                    if (code.match(/^sequenceDiagram/) || code.match(/^graph/) || code.match(/^gantt/)) {
+                        html = '<div class="mermaid">' + code + '</div>';
                     }
-                    if (lang === 'drawio') {
-                        if (window.drawioConverter) {
-                            console.log('drawio')
-                            return window.drawioConverter(code)
-                        } else {
-                            return `<div class='drawio-code'>${code}</div>`
-                        }
-                    }
-                    return this.origin.code.apply(this, arguments);
+                    var hl = Prism.highlight(code, Prism.languages[lang] || Prism.languages.markup);
+                    // return html + '<pre v-pre data-lang="' + lang + '"><code class="lang-' + lang + '">' + hl + '</code></pre>'; //展示流程图加代码
+                    return html // 只展示流程图
                 }
             }
         },
     }
 
-    var mermaidNum = 0;
-    mermaid.initialize({ logLevel:0, startOnLoad: false, themeCSS:'.label { font-family: Source Sans Pro,Helvetica Neue,Arial,sans-serif; }' });
+    // var mermaidNum = 0;
+    // mermaid.initialize({ logLevel:0, startOnLoad: false, themeCSS:'.label { font-family: Source Sans Pro,Helvetica Neue,Arial,sans-serif; }' });
 
     //提示信息 封装
     // function Toast(msg, duration) {
