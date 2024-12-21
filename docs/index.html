@@ -37,7 +37,7 @@
     <!--            conf: 'prod_c383ca2e7f8ef624a8e845962f065096'-->
     <!--        });-->
     <!--    </script>-->
-    <link rel="stylesheet" href="lib/mermaid.min.css">
+<!--    <link rel="stylesheet" href="lib/mermaid.min.css">-->
 </head>
 
 <body>
@@ -139,7 +139,6 @@
     //     };
     //     ConsoleManager.init();
     // }
-    var mermaidNum =0;
     window.$docsify = {
         themeColor: '#42b983',//主题颜色
         // 项目名称
@@ -214,19 +213,6 @@
             theme: 'classic', // default
             tabComments: true,      // default
             tabHeadings: true       // default
-        },
-        markdown: {
-            renderer: {
-                code: function(code, lang) {
-                    if (lang === "mermaid") {
-                        console.log( mermaid.render('mermaid-svg-' + mermaidNum++, code));
-                        return (
-                            '<div class="mermaid">' + mermaid.render('mermaid-svg-' + mermaidNum++, code) + "</div>"
-                        );
-                    }
-                    return this.origin.code.apply(this, arguments);
-                }
-            }
         },
         mermaidConfig: {
             querySelector: ".mermaid",
@@ -362,8 +348,10 @@
 <!--<script src="//unpkg.com/docsify-pagination/dist/docsify-pagination.min.js"></script>-->
 <!-- mermaid支持 -->
 <script src="lib/d3.js" defer></script>
-<script src="lib/mermaid.min.js" defer>
-    mermaid.initialize({ startOnLoad: false });
+<!--<script src="lib/mermaid.min.js" defer></script>-->
+<script type="module">
+    import mermaid from "/lib/mermaid.esm.min.mjs";
+    mermaid.initialize({ startOnLoad: true });
     window.mermaid = mermaid;
 </script>
 <script src="lib/docsify-mermaid.js" defer></script>
