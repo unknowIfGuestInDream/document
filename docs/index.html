@@ -295,29 +295,28 @@
         markdown: {
             renderer: {
                 code: function(code, lang) {
-                    // if (lang === "mermaid") {
-                    //     return (
-                    //         '<div class="mermaid">' + mermaid.render('mermaid-svg-' + mermaidNum++, code) + "</div>"
-                    //     );
-                    // }
-                    // if (lang === 'drawio') {
-                    //     if (window.drawioConverter) {
-                    //         console.log('drawio')
-                    //         return window.drawioConverter(code)
-                    //     } else {
-                    //         return `<div class='drawio-code'>${code}</div>`
-                    //     }
-                    // }
-                    // return this.origin.code.apply(this, arguments);
-
-                    var html = '';
-                    //if (code.match(/^sequenceDiagram/) || code.match(/^graph/) || code.match(/^gantt/)) {
                     if (lang === "mermaid") {
-                        html = '<div class="mermaid">' + code + '</div>';
+                        return (
+                            '<div class="mermaid">' + mermaid.render('mermaid-svg-' + mermaidNum++, code) + "</div>"
+                        );
                     }
-                    var hl = Prism.highlight(code, Prism.languages[lang] || Prism.languages.markup);
-                    // return html + '<pre v-pre data-lang="' + lang + '"><code class="lang-' + lang + '">' + hl + '</code></pre>'; //展示流程图加代码
-                    return html // 只展示流程图
+                    if (lang === 'drawio') {
+                        if (window.drawioConverter) {
+                            return window.drawioConverter(code)
+                        } else {
+                            return `<div class='drawio-code'>${code}</div>`
+                        }
+                    }
+                    return this.origin.code.apply(this, arguments);
+
+                    // var html = '';
+                    // //if (code.match(/^sequenceDiagram/) || code.match(/^graph/) || code.match(/^gantt/)) {
+                    // if (lang === "mermaid") {
+                    //     html = '<div class="mermaid">' + code + '</div>';
+                    // }
+                    // var hl = Prism.highlight(code, Prism.languages[lang] || Prism.languages.markup);
+                    // // return html + '<pre v-pre data-lang="' + lang + '"><code class="lang-' + lang + '">' + hl + '</code></pre>'; //展示流程图加代码
+                    // return html // 只展示流程图
                 }
             }
         },
