@@ -37,14 +37,10 @@ nginx配置:
 ### docsify-slides
 允许您编写类似于幻灯片的文档
 
-如果想默认隐藏 docsify 侧边栏，只需在 index.html 中的主体标签中添加 class="close "即可。
-
+如果想默认隐藏 docsify 侧边栏，只需在 index.html 中的主体标签中添加 class="close"即可。
 ```html
 <body class="close">...</body>
 ```
-例子:
-
-[filename](./slides/README.md ':include')
 
 ## 参考网站
 [Document](https://www.tlcsdm.com/ ':target=_blank')  
