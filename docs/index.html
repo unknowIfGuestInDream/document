@@ -24,11 +24,11 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <!-- 默认主题 -->
-<!--    <link rel="stylesheet" href="themes/vue.css">-->
+    <!--    <link rel="stylesheet" href="themes/vue.css">-->
     <!-- Theme: Simple (light + dark) -->
     <link rel="stylesheet" media="(prefers-color-scheme: light)" href="themes/theme-simple.css">
     <link rel="stylesheet" media="(prefers-color-scheme: dark)" href="themes/theme-simple-dark.css">
-<!--    <link rel="stylesheet" href="lib/docsify-top-banner-plugin.css">-->
+    <!--    <link rel="stylesheet" href="lib/docsify-top-banner-plugin.css">-->
     <!-- 评论插件-->
     <!--    <script charset="utf-8" type="text/javascript" src="https://cy-cdn.kuaizhan.com/upload/changyan.js"></script>-->
     <!--    <script type="text/javascript">-->
@@ -215,26 +215,14 @@
             tabComments: true,      // default
             tabHeadings: true       // default
         },
-        markdown: {
-            renderer: {
-                code: function(code, lang) {
-                    if (lang === "mermaid") {
-                        return (
-                            '<div class="mermaid">' + mermaid.render('mermaid-svg-' + mermaidNum++, code) + "</div>"
-                        );
-                    }
-                    return this.origin.code.apply(this, arguments);
-                }
-            }
+        mermaidConfig: {
+            querySelector: ".mermaid",
         },
-        // mermaidConfig: {
-        //     querySelector: ".mermaid",
-        // },
-        // mermaidZoom: {
-        //     minimumScale: 1,
-        //     maximumScale: 5,
-        //     zoomPannel: true
-        // },
+        mermaidZoom: {
+            minimumScale: 1,
+            maximumScale: 5,
+            zoomPannel: true
+        },
         // topBanner: {
         //     content: 'Welcome to my website',
         //     defaultTag: 'span',
@@ -361,11 +349,14 @@
 <!--<script src="//unpkg.com/docsify-pagination/dist/docsify-pagination.min.js"></script>-->
 <!-- mermaid支持 -->
 <script src="lib/d3.js" defer></script>
-<script src="lib/mermaid.min.js" defer>
-    mermaid.initialize({ startOnLoad: false });
+<script src="lib/mermaid.min.js" defer></script>
+<script type="module">
+    import mermaid from "/lib/mermaid.min.js";
+    mermaid.initialize({ startOnLoad: true });
+    window.mermaid = mermaid;
 </script>
-<!--<script src="lib/docsify-mermaid.js" defer></script>-->
-<!--<script src="lib/docsify-mermaid-zoom.js" defer></script>-->
+<script src="lib/docsify-mermaid.js" defer></script>
+<script src="lib/docsify-mermaid-zoom.js" defer></script>
 <!-- 百度统计 -->
 <script src="lib/baiduTj.js" async></script>
 </body>
