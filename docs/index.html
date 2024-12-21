@@ -240,7 +240,6 @@
         // },
         plugins: [
             function (hook) {
-                mermaid.initialize({ startOnLoad: true });
                 //header模块暂时隐藏
                 var header = [
                     '<p>',
@@ -284,7 +283,30 @@
                 });
             }
         ],
+        markdown: {
+            renderer: {
+                code: function(code, lang) {
+                    if (lang === "mermaid") {
+                        return (
+                            '<div class="mermaid">' + mermaid.render('mermaid-svg-' + mermaidNum++, code) + "</div>"
+                        );
+                    }
+                    if (lang === 'drawio') {
+                        if (window.drawioConverter) {
+                            console.log('drawio')
+                            return window.drawioConverter(code)
+                        } else {
+                            return `<div class='drawio-code'>${code}</div>`
+                        }
+                    }
+                    return this.origin.code.apply(this, arguments);
+                }
+            }
+        },
     }
+
+    var mermaidNum = 0;
+    mermaid.initialize({ logLevel:0, startOnLoad: false, themeCSS:'.label { font-family: Source Sans Pro,Helvetica Neue,Arial,sans-serif; }' });
 
     //提示信息 封装
     // function Toast(msg, duration) {
