@@ -214,6 +214,18 @@
             tabComments: true,      // default
             tabHeadings: true       // default
         },
+        markdown: {
+            renderer: {
+                code: function(code, lang) {
+                    if (lang === "mermaid") {
+                        return (
+                            '<div class="mermaid" data-processed="true">' + mermaid.renderer('mermaid-svg-' + mermaidNum++, code) + "</div>"
+                        );
+                    }
+                    return this.origin.code.apply(this, arguments);
+                }
+            }
+        },
         mermaidConfig: {
             querySelector: ".mermaid",
         },
@@ -355,6 +367,7 @@
     import mermaid from "lib/mermaid.min.js";
     mermaid.initialize({ startOnLoad: true });
     window.mermaid = mermaid;
+    var mermaidNum =0;
 </script>
 <!-- 百度统计 -->
 <script src="lib/baiduTj.js" async></script>
