@@ -217,18 +217,6 @@
             tabComments: true,      // default
             tabHeadings: true       // default
         },
-        markdown: {
-            renderer: {
-                code: function(code, lang) {
-                    if (lang === "mermaid") {
-                        return (
-                            '<div class="mermaid">' + mermaid.render('mermaid-svg-' + num++, code) + "</div>"
-                        );
-                    }
-                    return this.origin.code.apply(this, arguments);
-                }
-            }
-        },
         mermaidConfig: {
             querySelector: ".mermaid",
         },
