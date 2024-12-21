@@ -242,8 +242,7 @@
             // mermaid显示
             function (hook, vm) {
                 hook.ready(function () {
-                    mermaid.initialize({ logLevel:0, startOnLoad: false, themeCSS:'.label { font-family: Source Sans Pro,Helvetica Neue,Arial,sans-serif; }' });
-                    //mermaid.initialize({ startOnLoad: false });
+                    mermaid.initialize({ startOnLoad: false });
                 });
                 hook.doneEach(function () {
                     mermaid.init(undefined, '.mermaid');
@@ -361,11 +360,16 @@
 <script src="lib/prism-markdown.min.js" defer></script>
 <script src="lib/prism-nginx.min.js" defer></script>
 <script src="lib/prism-c.min.js" defer></script>
+<script src="lib/prism-css.min.js" defer></script>
 <script src="lib/prism-cpp.min.js" defer></script>
 <script src="lib/prism-csharp.min.js" defer></script>
 <script src="lib/prism-javascript.min.js" defer></script>
+<script src="lib/prism-groovy.min.js" defer></script>
 <script src="lib/prism-php.min.js" defer></script>
 <script src="lib/prism-python.min.js" defer></script>
+<script src="lib/prism-powershell.min.js" defer></script>
+<script src="lib/prism-properties.min.js" defer></script>
+<script src="lib/prism-typescript.min.js" defer></script>
 <!-- 聊天室 -->
 <!--<script>-->
 <!--((window.gitter = {}).chat = {}).options = {-->
@@ -380,6 +384,9 @@
 <script src="lib/mermaid.min.js" defer></script>
 <script src="lib/docsify-mermaid.js" defer></script>
 <script src="lib/docsify-mermaid-zoom.js" defer></script>
+<!-- drawio支持 -->
+<script src="lib/drawio-viewer.min.js" defer></script>
+<script src="lib/drawio.js" defer></script>
 <!-- 百度统计 -->
 <script src="lib/baiduTj.js" async></script>
 </body>
