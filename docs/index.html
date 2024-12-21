@@ -38,6 +38,7 @@
     <!--        });-->
     <!--    </script>-->
     <link rel="stylesheet" href="lib/mermaid.min.css">
+    <link rel="stylesheet" href="lib/docsify-accordion.css">
 </head>
 
 <body>
@@ -145,6 +146,7 @@
         name: 'Learning',
         // 仓库地址，点击右上角的Github章鱼猫头像会跳转到此地址
         repo: 'https://github.com/unknowIfGuestInDream',
+        logo: '/images/logo.png',
         auto2top: true,//切换页面后是否自动跳转到页面顶部。
         onlyCover: false, //将封面跟文档分开 而不是上下连接
         // 侧边栏支持，默认加载的是项目根目录下的_sidebar.md文件
@@ -311,6 +313,32 @@
                 }
             }
         },
+        // ads: [
+        //     {
+        //         img: 'https://dn-lego-static.qbox.me/cps/1638355965-480x300.jpg',
+        //         href: 'https://s.qiniu.com/zqiMBz'
+        //     },
+        //     {
+        //         img: 'https://dn-lego-static.qbox.me/cps/1638355965-480x300.jpg',
+        //         href: 'https://s.qiniu.com/VJFJvi'
+        //     },
+        //     {
+        //         img: 'https://dn-lego-static.qbox.me/cps/1638355799-480300.jpg',
+        //         href: 'https://s.qiniu.com/7nM3uy'
+        //     },
+        //     {
+        //         img: 'https://dn-lego-static.qbox.me/cps/1638268412-480x300.jpg',
+        //         href: 'https://s.qiniu.com/VZvaii'
+        //     },
+        //     {
+        //         img: 'https://dn-lego-static.qbox.me/cps/1638268217-480x300.jpg',
+        //         href: 'https://s.qiniu.com/nMnaQj'
+        //     },
+        //     {
+        //         img: 'https://dn-lego-static.qbox.me/cps/1638267917-480x300.jpg',
+        //         href: 'https://s.qiniu.com/aqAneu'
+        //     }
+        // ]
     }
 
     //提示信息 封装
@@ -352,6 +380,10 @@
 <script src="lib/countable.js" defer></script>
 <!-- 回到顶部 -->
 <script src="lib/docsify-scroll-to-top.min.js" defer></script>
+<!-- 允许您编写类似于幻灯片的文档 -->
+<script src="lib/docsify-slides.min.js" defer></script>
+<!--在 docsify 文档中使用手风琴的插件。 -->
+<script src="lib/docsify-accordion.js" defer></script>
 <!--Java代码高亮-->
 <script src="lib/prism-java.js" defer></script>
 <script src="lib/prism-sql.js" defer></script>
@@ -383,6 +415,10 @@
 <script src="lib/mermaid.min.js" defer></script>
 <script src="lib/docsify-mermaid.js" defer></script>
 <script src="lib/docsify-mermaid-zoom.js" defer></script>
+<!-- 广告支持 -->
+<script src="lib/docsify-ads.min.js" defer></script>
+<!-- 广告支持 -->
+<script src="lib/docsify-terminal-block.js" defer></script>
 <!-- drawio支持 -->
 <script src="lib/drawio-viewer.min.js" defer></script>
 <script src="lib/drawio.js" defer></script>

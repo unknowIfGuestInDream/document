@@ -34,6 +34,64 @@ nginx配置:
 ### drawio
 [filename](https://cdn.jsdelivr.net/npm/docsify-drawio/test.drawio ':include :type=code')
 
+### docsify-slides
+允许您编写类似于幻灯片的文档
+
+如果想默认隐藏 docsify 侧边栏，只需在 index.html 中的主体标签中添加 class="close"即可。
+```html
+<body class="close">...</body>
+```
+
+### docsify-accordion
+使用手风琴的插件  
+
+以 +（空格）开头，以 （空格）+ 结尾（空格很重要）会将列表转换为折叠式
+
+```markdown
+
+# FAQ Section
+
+Introduction text for the FAQ page.
+
++ Question 1? +
+
+  Answer 1
+
++ Question 2? +
+
+  Answer 2
+
+```
+
+#### FAQ Section
+
+Introduction text for the FAQ page.
+
++ Question 1? +
+
+  Answer 1
+
++ Question 2? +
+
+  Answer 2
+
+### docsify-terminal-block
+为您的文档添加漂亮的接线端子。它也具有 复制到剪贴板 功能。
+
+ ```terminal
+    npm run start
+    $|npm run start
+    $|warning|npm run build
+    >|info|npm run start
+     |...
+    >|error|npm run start
+    >|success|npm run start
+
+    warning|npm run build
+```
+
 ## 参考网站
 [Document](https://www.tlcsdm.com/ ':target=_blank')  
-[mall-learning](http://www.macrozheng.com/ ':target=_blank')
+[mall-learning](http://www.macrozheng.com/ ':target=_blank')  
+[hashiqube](https://github.com/star3am/hashiqube ':target=_blank')  
+[weharmony](https://weharmony.github.io ':target=_blank')  
