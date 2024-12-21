@@ -29,6 +29,11 @@ nginx配置:
    }
 ```
 
+## 插件
+
+### drawio
+[filename](https://cdn.jsdelivr.net/npm/docsify-drawio/test.drawio ':include :type=code')
+
 ## 参考网站
 [Document](https://www.tlcsdm.com/ ':target=_blank')  
 [mall-learning](http://www.macrozheng.com/ ':target=_blank')
