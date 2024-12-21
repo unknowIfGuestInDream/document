@@ -42,7 +42,42 @@ nginx配置:
 <body class="close">...</body>
 ```
 
+### docsify-accordion
+使用手风琴的插件  
+
+以 +（空格）开头，以 （空格）+ 结尾（空格很重要）会将列表转换为折叠式
+
+```markdown
+
+# FAQ Section
+
+Introduction text for the FAQ page.
+
++ Question 1? +
+
+  Answer 1
+
++ Question 2? +
+
+  Answer 2
+
+```
+
+#### FAQ Section
+
+Introduction text for the FAQ page.
+
++ Question 1? +
+
+  Answer 1
+
++ Question 2? +
+
+  Answer 2
+
+
+
 ## 参考网站
 [Document](https://www.tlcsdm.com/ ':target=_blank')  
-[mall-learning](http://www.macrozheng.com/ ':target=_blank')
+[mall-learning](http://www.macrozheng.com/ ':target=_blank')  
 [hashiqube](https://github.com/star3am/hashiqube ':target=_blank')
