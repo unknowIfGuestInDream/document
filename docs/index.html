@@ -297,7 +297,7 @@
                 code: function(code, lang) {
                     if (lang === "mermaid") {
                         return (
-                            '<div class="mermaid">' + mermaid.render('mermaid-svg-' + mermaidNum++, code) + "</div>"
+                            '<div class="mermaid">' + code + "</div>"
                         );
                     }
                     if (lang === 'drawio') {
