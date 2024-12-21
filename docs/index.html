@@ -297,14 +297,8 @@
             renderer: {
                 code: function(code, lang) {
                     if (lang === "mermaid") {
-                        var html = '';
-                        if (code.match(/^sequenceDiagram/) || code.match(/^graph/) || code.match(/^gantt/)) {
-                            html = code;
-                        }else{
-                            html = mermaid.render('mermaid-svg-' + mermaidNum++, code);
-                        }
                         return (
-                            '<div class="mermaid">' + html + "</div>"
+                            '<div class="mermaid">' + code + "</div>"
                         );
                     }
                     if (lang === 'drawio') {
