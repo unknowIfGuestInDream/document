@@ -244,9 +244,9 @@
                 hook.ready(function () {
                     mermaid.initialize({ startOnLoad: true });
                 });
-                hook.doneEach(function () {
-                    mermaid.init(undefined, '.mermaid');
-                });
+                // hook.doneEach(function () {
+                //     mermaid.init(undefined, '.mermaid');
+                // });
             },
             function (hook) {
                 //header模块暂时隐藏
@@ -360,7 +360,6 @@
 <script src="lib/prism-markdown.min.js" defer></script>
 <script src="lib/prism-nginx.min.js" defer></script>
 <script src="lib/prism-c.min.js" defer></script>
-<script src="lib/prism-css.min.js" defer></script>
 <script src="lib/prism-cpp.min.js" defer></script>
 <script src="lib/prism-csharp.min.js" defer></script>
 <script src="lib/prism-javascript.min.js" defer></script>
