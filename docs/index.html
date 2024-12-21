@@ -239,6 +239,11 @@
         //     crossChapter: true,
         //     crossChapterText: true,
         // },
+        progress: {
+            position: "top",
+            color: "var(--theme-color,#42b983)",
+            height: "3px",
+        },
         plugins: [
             // mermaid显示
             function (hook, vm) {
@@ -391,6 +396,7 @@
 <!-- drawio支持 -->
 <script src="lib/drawio-viewer.min.js" defer></script>
 <script src="lib/drawio.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/docsify-progress@latest/dist/progress.min.js"></script>
 <!-- 百度统计 -->
 <script src="lib/baiduTj.js" async></script>
 </body>
