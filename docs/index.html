@@ -206,7 +206,7 @@
             offset: 500
         },
         themeable: {
-            readyTransition : true, // default
+            readyTransition: true, // default
             responsiveTables: true  // default
         },
         tabs: {
@@ -243,7 +243,7 @@
         auth: {
             enable: true, // 是否开启
             use: "sha256",
-            password: "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92", // md5密码
+            password: "8a5d5f5b4d7c7ce7f00c1a32487164b6d89e287b5236fb9d5899380a9288b861", // sha256('')
             title: "请输入密码以访问文档：", // 设置标题
             paths: ["^/antd"] // 需要认证的路径，支持正则表达式匹配
         },
@@ -251,7 +251,7 @@
             // mermaid显示
             function (hook, vm) {
                 hook.ready(function () {
-                    mermaid.initialize({ startOnLoad: false });
+                    mermaid.initialize({startOnLoad: false});
                 });
                 hook.doneEach(function () {
                     mermaid.init(undefined, '.mermaid');
@@ -303,7 +303,7 @@
         ],
         markdown: {
             renderer: {
-                code: function(code, lang) {
+                code: function (code, lang) {
                     if (lang === "mermaid") {
                         return (
                             '<div class="mermaid">' + code + "</div>"
