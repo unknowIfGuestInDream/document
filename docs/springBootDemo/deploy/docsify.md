@@ -142,6 +142,18 @@ Ciao!
 3. 自定义样式
 [自定义样式](https://jhildenbiddle.github.io/docsify-tabs ':target=_blank')
 
+### docsify-pdf-embed
+使用 PDFObject.js 在 Docsify 中嵌入 PDF  
+每当您想要嵌入 PDF 时，请在要放入的文件中键入以下内容：
+```markdown
+### Here are some of your previous markdown contents
+blah blah blah
+
+```pdf
+	path-to-the-pdf-file
+(``` to close the codeblock)
+```
+
 ## 参考网站
 [Document](https://www.tlcsdm.com/ ':target=_blank')  
 [mall-learning](http://www.macrozheng.com/ ':target=_blank')  
