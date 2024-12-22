@@ -254,14 +254,14 @@
         },
         plugins: [
             // mermaid显示
-            function (hook, vm) {
-                hook.ready(function () {
-                    mermaid.initialize({startOnLoad: false});
-                });
-                hook.doneEach(function () {
-                    mermaid.init(undefined, '.mermaid');
-                });
-            },
+            // function (hook, vm) {
+            //     hook.ready(function () {
+            //         mermaid.initialize({startOnLoad: false});
+            //     });
+            //     hook.doneEach(function () {
+            //         mermaid.init(undefined, '.mermaid');
+            //     });
+            // },
             function (hook) {
                 //header模块暂时隐藏
                 var header = [
