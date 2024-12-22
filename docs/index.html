@@ -332,7 +332,7 @@
                             return rand_gen() + rand_gen() + '-' + rand_gen() + '-' + rand_gen() + '-' + rand_gen() + '-' + rand_gen() + rand_gen() + rand_gen();
                         }
 
-                        if (lang && !lang.localeCompare('pdf', 'en', {sensitivity: 'base'})) {
+                        if (lang && !lang.localeCompare('pdf', {sensitivity: 'base'})) {
                             if (verify) {
                                 return true;
                             } else {
