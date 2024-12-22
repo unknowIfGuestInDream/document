@@ -49,6 +49,11 @@
 <!-- 定义加载时候的动作 -->
 <div id="app"></div>
 <script>
+    if (typeof navigator.serviceWorker !== 'undefined') {
+        navigator.serviceWorker.register('sw.js')
+    }
+</script>
+<script>
     // document.oncontextmenu = function () {
     //     Toast('右键菜单已禁用', 1000);
     //     event.returnValue = false;

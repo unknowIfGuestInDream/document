@@ -52,7 +52,7 @@ Node.js 更擅长上层具体业务逻辑的处理，两者可以完美组合，
 
 ### 配置反向代理
 
-```
+```nginx
 server {
   listen 80;
   server_name www.test.com;
@@ -115,7 +115,7 @@ $ ： 匹配字符串的结束
 > location优先级从高到底：  
 > (location =) > (location 完整路径) > (location ^~ 路径) > (location ~,~* 正则顺序) > (location 部分起始路径) > (/)
 
-```
+```nginx
 location = / {
     # 精确匹配/，主机名后面不能带任何字符串 /
     [ configuration A ]
@@ -177,7 +177,7 @@ location = /test.htm {
 
 同一个项目分别使用8081和8082端口启动项目
 
-```
+```nginx
 upstream web_servers {  
    server localhost:8081;  
    server localhost:8082;  
@@ -201,7 +201,7 @@ server {
 指定轮询几率，weight和访问比率成正比, 也就是服务器接收请求的比例就是各自配置的weight的比例，
 用于后端服务器性能不均的情况,比如服务器性能差点就少接收点请求，服务器性能好点就多处理点请求。
 
-```
+```nginx
 upstream test {
     server localhost:8081 weight=1;
     server localhost:8082 weight=3;
@@ -219,7 +219,7 @@ upstream test {
 那么就需要用iphash了，iphash的每个请求按访问ip的hash结果分配，这样每个访客固定访问一个后端服务器，
 可以解决session的问题。
 
-```
+```nginx
 upstream test {
     ip_hash;
     server localhost:8080;
@@ -231,7 +231,7 @@ upstream test {
 
 按后端服务器的响应时间来分配请求，响应时间短的优先分配。这个配置是为了更快的给用户响应
 
-```
+```nginx
 upstream backend {
     fair;
     server localhost:8080;
@@ -244,7 +244,7 @@ upstream backend {
 按访问url的hash结果来分配请求，使每个url定向到同一个后端服务器，后端服务器为缓存时比较有效。 
 在upstream中加入hash语句，server语句中不能写入weight等其他的参数，hash_method是使用的hash算法
 
-```
+```nginx
 upstream backend {
     hash $request_uri;
     hash_method crc32;
@@ -260,7 +260,7 @@ upstream backend {
 
 ![](../../images/nginx/nginx3.png)
 
-```
+```nginx
 upstream web_servers {  
        server localhost:8081;  
        server localhost:8082;  
@@ -296,7 +296,7 @@ server {
 
 返回http状态码 和 可选的第二个参数可以是重定向的URL
 
-```
+```nginx
 location /permanently/moved/url {
     return 301 http://www.example.com/moved/here;
 }
@@ -308,7 +308,7 @@ location /permanently/moved/url {
 第一个(必需)参数是请求URI必须匹配的正则表达式。 第二个参数是用于替换匹配URI的URI。 
 可选的第三个参数是可以停止进一步重写指令的处理或发送重定向(代码301或302)的标志
 
-```
+```nginx
 location /users/ {
     rewrite ^/users/(.*)$ /show?user=$1 break;
 }
@@ -319,7 +319,7 @@ location /users/ {
 使用error_page指令，您可以配置NGINX返回自定义页面以及错误代码，替换响应中的其他错误代码，或将浏览器重定向到其他URI。
  在以下示例中，error_page指令指定要返回404页面错误代码的页面(/404.html)。
  
- ```
+ ```nginx
 error_page 404 /404.html;
 ```
 
@@ -327,7 +327,7 @@ error_page 404 /404.html;
 
 访问日志：需要开启压缩 gzip on; 否则不生成日志文件，打开log_format、access_log注释
 
-```
+```nginx
 log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
                       '$status $body_bytes_sent "$http_referer" '
                       '"$http_user_agent" "$http_x_forwarded_for"';
@@ -339,7 +339,7 @@ gzip  on;
 
 5.deny 指令
 
-```
+```nginx
 # 禁止访问某个目录
 location ~* \.(txt|doc)${
     root $doc_root;
@@ -377,7 +377,7 @@ location ~* \.(txt|doc)${
 
 在前端服务地址为 fe.test.com 的页面请求 be.test.com 的后端服务导致的跨域，可以这样配置：
 
-```
+```nginx
 server {
   listen 9001;
   server_name fe.test.com ;
@@ -394,7 +394,7 @@ server {
 这里对静态文件的请求和后端服务的请求都以 fe.test.com 开始，不易区分，所以为了实现对后端服务请求的统一转发，
 通常我们会约定对后端服务的请求加上 /apis/ 前缀或者其他的 path 来和对静态资源的请求加以区分，此时我们可以这样配置：
 
-```
+```nginx
 # 请求跨域，约定代理后端服务请求path以/apis/开头
 location ^~/apis/ {
     # 这里重写了请求，将正则匹配中的第一个分组的path拼接到真正的请求后面，并用break停止后续匹配
@@ -433,7 +433,7 @@ location ^~/apis/ {
 
 nginx配置如下
 
-```
+```nginx
 server {
   listen       80;
   server_name  be.test.com;
@@ -477,7 +477,7 @@ gzip 是一种常用的网页压缩技术，传输的网页经过 gzip 压缩之
 并在 response 相应的时候加上 content-encoding: gzip 来告诉浏览器自己采用的压缩方式（因为浏览器在传给服务器的时候一般还告诉服务器自己支持好几种压缩方式），
 浏览器拿到压缩的文件后，根据自己的解压方式进行解析。
 
-```
+```nginx
 gzip on; # 默认off，是否开启gzip
 gzip_types text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript;
 
@@ -548,7 +548,7 @@ module.exports = {
 我购买的腾讯云提供的亚洲诚信机构颁发的免费证书只能一个域名使用，二级域名什么的需要另外申请，但是申请审批比较快，一般几分钟就能成功，
 然后下载证书的压缩文件，里面有个 nginx 文件夹，把 xxx.crt 和 xxx.key 文件拷贝到服务器目录，再配置下：
 
-```
+```nginx
 server {
   listen 443 ssl http2 default_server;   # SSL 访问端口号为 443
   server_name sherlocked93.club;         # 填写绑定证书的域名
@@ -570,7 +570,7 @@ server {
 
 一般还可以加上几个增强安全性的命令：
 
-```
+```nginx
 add_header X-Frame-Options DENY;           # 减少点击劫持
 add_header X-Content-Type-Options nosniff; # 禁止服务器自动解析资源类型
 add_header X-Xss-Protection 1;             # 防XSS攻击
@@ -580,7 +580,7 @@ add_header X-Xss-Protection 1;             # 防XSS攻击
 
 ### 静态服务
 
-```
+```nginx
 server {
   listen       80;
   server_name  static.test.com;
@@ -598,7 +598,7 @@ server {
 
 ### 图片防盗链
 
-```
+```nginx
 server {
   listen       80;
   server_name  *.test.com;
@@ -615,7 +615,7 @@ server {
 
 ### 请求过滤
 
-```
+```nginx
 # 非指定请求全返回 403
 if ( $request_method !~ ^(GET|POST|HEAD)$ ) {
   return 403;
@@ -636,7 +636,7 @@ location / {
 由于图片、字体、音频、视频等静态文件在打包的时候通常会增加了 hash，所以缓存可以设置的长一点，先设置强制缓存，再设置协商缓存；
 如果存在没有 hash 值的静态文件，建议不设置强制缓存，仅通过协商缓存判断是否需要使用缓存。
 
-```
+```nginx
 # 图片缓存时间设置
 location ~ .*\.(css|js|jpg|png|gif|swf|woff|woff2|eot|svg|ttf|otf|mp3|m4a|aac|txt)$ {
 	expires 10d;
@@ -648,7 +648,7 @@ expires -1;
 
 ### 单页面项目 history 路由配置
 
-```
+```nginx
 server {
   listen       80;
   server_name  fe.sherlocked93.club;
@@ -677,7 +677,7 @@ server {
 
 配置完 HTTPS 后，浏览器还是可以访问 HTTP 的地址 http://test.com/ 的，可以做一个 301 跳转，把对应域名的 HTTP 请求重定向到 HTTPS 上
 
-```
+```nginx
 server {
     listen      80;
     server_name www.test.com;
@@ -711,7 +711,7 @@ server {
 1. test1.doc.test.com 自动指向 /usr/share/nginx/html/doc/test1 服务器地址；
 2. test2.doc.test.com 自动指向 /usr/share/nginx/html/doc/test2 服务器地址；
 
-```
+```nginx
 server {
     listen       80;
     server_name  ~^([\w-]+)\.doc\.test\.com;
@@ -727,7 +727,7 @@ server {
 1. test1.serv.test.com/api?name=a 自动转发到 127.0.0.1:8080/test1/api?name=a ；
 2. test2.serv.test.com/api?name=a 自动转发到 127.0.0.1:8080/test2/api?name=a ；
 
-```
+```nginx
 server {
     listen       80;
     server_name ~^([\w-]+)\.serv\.test\.com;
@@ -746,7 +746,7 @@ server {
 
 limit_req_zone
 
-```
+```nginx
 http {
     # 将请求客户端的IP存放到perip区域，区域大小为10M，并限制同一IP地址的请求每秒钟只处理10次
     limit_req_zone $binary_remote_addr zone=perip:10m rate=10r/s;
@@ -774,7 +774,7 @@ http {
 
 ngx_http_upstream_module
 
-```
+```nginx
 对服务器进行（反向代理）限流
 upstream MyName {
     server 192.168.0.1:8080 weight=1 max_conns=10;
@@ -788,7 +788,7 @@ max_conns=number
 
 ### 隐藏Nginx版本号
 
-```
+```nginx
 http {
 server_tokens off;
 }
@@ -798,7 +798,7 @@ server_tokens off;
 
 白名单高度安全配置（适用于授权IP较少的情况，其余全部deny封锁），可配置在http、server、location中
 
-```
+```nginx
 location / {
 allow 192.168.1.1;
 deny all;
@@ -816,7 +816,7 @@ allow all;
 
 ### 区分pc跟移动端跳转不同页面
 
-```
+```nginx
 		location / {			
 			root   G:/work/dist/;
 			if ( $http_user_agent ~ "(MIDP)|(WAP)|(UP.Browser)|(Smartphone)|(Obigo)|(Mobile)|(AU.Browser)|(wxd.Mms)|(
@@ -835,7 +835,7 @@ orola)|(SHARP)|(WAPPER)|(LG-)|(LG/)|(EG900)|(CECT)|(Compal)|(kejian)|(Bird)|(BIR
 
 ### 前端打包配置Nginx示例
 
-```shell
+```nginx
 	upstream  eamname{
 		 server 10.18.2.127:8201;
     }
@@ -876,7 +876,7 @@ orola)|(SHARP)|(WAPPER)|(LG-)|(LG/)|(EG900)|(CECT)|(Compal)|(kejian)|(Bird)|(BIR
 * worker_cpu_affinity 运行CPU亲和力，与worker_processes对应，如：worker_cpu_affinity 0001 0010 0100 1000;
 * worker_rlimit_nofile Nginx最多可以打开文件数，与ulimit -n保持一致，如：worker_rlimit_nofile 65535;
 * events 事件处理模型。如：
-```markdown
+```nginx
 events {
   use epoll;
   worker_connections 65535;
@@ -895,7 +895,7 @@ events {
 
 ## Linux环境下Nginx配置例子
 
-```
+```nginx
 # For more information on configuration, see:
 #   * Official English Documentation: http://nginx.org/en/docs/
 #   * Official Russian Documentation: http://nginx.org/ru/docs/
@@ -1028,7 +1028,7 @@ http {
 
 ## Windows下Nginx配置例子
 
-```
+```nginx
 worker_processes  1;
 
 events {
