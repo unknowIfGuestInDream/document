@@ -49,6 +49,12 @@
 <!-- 定义加载时候的动作 -->
 <div id="app"></div>
 <script>
+    //离线渲染
+    if (typeof navigator.serviceWorker !== 'undefined') {
+        navigator.serviceWorker.register('sw.js')
+    }
+</script>
+<script>
     // document.oncontextmenu = function () {
     //     Toast('右键菜单已禁用', 1000);
     //     event.returnValue = false;
@@ -303,7 +309,7 @@
         ],
         markdown: {
             renderer: {
-                code: function (code, lang) {
+                code: function (code, lang, base = null) {
                     if (lang === "mermaid") {
                         return (
                             '<div class="mermaid">' + code + "</div>"
@@ -316,10 +322,48 @@
                             return `<div class='drawio-code'>${code}</div>`
                         }
                     }
-                    return this.origin.code.apply(this, arguments);
+                    // pdf
+                    var pdf_renderer = function (code, lang, verify) {
+                        function unique_id_generator() {
+                            function rand_gen() {
+                                return Math.floor((Math.random() + 1) * 65536).toString(16).substring(1);
+                            }
+
+                            return rand_gen() + rand_gen() + '-' + rand_gen() + '-' + rand_gen() + '-' + rand_gen() + '-' + rand_gen() + rand_gen() + rand_gen();
+                        }
+
+                        if (lang && !(lang.localeCompare('pdf', 'en', {sensitivity: 'base'}) || lang.localeCompare('pdf', 'zh', {sensitivity: 'base'}))) {
+                            if (verify) {
+                                return true;
+                            } else {
+                                var divId = "markdown_code_pdf_container_" + unique_id_generator().toString();
+                                var container_list = new Array();
+                                if (localStorage.getItem('pdf_container_list')) {
+                                    container_list = JSON.parse(localStorage.getItem('pdf_container_list'));
+                                }
+                                container_list.push({"pdf_location": code, "div_id": divId});
+                                localStorage.setItem('pdf_container_list', JSON.stringify(container_list));
+                                return (
+                                    '<div style="margin-top:' + PDF_MARGIN_TOP + '; margin-bottom:' + PDF_MARGIN_BOTTOM + ';" id="' + divId + '">'
+                                    + '<a href="' + code + '"> Link </a> to ' + code +
+                                    '</div>'
+                                );
+                            }
+                        }
+                        return false;
+                    }
+                    if (pdf_renderer(code, lang, true)) {
+                        return pdf_renderer(code, lang, false);
+                    }
+
+                    return (base ? base : this.origin.code.apply(this, arguments));
                 }
             }
         },
+        hideCode: {
+            scroll: false, // Enable scrolling
+            height: 300 // Max height
+        }
         // ads: [
         //     {
         //         img: 'https://dn-lego-static.qbox.me/cps/1638355965-480x300.jpg',
@@ -439,6 +483,10 @@
 <!-- drawio支持 -->
 <script src="lib/drawio-viewer.min.js" defer></script>
 <script src="lib/drawio.js" defer></script>
+<!-- 代码过长时隐藏超出部分 -->
+<script src="lib/docsify-hide-code.min.js"></script>
+<!-- bilibili -->
+<script src="lib/docsify-bilibili.min.js"></script>
 <!-- 百度统计 -->
 <script src="lib/baiduTj.js" async></script>
 </body>

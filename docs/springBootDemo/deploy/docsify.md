@@ -9,7 +9,7 @@
 推荐部署方式 通过nginx转发, 无需启动docsify项目  
 
 nginx配置:
-```
+```nginx
   server {
       listen  80;
       server_name xxx;
@@ -89,6 +89,87 @@ Introduction text for the FAQ page.
 
     warning|npm run build
 ```
+
+### docsify-tabs
+用于从 markdown 渲染选项卡式内容。  
+1. 使用 和 HTML 注释定义选项卡集。tabs:starttabs:end
+```
+<!-- tabs:start -->
+
+...
+
+<!-- tabs:end -->
+```
+
+2. 使用标题 + 粗体 markdown 定义选项卡集中的选项卡。
+标题文本将用作选项卡标签，并且所有后续内容都将与该选项卡关联，直到下一个选项卡或注释的开头。使用标题 + 粗体 markdown 允许使用标准
+markdown 定义选项卡，并确保在文档化站点（例如 GitHub、GitLab 等）之外呈现选项卡内容时，选项卡内容与标题一起显示。tab:end  
+
+```markdown
+<!-- tabs:start -->
+
+#### **English**
+
+Hello!
+
+#### **French**
+
+Bonjour!
+
+#### **Italian**
+
+Ciao!
+
+<!-- tabs:end -->
+```
+
+<!-- tabs:start -->
+
+#### **English**
+
+Hello!
+
+#### **French**
+
+Bonjour!
+
+#### **Italian**
+
+Ciao!
+
+<!-- tabs:end -->
+
+3. 自定义样式
+[自定义样式](https://jhildenbiddle.github.io/docsify-tabs ':target=_blank')
+
+### docsify-pdf-embed
+使用 PDFObject.js 在 Docsify 中嵌入 PDF  
+每当您想要嵌入 PDF 时，请在要放入的文件中键入以下内容：
+```markdown
+### Here are some of your previous markdown contents
+blah blah blah
+
+```pdf
+	path-to-the-pdf-file
+(``` to close the codeblock)
+```
+
+### docsify-bilibili
+```markdown
+- Bilibili video
+- aid=708255828&bvid=BV1wQ4y1E7SW&cid=1395326689&p=1
+- aid=666024576&bvid=BV1pa4y1m7yN&cid=1401696220&p=1
+- aid=666024576&bvid=BV1pa4y1m7yN&cid=1401696220&p=1
+- aid=666024576&bvid=BV1pa4y1m7yN&cid=1401696220&p=1
+- aid=666024576&bvid=BV1pa4y1m7yN&cid=1401696220&p=1
+```
+
+- Bilibili video
+- aid=708255828&bvid=BV1wQ4y1E7SW&cid=1395326689&p=1
+- aid=666024576&bvid=BV1pa4y1m7yN&cid=1401696220&p=1
+- aid=666024576&bvid=BV1pa4y1m7yN&cid=1401696220&p=1
+- aid=666024576&bvid=BV1pa4y1m7yN&cid=1401696220&p=1
+- aid=666024576&bvid=BV1pa4y1m7yN&cid=1401696220&p=1
 
 ## 参考网站
 [Document](https://www.tlcsdm.com/ ':target=_blank')  
