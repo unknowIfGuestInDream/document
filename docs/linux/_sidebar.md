@@ -16,3 +16,4 @@
   - [安装nginx](linux/soft/nginx.md)
   - [安装oracle](linux/soft/oracle.md)
   - [安装ffmpeg](linux/soft/ffmpeg.md)
+  - [安装mail](linux/soft/mail.md)
