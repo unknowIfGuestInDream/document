@@ -14,3 +14,4 @@
   - [安装minio](linux/soft/minio.md)
   - [安装nginx](linux/soft/nginx.md)
   - [安装oracle](linux/soft/oracle.md)
+  - [安装ffmpeg](linux/soft/ffmpeg.md)
