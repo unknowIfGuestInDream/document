@@ -488,3 +488,62 @@ jps 192.168.0.77
 
 注：jps命令有个地方很不好，似乎只能显示当前用户的java进程，要显示其他用户的还是只能用unix/linux的ps命令。
 ```
+
+## crontab 定时任务
+> Crontab可以用来在系统中定期的执行任务。
+
+### crontab 命令
+当前系统登录用户的Crontab命令集合  
+```shell
+crontab -l
+```
+查看其他用户的Crontab命令集合
+```shell
+crontab -u username -l
+```
+编辑定时任务
+```shell
+crontab -e
+```
+将所有的 cron 命令备份到文本文件当中  
+```shell
+crontab -l > cron-backup.txt
+```
+移除当前的cron
+```shell
+crontab -r
+```
+从text file中恢复
+```shell
+crontab cron-backup.txt
+```
+
+### 使用示例
+每天 02:00 执行任务  
+```shell
+0 2 * * * /bin/sh backup.sh
+```
+每天 5:00和17:00执行任务  
+```shell
+0 5,17 * * * /scripts/script.sh
+```
+每周日 17:00 执行任务  
+```shell
+0 17 * * sun  /scripts/script.sh
+```
+每 10min 执行一次任务
+```shell
+*/10 * * * * /scripts/monitor.sh
+```
+在每周五、周日的17点执行任务
+```shell
+0 17 * * sun,fri /script/scripy.sh
+```
+每年执行一次任务 (@yearly 类似于“0 0 1 1 *”。它会在每年的第一分钟内执行)
+```shell
+@yearly /scripts/script.sh
+```
+系统重启时执行
+```shell
+@reboot /scripts/script.sh
+```
