@@ -1,6 +1,5 @@
-> mysql 版本 5.7.24
-
-## 安装前准备
+## Mysql 5.7.24
+### 安装前准备 - CentOS 7
 
 1、检查是否已经安装过mysql，执行命令
 
@@ -67,7 +66,7 @@ mysql:
 
 也可以直接到 [mysql官网](https://downloads.mysql.com/archives/community/) 选择对应版本进行下载。
 
-## 安装Mysql
+### 安装Mysql
 
 1、在执行wget命令的目录下或你的上传目录下找到Mysql安装包：mysql-5.7.24-linux-glibc2.12-x86_64.tar.gz  
 执行解压命令：
@@ -187,4 +186,57 @@ mysql>flush privileges;
 ```
 
 至此，mysql5.7.24版本的数据库安装，已经完成。
- 
+
+## Mysql 8.0
+### 安装前准备 - Tencent OS 8
+
+**安装dnf**  
+添加 EPEL Repo  
+```shell
+yum install epel-release
+```
+安装dnf
+```shell
+yum install dnf
+```
+
+### 安装Mysql
+
+```shell
+sudo dnf install @mysql
+```
+
+安装完成后，通过运行以下命令来启动MySQL服务并使它在启动时自动启动：  
+```shell
+sudo systemctl enable --now mysqld
+```
+要检查MySQL服务器是否正在运行，请输入：  
+```shell
+sudo systemctl status mysqld
+```
+运行mysql_secure_installation脚本，该脚本执行一些与安全性相关的操作并设置MySQL根密码  
+```shell
+sudo mysql_secure_installation
+```
+通过键入以下内容测试登录mysql：  
+```shell
+mysql -u root -p
+```
+当出现mysql > 代表已成功登录当前账户  
+因为mysql默认设置只可本机访问数据库，所以这里要设置外网可访问，这里在mysql中输入以下命令：  
+```shell
+mysql>  use mysql
+```
+之后输入：  
+```mysql
+select user,host from user;
+```
+可以看到此时root的host为localhost，接下来输入以下命令更改为所有网路都可访问：  
+```mysql
+update user set host = '%' where user = 'root';
+```
+%代表所有ip都可访问  
+再输入以下代码使其立即生效：  
+```mysql
+FLUSH PRIVILEGES;
+```
