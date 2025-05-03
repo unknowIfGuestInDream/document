@@ -9,6 +9,7 @@ Ext JS基本上用于创建桌面应用程序它支持所有现代浏览器，�
 Ext JS基于MVC / MVVM架构。
 
 [Extjs4.x中文文档](http://extjs-doc-cn.github.io/ext4api/ ':target=_blank')
+[Extjs7 教程](https://www.cnblogs.com/cqpanda/p/16328016.html ':target=_blank')
 
 **特征**  
 这些是Ext JS的突出特性
