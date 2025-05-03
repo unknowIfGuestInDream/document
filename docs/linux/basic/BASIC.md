@@ -547,3 +547,25 @@ crontab cron-backup.txt
 ```shell
 @reboot /scripts/script.sh
 ```
+
+## 设置命令别名 (shell脚本的快捷启动)
+> 给shell脚本设置快捷运行方式，即不用进入到shell脚本的目录，
+> 就可以在任何目录运行shell脚本
+
+1.打开profile文件  
+```shell
+sudo vi /etc/profile
+```
+
+2.添加需要设置的命令及指向  
+```shell
+alias 服务名stop/start="sh startup.sh/shutdown.sh”
+#alias 8081stop="sh /test/XXX/bin/shutdown.sh"
+```
+
+3.配置生效  
+```shell
+source /etc/profile
+#8081stop
+```
+
