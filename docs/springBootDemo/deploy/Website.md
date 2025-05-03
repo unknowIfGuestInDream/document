@@ -17,3 +17,5 @@
 [logo制作](https://brandmark.io ':target=_blank')  
 [在线字体编辑器](https://kekee000.github.io/fonteditor/ ':target=_blank')  
 [正则可视化](https://goldtools.cn/regexp ':target=_blank')  
+[测试浏览器支持项](https://html5test.teamdev.com/ ':target=_blank')  
+[AI创作图片](https://creator.nightcafe.studio/ ':target=_blank')  
