@@ -20,7 +20,7 @@ URL: http://127.0.0.1:8000/
 
 ### 优化 Java API 文档中的代码片段
 在 Java 18 之前，如果我们想要在 Javadoc 中引入代码片段可以使用 `pre>{@code ...}</pre>`
-```Java
+```java
 /**
  * <pre>{@code
  *  lines of source code
@@ -28,7 +28,7 @@ URL: http://127.0.0.1:8000/
  */
 ```
 在 Java 18 之后，可以通过 @snippet 标签来做这件事情。
-```Java
+```java
 /**
  * The following code shows how to use {@code Optional.isPresent}:
  * {@snippet :
@@ -49,7 +49,7 @@ Sequenced Collections 包括以下三个接口：
 * SequencedMap
 
 SequencedCollection 接口继承了 Collection接口， 提供了在集合两端访问、添加或删除元素以及获取集合的反向视图的方法。  
-```Java
+```java
 interface SequencedCollection<E> extends Collection<E> {
 
   // New Method
@@ -70,7 +70,7 @@ interface SequencedCollection<E> extends Collection<E> {
 ```
 List 和 Deque 接口实现了SequencedCollection 接口。  
 这里以 ArrayList 为例，演示一下实际使用效果：  
-```Java
+```java
 ArrayList<Integer> arrayList = new ArrayList<>();
 
 arrayList.add(1);   // List contains: [1]
@@ -86,7 +86,7 @@ System.out.println(reversed); // Prints [2, 1, 0]
 ```
 
 SortedSet 和 LinkedHashSet 实现了SequencedSet接口。  
-```Java
+```java
 LinkedHashSet<Integer> linkedHashSet = new LinkedHashSet<>(List.of(1, 2, 3));
 
 Integer firstElement = linkedHashSet.getFirst();   // 1
@@ -99,7 +99,7 @@ System.out.println(linkedHashSet.reversed());   //Prints [4, 3, 2, 1, 0]
 ```
 SequencedMap 接口继承了 Map接口， 提供了在集合两端访问、添加或删除键值对、获取包含 key 的 SequencedSet、
 包含 value 的 SequencedCollection、包含 entry（键值对） 的 SequencedSet以及获取集合的反向视图的方法。  
-```Java
+```java
 interface SequencedMap<K,V> extends Map<K,V> {
 
   // New Methods
@@ -132,12 +132,12 @@ SortedMap 和LinkedHashMap 实现了SequencedMap 接口
 先以 instanceof 为例简单演示一下。  
 
 **简单定义一个记录类：**
-```Java
+```java
 record Shape(String type, long unit){}
 ```
 
 没有记录模式之前：
-```Java
+```java
 Shape circle = new Shape("Circle", 10);
 if (circle instanceof Shape shape) {
 
@@ -145,7 +145,7 @@ if (circle instanceof Shape shape) {
 }
 ```
 有了记录模式之后：
-```Java
+```java
 Shape circle = new Shape("Circle", 10);
 if (circle instanceof Shape(String type, long unit)) {
   System.out.println("Area of " + type + " is : " + Math.PI * Math.pow(unit, 2));
@@ -154,7 +154,7 @@ if (circle instanceof Shape(String type, long unit)) {
 
 **再看看记录模式与 switch 的配合使用。**  
 定义一些类：
-```Java
+```java
 interface Shape {}
 record Circle(double radius) implements Shape { }
 record Square(double side) implements Shape { }
@@ -162,7 +162,7 @@ record Rectangle(double length, double width) implements Shape { }
 ```
 
 没有记录模式之前：
-```Java
+```java
 Shape shape = new Circle(10);
 switch (shape) {
     case Circle c:
@@ -184,7 +184,7 @@ switch (shape) {
 ```
 
 有了记录模式之后：
-```Java
+```java
 Shape shape = new Circle(10);
 switch(shape) {
 
@@ -211,7 +211,7 @@ switch(shape) {
 ### switch 的模式匹配
 增强 Java 中的 switch 表达式和语句，允许在 case 标签中使用模式。当模式匹配时，执行 case 标签对应的代码。  
 在下面的代码中，switch 表达式使用了类型模式来进行匹配。
-```Java
+```java
 static String formatterPatternSwitch(Object obj) {
     return switch (obj) {
         case Integer i -> String.format("int %d", i);
@@ -236,7 +236,7 @@ JVM 调度程序通过平台线程（载体线程）来管理虚拟线程，一�
 
 虚拟线程在其他多线程语言中已经被证实是十分有用的，比如 Go 中的 Goroutine、Erlang 中的进程。  
 四种创建虚拟线程的方法：
-```Java
+```java
 // 1、通过 Thread.ofVirtual() 创建
 Runnable fn = () -> {
   // your code here
