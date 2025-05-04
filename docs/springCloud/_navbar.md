@@ -4,6 +4,7 @@
  * [Linux](/linux/)
  * [Extjs](/extjs/)
  * [Java](/java/)
+ * [C++](/cpp/)
  * [数据库](/database/)
  * [设计模式](/designPattern/)
  * [ANTD](/antd/)

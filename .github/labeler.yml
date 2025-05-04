@@ -67,6 +67,9 @@ theme:
 image:
   - docs/images/**
 
+cpp:
+  - docs/cpp/**
+
 automerge:
   - all: [ 'README.md' ]
   - all: [ 'LICENSE' ]
