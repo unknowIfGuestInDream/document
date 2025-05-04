@@ -188,3 +188,14 @@ IDEA导入规则
 
 修改eclipse导入规则
 ![](../../images/eclipse/eclipse26.png)
+
+### 当光标位于括号内时，自动完成括号并插入分号以进行代码换行
+![](../../images/eclipse/eclipse27.png)  
+![](../../images/eclipse/eclipse28.png)
+
+### 将嵌套循环的括号高亮显示括起来
+![](../../images/eclipse/eclipse29.png)  
+![](../../images/eclipse/eclipse30.png)
+
+### 代码模板：通过 Ctrl+空格键自动插入代码模板
+![](../../images/eclipse/eclipse31.png)  
