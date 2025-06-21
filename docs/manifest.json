@@ -1,7 +1,7 @@
 {
   "name": "知识记录",
-  "short_name": "Docs",
-  "start_url": "./index.html",
+  "short_name": "Document",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#42b983",
