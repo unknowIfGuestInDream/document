@@ -1,0 +1,15 @@
+{
+  "name": "知识记录",
+  "short_name": "Docs",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#42b983",
+  "icons": [
+    {
+      "src": "/images/logo.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
