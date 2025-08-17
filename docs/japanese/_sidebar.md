@@ -3,3 +3,34 @@
   - [N3](japanese/n3/README.md)
 - 第三方资源
   - [nippon](japanese/nippon/README.md)
+    - 基础（N5/N4）
+      - [五十音图](japanese/nippon/五十音图.md)
+      - 动词变形
+        - [ます形](japanese/nippon/verb/ます形.md)
+        - [て形](japanese/nippon/verb/て形.md)
+        - [ない形](japanese/nippon/verb/ない形.md)
+        - [可能态](japanese/nippon/verb/可能态.md)
+        - [假定形](japanese/nippon/verb/假定形.md)
+        - [被动形](japanese/nippon/verb/被动形.md)
+        - [使役态](japanese/nippon/verb/使役态.md)
+        - [意志形](japanese/nippon/verb/意志形.md)
+        - [命令形](japanese/nippon/verb/命令形.md)
+        - [禁止形](japanese/nippon/verb/禁止形.md)
+      - 其他词语
+        - [形容词](japanese/nippon/形容词.md)
+        - [形容动词](japanese/nippon/形容动词.md)
+        - [助词](japanese/nippon/助词.md)
+        - [副词](japanese/nippon/副词.md)
+    - 中级语法（N3/N2）
+      - 简体和敬语
+        - [简体](japanese/nippon/简体.md)
+        - [敬语](japanese/nippon/敬语.md)
+      - N2/N3语法
+        - 📘N3
+          - [1单元](japanese/nippon/N3/1/README.md)
+          - [2单元](japanese/nippon/N3/2/README.md)
+          - [3单元](japanese/nippon/N3/3/README.md)
+          - [4单元](japanese/nippon/N3/4/README.md)
+        - 📕N2
+          - [5单元](japanese/nippon/N2/5/README.md)
+          - [6单元](japanese/nippon/N2/6/README.md)
