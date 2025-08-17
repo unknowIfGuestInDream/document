@@ -2,10 +2,10 @@
   - [首页](japanese/README.md)
   - [N3](japanese/n3/README.md)
 - 第三方资源
-  - nippon
-    - 基础（N5/N4）
+  - 📁nippon
+    - 📁基础（N5/N4）
       - [五十音图](japanese/nippon/五十音图.md)
-      - 动词变形
+      - 📁动词变形
         - [ます形](japanese/nippon/verb/ます形.md)
         - [て形](japanese/nippon/verb/て形.md)
         - [ない形](japanese/nippon/verb/ない形.md)
@@ -16,54 +16,54 @@
         - [意志形](japanese/nippon/verb/意志形.md)
         - [命令形](japanese/nippon/verb/命令形.md)
         - [禁止形](japanese/nippon/verb/禁止形.md)
-      - 其他词语
+      - 📁其他词语
         - [形容词](japanese/nippon/形容词.md)
         - [形容动词](japanese/nippon/形容动词.md)
         - [助词](japanese/nippon/助词.md)
         - [副词](japanese/nippon/副词.md)
-    - 中级语法（N3/N2）
-      - 简体和敬语
+    - 📁中级语法（N3/N2）
+      - 📁简体和敬语
         - [简体](japanese/nippon/简体.md)
         - [敬语](japanese/nippon/敬语.md)
-      - N2/N3语法
+      - 📁N2/N3语法
         - 📘N3
-          - 1单元
+          - 📁1单元
             - [1单元-1](japanese/nippon/N3/1/1.md)
             - [1单元-2](japanese/nippon/N3/1/2.md)
             - [1单元-3](japanese/nippon/N3/1/3.md)
             - [1单元-4](japanese/nippon/N3/1/4.md)
-          - 2单元
+          - 📁2单元
             - [2单元-5](japanese/nippon/N3/2/5.md)
             - [2单元-6](japanese/nippon/N3/2/6.md)
             - [2单元-7](japanese/nippon/N3/2/7.md)
             - [2单元-8](japanese/nippon/N3/2/8.md)
-          - 3单元
+          - 📁3单元
             - [3单元-9](japanese/nippon/N3/3/9.md)
             - [3单元-10](japanese/nippon/N3/3/10.md)
             - [3单元-11](japanese/nippon/N3/3/11.md)
             - [3单元-12](japanese/nippon/N3/3/12.md)
-          - 4单元
+          - 📁4单元
             - [4单元-13](japanese/nippon/N3/4/13.md)
             - [4单元-14](japanese/nippon/N3/4/14.md)
             - [4单元-15](japanese/nippon/N3/4/15.md)
             - [4单元-16](japanese/nippon/N3/4/16.md)
         - 📕N2
-          - 5单元
+          - 📁5单元
             - [5单元-17](japanese/nippon/N2/5/17.md)
             - [5单元-18](japanese/nippon/N2/5/18.md)
             - [5单元-19](japanese/nippon/N2/5/19.md)
             - [5单元-20](japanese/nippon/N2/5/20.md)
-          - 6单元
+          - 📁6单元
             - [6单元-21](japanese/nippon/N2/6/21.md)
             - [6单元-22](japanese/nippon/N2/6/22.md)
             - [6单元-23](japanese/nippon/N2/6/23.md)
             - [6单元-24](japanese/nippon/N2/6/24.md)
-          - 7单元
+          - 📁7单元
             - [7单元-25](japanese/nippon/N2/7/25.md)
             - [7单元-26](japanese/nippon/N2/7/26.md)
             - [7单元-27](japanese/nippon/N2/7/27.md)
             - [7单元-28](japanese/nippon/N2/7/28.md)
-          - 8单元
+          - 📁8单元
             - [8单元-29](japanese/nippon/N2/8/29.md)
             - [8单元-30](japanese/nippon/N2/8/30.md)
             - [8单元-31](japanese/nippon/N2/8/31.md)
