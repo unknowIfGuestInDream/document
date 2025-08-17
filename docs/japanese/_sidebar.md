@@ -1,3 +1,5 @@
 - 日语
   - [首页](japanese/README.md)
   - [N3](japanese/n3/README.md)
+- 第三方资源
+  - [nippon](japanese/nippon/README.md)
