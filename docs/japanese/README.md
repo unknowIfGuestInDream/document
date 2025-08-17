@@ -11,3 +11,6 @@
 [第2课](junior/2.md ':include')
 
 [第25课](junior/25.md ':include')
+
+## 第三方资源
+[nippon](nippon/README.md ':include')

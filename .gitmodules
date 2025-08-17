@@ -1,0 +1,3 @@
+[submodule "docs/japanese/nippon"]
+	path = docs/japanese/nippon
+	url = https://github.com/xinwu-yang/nippon
