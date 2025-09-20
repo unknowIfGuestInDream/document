@@ -24,5 +24,6 @@
   - [Java11相对于8的新特性](java/other/JavaCompair.md)
   - [Java17相对于11的新特性](java/other/JavaCompair11.md)
   - [Java21新特性](java/other/JavaCompair21.md)
+  - [Java25新特性](java/other/JavaCompair25.md)
   - [更多](java/other/More.md)
 
