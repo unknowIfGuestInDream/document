@@ -702,6 +702,560 @@ public class MyNature implements IProjectNature {
 - 实现团队协作功能
 - 管理代码仓库
 
+## PDE 扩展点
+
+PDE (Plug-in Development Environment) 提供了一系列扩展点，用于扩展插件开发环境的能力。以下是 PDE 的主要扩展点：
+
+### 1. org.eclipse.ui.trace.traceComponents
+
+定义跟踪组件，用于调试和跟踪插件运行。
+
+```xml
+<extension point="org.eclipse.ui.trace.traceComponents">
+   <component
+      id="com.example.trace"
+      label="Example Trace Component">
+      <bundle
+         name="com.example.plugin"
+         consumed="false">
+      </bundle>
+   </component>
+</extension>
+```
+
+**用途**:
+- 启用插件运行时跟踪
+- 调试插件行为
+- 性能分析和诊断
+
+### 2. org.eclipse.pde.build.fetchFactories
+
+定义获取工厂，用于从版本控制系统获取源代码。
+
+```xml
+<extension point="org.eclipse.pde.build.fetchFactories">
+   <factory
+      id="com.example.fetchFactory"
+      class="com.example.build.MyFetchFactory">
+   </factory>
+</extension>
+```
+
+**Java 实现**:
+
+```java
+public class MyFetchFactory implements IFetchFactory {
+    
+    @Override
+    public void generateRetrieveElementCall(
+            Map<String, Object> entryInfos,
+            IPath destination,
+            Map<String, Object> buildProperties) {
+        // 实现从版本控制系统获取代码的逻辑
+        String cvstag = (String) entryInfos.get("tag");
+        String cvsroot = (String) entryInfos.get("cvsRoot");
+        // ... 获取代码
+    }
+    
+    @Override
+    public void generateRetrieveFilesCall(
+            Map<String, Object> entryInfos,
+            IPath destination,
+            String[] files,
+            Map<String, Object> buildProperties) {
+        // 实现获取特定文件的逻辑
+    }
+}
+```
+
+**用途**:
+- 支持自定义版本控制系统
+- 自动化构建过程中的代码获取
+- 集成企业内部的源代码管理工具
+
+### 3. org.eclipse.pde.core.bundleClasspathResolvers
+
+定义 Bundle 类路径解析器，用于解析和管理插件的类路径。
+
+```xml
+<extension point="org.eclipse.pde.core.bundleClasspathResolvers">
+   <resolver
+      nature="com.example.nature"
+      class="com.example.pde.MyClasspathResolver">
+   </resolver>
+</extension>
+```
+
+**Java 实现**:
+
+```java
+public class MyClasspathResolver implements IBundleClasspathResolver {
+    
+    @Override
+    public IClasspathEntry[] getAdditionalClasspathEntries(
+            BundleDescription bundleDescription,
+            IProgressMonitor monitor) {
+        List<IClasspathEntry> entries = new ArrayList<>();
+        
+        // 添加自定义类路径条目
+        IPath libraryPath = new Path("/path/to/library.jar");
+        IClasspathEntry entry = JavaCore.newLibraryEntry(
+            libraryPath,
+            null,  // source attachment
+            null   // source attachment root
+        );
+        entries.add(entry);
+        
+        return entries.toArray(new IClasspathEntry[0]);
+    }
+}
+```
+
+**用途**:
+- 解析外部依赖库
+- 自定义类路径管理
+- 支持特殊的库加载需求
+
+### 4. org.eclipse.pde.core.javadoc
+
+定义 Javadoc 位置，用于关联插件的 API 文档。
+
+```xml
+<extension point="org.eclipse.pde.core.javadoc">
+   <javadoc
+      path="doc/api">
+      <plugin id="com.example.plugin"/>
+   </javadoc>
+</extension>
+```
+
+**用途**:
+- 提供 API 文档链接
+- 改善开发体验
+- 支持代码提示和帮助
+
+### 5. org.eclipse.pde.core.pluginClasspathContributors
+
+定义插件类路径贡献者，用于向插件添加额外的类路径条目。
+
+```xml
+<extension point="org.eclipse.pde.core.pluginClasspathContributors">
+   <contributor
+      class="com.example.pde.MyClasspathContributor">
+   </contributor>
+</extension>
+```
+
+**Java 实现**:
+
+```java
+public class MyClasspathContributor implements IClasspathContributor {
+    
+    @Override
+    public List<IClasspathEntry> getInitialEntries(
+            BundleDescription bundleDescription) {
+        List<IClasspathEntry> entries = new ArrayList<>();
+        
+        // 根据插件配置添加类路径
+        String extraLibs = bundleDescription.getUserObject();
+        if (extraLibs != null) {
+            // 解析并添加额外的库
+            IPath path = new Path(extraLibs);
+            entries.add(JavaCore.newLibraryEntry(path, null, null));
+        }
+        
+        return entries;
+    }
+    
+    @Override
+    public List<IClasspathEntry> getEntriesForDependency(
+            BundleDescription project,
+            BundleDescription addedDependency) {
+        // 为依赖项添加类路径条目
+        return Collections.emptyList();
+    }
+}
+```
+
+**用途**:
+- 动态添加类路径依赖
+- 支持复杂的依赖管理
+- 集成第三方库
+
+### 6. org.eclipse.pde.core.source
+
+定义源代码位置，用于关联插件的源代码。
+
+```xml
+<extension point="org.eclipse.pde.core.source">
+   <location
+      path="src">
+      <plugin id="com.example.plugin"/>
+   </location>
+</extension>
+```
+
+**用途**:
+- 提供源代码调试支持
+- 改善开发体验
+- 支持源代码浏览
+
+### 7. org.eclipse.pde.core.targetLocations
+
+定义目标平台位置，用于配置插件的运行环境。
+
+```xml
+<extension point="org.eclipse.pde.core.targetLocations">
+   <location
+      id="com.example.targetLocation"
+      name="Example Target Location"
+      class="com.example.pde.MyTargetLocation">
+   </location>
+</extension>
+```
+
+**Java 实现**:
+
+```java
+public class MyTargetLocation extends AbstractBundleContainer {
+    
+    @Override
+    protected TargetBundle[] resolveBundles(
+            ITargetDefinition definition,
+            IProgressMonitor monitor) throws CoreException {
+        List<TargetBundle> bundles = new ArrayList<>();
+        
+        // 从自定义位置解析 Bundle
+        // 例如：从远程仓库、数据库等
+        File bundleFile = new File("/path/to/bundle.jar");
+        if (bundleFile.exists()) {
+            TargetBundle bundle = new TargetBundle(bundleFile);
+            bundles.add(bundle);
+        }
+        
+        return bundles.toArray(new TargetBundle[0]);
+    }
+    
+    @Override
+    public String getType() {
+        return "MyTargetLocation";
+    }
+    
+    @Override
+    public String getLocation(boolean resolve) throws CoreException {
+        return "/custom/target/location";
+    }
+}
+```
+
+**用途**:
+- 自定义目标平台源
+- 支持企业内部的插件仓库
+- 灵活配置运行环境
+
+### 8. org.eclipse.pde.core.targets
+
+定义目标平台定义，用于配置完整的目标平台。
+
+```xml
+<extension point="org.eclipse.pde.core.targets">
+   <target
+      id="com.example.target"
+      name="Example Target"
+      definition="targets/example.target">
+   </target>
+</extension>
+```
+
+**目标定义文件示例** (example.target):
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<target name="Example Target" sequenceNumber="1">
+   <locations>
+      <location includeAllPlatforms="false" includeConfigurePhase="false" 
+                includeMode="planner" includeSource="true" type="InstallableUnit">
+         <unit id="org.eclipse.platform.feature.group" version="0.0.0"/>
+         <repository location="https://download.eclipse.org/releases/latest"/>
+      </location>
+   </locations>
+</target>
+```
+
+**用途**:
+- 预定义目标平台配置
+- 标准化开发环境
+- 简化项目设置
+
+### 9. org.eclipse.pde.ui.launchShortcuts
+
+定义启动快捷方式，用于快速启动特定类型的应用程序。
+
+```xml
+<extension point="org.eclipse.pde.ui.launchShortcuts">
+   <shortcut
+      id="com.example.launchShortcut"
+      class="com.example.ui.MyLaunchShortcut"
+      label="Run as My Application"
+      icon="icons/launch.png"
+      modes="run, debug">
+      <contextualLaunch>
+         <enablement>
+            <with variable="selection">
+               <count value="1"/>
+               <iterate>
+                  <adapt type="org.eclipse.core.resources.IProject">
+                     <test property="org.eclipse.core.resources.projectNature"
+                           value="com.example.nature"/>
+                  </adapt>
+               </iterate>
+            </with>
+         </enablement>
+      </contextualLaunch>
+   </shortcut>
+</extension>
+```
+
+**Java 实现**:
+
+```java
+public class MyLaunchShortcut implements ILaunchShortcut {
+    
+    @Override
+    public void launch(ISelection selection, String mode) {
+        if (selection instanceof IStructuredSelection) {
+            IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+            Object element = structuredSelection.getFirstElement();
+            
+            if (element instanceof IProject) {
+                launchProject((IProject) element, mode);
+            }
+        }
+    }
+    
+    @Override
+    public void launch(IEditorPart editor, String mode) {
+        IFile file = editor.getEditorInput().getAdapter(IFile.class);
+        if (file != null) {
+            launchProject(file.getProject(), mode);
+        }
+    }
+    
+    private void launchProject(IProject project, String mode) {
+        try {
+            // 创建或获取启动配置
+            ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
+            ILaunchConfigurationType type = manager.getLaunchConfigurationType(
+                "com.example.launchConfigType"
+            );
+            
+            ILaunchConfiguration[] configs = manager.getLaunchConfigurations(type);
+            ILaunchConfiguration config = null;
+            
+            // 查找已有配置或创建新配置
+            for (ILaunchConfiguration c : configs) {
+                if (c.getAttribute("project", "").equals(project.getName())) {
+                    config = c;
+                    break;
+                }
+            }
+            
+            if (config == null) {
+                ILaunchConfigurationWorkingCopy workingCopy = type.newInstance(
+                    null,
+                    manager.generateLaunchConfigurationName(project.getName())
+                );
+                workingCopy.setAttribute("project", project.getName());
+                config = workingCopy.doSave();
+            }
+            
+            // 启动
+            DebugUITools.launch(config, mode);
+            
+        } catch (CoreException e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+**用途**:
+- 提供快速启动入口
+- 简化应用程序启动流程
+- 改善用户体验
+
+### 10. org.eclipse.pde.ui.newExtension
+
+定义新扩展向导，用于帮助用户创建新的扩展点贡献。
+
+```xml
+<extension point="org.eclipse.pde.ui.newExtension">
+   <wizard
+      id="com.example.newExtensionWizard"
+      name="Example Extension"
+      icon="icons/extension.png"
+      category="com.example.category"
+      class="com.example.ui.NewExtensionWizard"
+      point="com.example.extensionPoint">
+   </wizard>
+</extension>
+```
+
+**Java 实现**:
+
+```java
+public class NewExtensionWizard extends BaseExtensionPointMainPage {
+    
+    @Override
+    public void addPages() {
+        addPage(new NewExtensionWizardPage());
+    }
+    
+    class NewExtensionWizardPage extends WizardPage {
+        
+        private Text nameText;
+        private Text classText;
+        
+        protected NewExtensionWizardPage() {
+            super("newExtensionPage");
+            setTitle("新建扩展");
+            setDescription("创建一个新的扩展点贡献");
+        }
+        
+        @Override
+        public void createControl(Composite parent) {
+            Composite container = new Composite(parent, SWT.NULL);
+            container.setLayout(new GridLayout(2, false));
+            
+            Label nameLabel = new Label(container, SWT.NULL);
+            nameLabel.setText("名称:");
+            
+            nameText = new Text(container, SWT.BORDER | SWT.SINGLE);
+            nameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            
+            Label classLabel = new Label(container, SWT.NULL);
+            classLabel.setText("类:");
+            
+            classText = new Text(container, SWT.BORDER | SWT.SINGLE);
+            classText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            
+            setControl(container);
+        }
+    }
+    
+    @Override
+    public boolean performFinish() {
+        try {
+            // 在 plugin.xml 中添加扩展配置
+            IPluginModelBase model = getPluginModel();
+            IPluginExtension extension = model.getPluginFactory().createExtension();
+            extension.setPoint("com.example.extensionPoint");
+            
+            IPluginElement element = model.getFactory().createElement(extension);
+            element.setName("example");
+            element.setAttribute("name", nameText.getText());
+            element.setAttribute("class", classText.getText());
+            
+            extension.add(element);
+            model.getPluginBase().add(extension);
+            
+            return true;
+        } catch (CoreException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+}
+```
+
+**用途**:
+- 简化扩展点使用
+- 提供向导式创建流程
+- 减少配置错误
+
+## PDE 扩展点使用场景
+
+### 开发工具增强
+
+结合使用多个 PDE 扩展点可以创建强大的开发工具：
+
+```xml
+<!-- 完整的 PDE 工具链 -->
+
+<!-- 1. 自定义启动快捷方式 -->
+<extension point="org.eclipse.pde.ui.launchShortcuts">
+   <shortcut
+      id="com.example.launch"
+      class="com.example.MyLaunchShortcut"
+      label="Run My App"
+      modes="run, debug">
+   </shortcut>
+</extension>
+
+<!-- 2. 类路径贡献 -->
+<extension point="org.eclipse.pde.core.pluginClasspathContributors">
+   <contributor class="com.example.MyClasspathContributor"/>
+</extension>
+
+<!-- 3. 目标平台位置 -->
+<extension point="org.eclipse.pde.core.targetLocations">
+   <location
+      id="com.example.target"
+      class="com.example.MyTargetLocation">
+   </location>
+</extension>
+
+<!-- 4. 扩展向导 -->
+<extension point="org.eclipse.pde.ui.newExtension">
+   <wizard
+      id="com.example.wizard"
+      name="New Extension"
+      class="com.example.NewExtensionWizard"
+      point="com.example.extensionPoint">
+   </wizard>
+</extension>
+```
+
+### 调试和跟踪
+
+```xml
+<!-- 启用跟踪支持 -->
+<extension point="org.eclipse.ui.trace.traceComponents">
+   <component
+      id="com.example.trace"
+      label="Example Component Trace">
+      <bundle name="com.example.plugin">
+         <trace option="debug" label="Debug Mode">
+            <description>
+               启用详细的调试输出
+            </description>
+         </trace>
+         <trace option="performance" label="Performance">
+            <description>
+               记录性能指标
+            </description>
+         </trace>
+      </bundle>
+   </component>
+</extension>
+```
+
+**使用跟踪选项**:
+
+```java
+// 在代码中检查跟踪选项
+if (Platform.getDebugOption("com.example.plugin/debug") != null) {
+    System.out.println("Debug mode enabled");
+}
+
+if (Platform.getDebugOption("com.example.plugin/performance") != null) {
+    long startTime = System.currentTimeMillis();
+    // 执行操作
+    long endTime = System.currentTimeMillis();
+    System.out.println("Operation took: " + (endTime - startTime) + "ms");
+}
+```
+
 ## 扩展点使用建议
 
 ### 选择合适的扩展点
@@ -711,6 +1265,7 @@ public class MyNature implements IProjectNature {
 3. **运行时配置**: 使用 `org.eclipse.core.runtime.*` 扩展点
 4. **调试支持**: 使用 `org.eclipse.debug.*` 扩展点
 5. **帮助系统**: 使用 `org.eclipse.help.*` 扩展点
+6. **插件开发**: 使用 `org.eclipse.pde.*` 扩展点
 
 ### 扩展点组合使用
 
