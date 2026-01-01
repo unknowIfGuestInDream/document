@@ -702,6 +702,739 @@ public class MyNature implements IProjectNature {
 - 实现团队协作功能
 - 管理代码仓库
 
+### 补充 Workspace 扩展点
+
+#### org.eclipse.core.resources.filterMatchers
+
+定义资源过滤匹配器，用于过滤工作空间中的资源。
+
+```xml
+<extension point="org.eclipse.core.resources.filterMatchers">
+   <filterMatcher
+      id="com.example.myFilterMatcher"
+      name="My Filter Matcher"
+      class="com.example.filters.MyFilterMatcher"
+      argumentType="string">
+   </filterMatcher>
+</extension>
+```
+
+**用途**:
+- 自定义资源过滤规则
+- 隐藏特定文件或目录
+- 实现复杂的过滤逻辑
+
+#### org.eclipse.core.resources.modelProviders
+
+定义模型提供者，用于管理资源模型。
+
+```xml
+<extension point="org.eclipse.core.resources.modelProviders">
+   <modelProvider
+      class="com.example.models.MyModelProvider">
+      <enablement>
+         <with variable="projectNature">
+            <equals value="com.example.nature"/>
+         </with>
+      </enablement>
+   </modelProvider>
+</extension>
+```
+
+**用途**:
+- 提供资源模型抽象
+- 支持团队操作
+- 管理资源状态
+
+#### org.eclipse.core.resources.moveDeleteHook
+
+定义移动/删除钩子，用于在资源移动或删除时执行自定义逻辑。
+
+```xml
+<extension point="org.eclipse.core.resources.moveDeleteHook">
+   <moveDeleteHook
+      class="com.example.hooks.MyMoveDeleteHook">
+   </moveDeleteHook>
+</extension>
+```
+
+**Java 实现**:
+
+```java
+public class MyMoveDeleteHook implements IMoveDeleteHook {
+    
+    @Override
+    public boolean deleteFile(IResourceTree tree, IFile file,
+                             int updateFlags, IProgressMonitor monitor) {
+        // 在文件删除前执行自定义逻辑
+        System.out.println("准备删除文件: " + file.getName());
+        return false; // 返回 false 表示继续默认删除操作
+    }
+    
+    @Override
+    public boolean deleteFolder(IResourceTree tree, IFolder folder,
+                               int updateFlags, IProgressMonitor monitor) {
+        // 在文件夹删除前执行自定义逻辑
+        return false;
+    }
+    
+    @Override
+    public boolean deleteProject(IResourceTree tree, IProject project,
+                                int updateFlags, IProgressMonitor monitor) {
+        // 在项目删除前执行自定义逻辑
+        return false;
+    }
+    
+    @Override
+    public boolean moveFile(IResourceTree tree, IFile source,
+                           IFile destination, int updateFlags,
+                           IProgressMonitor monitor) {
+        // 在文件移动前执行自定义逻辑
+        return false;
+    }
+    
+    @Override
+    public boolean moveFolder(IResourceTree tree, IFolder source,
+                             IFolder destination, int updateFlags,
+                             IProgressMonitor monitor) {
+        // 在文件夹移动前执行自定义逻辑
+        return false;
+    }
+    
+    @Override
+    public boolean moveProject(IResourceTree tree, IProject source,
+                              IProjectDescription description,
+                              int updateFlags, IProgressMonitor monitor) {
+        // 在项目移动前执行自定义逻辑
+        return false;
+    }
+}
+```
+
+**用途**:
+- 拦截资源删除操作
+- 拦截资源移动操作
+- 实现自定义清理逻辑
+
+#### org.eclipse.core.resources.refreshProviders
+
+定义刷新提供者，用于自动刷新工作空间资源。
+
+```xml
+<extension point="org.eclipse.core.resources.refreshProviders">
+   <refreshProvider
+      name="My Refresh Provider"
+      class="com.example.refresh.MyRefreshProvider">
+   </refreshProvider>
+</extension>
+```
+
+**用途**:
+- 监控文件系统变化
+- 自动刷新工作空间
+- 同步外部变更
+
+#### org.eclipse.core.resources.teamHook
+
+定义团队钩子，用于集成版本控制系统。
+
+```xml
+<extension point="org.eclipse.core.resources.teamHook">
+   <teamHook
+      class="com.example.team.MyTeamHook">
+   </teamHook>
+</extension>
+```
+
+**用途**:
+- 集成版本控制系统
+- 处理团队操作
+- 管理资源同步
+
+#### org.eclipse.core.resources.variableResolvers
+
+定义变量解析器，用于解析路径变量。
+
+```xml
+<extension point="org.eclipse.core.resources.variableResolvers">
+   <variableResolver
+      variable="MY_VAR"
+      class="com.example.resolvers.MyVariableResolver">
+   </variableResolver>
+</extension>
+```
+
+**Java 实现**:
+
+```java
+public class MyVariableResolver implements IStringVariableResolver {
+    
+    @Override
+    public String resolveValue(IStringVariable variable, String argument)
+            throws CoreException {
+        // 解析变量值
+        if ("MY_VAR".equals(variable.getName())) {
+            return "/path/to/resource";
+        }
+        return null;
+    }
+}
+```
+
+**用途**:
+- 定义自定义路径变量
+- 动态解析资源路径
+- 支持可移植项目配置
+
+## Platform Text 扩展点
+
+Platform Text 提供了丰富的文本编辑功能扩展点，用于增强文本编辑器的能力。
+
+### File Buffers
+
+#### org.eclipse.core.filebuffers.annotationModelCreation
+
+定义注解模型创建器，用于为文件缓冲区创建注解模型。
+
+```xml
+<extension point="org.eclipse.core.filebuffers.annotationModelCreation">
+   <factory
+      class="com.example.text.MyAnnotationModelFactory"
+      contentTypeId="org.eclipse.core.runtime.text">
+   </factory>
+</extension>
+```
+
+**用途**:
+- 创建自定义注解模型
+- 管理文档注解
+- 支持错误标记显示
+
+#### org.eclipse.core.filebuffers.documentCreation
+
+定义文档创建器，用于创建特定类型的文档。
+
+```xml
+<extension point="org.eclipse.core.filebuffers.documentCreation">
+   <factory
+      class="com.example.text.MyDocumentFactory"
+      contentTypeId="com.example.myContentType">
+   </factory>
+</extension>
+```
+
+**用途**:
+- 创建自定义文档类型
+- 支持特殊文档格式
+- 实现文档初始化逻辑
+
+#### org.eclipse.core.filebuffers.documentSetup
+
+定义文档设置参与者，用于配置文档属性。
+
+```xml
+<extension point="org.eclipse.core.filebuffers.documentSetup">
+   <participant
+      class="com.example.text.MyDocumentSetupParticipant"
+      contentTypeId="com.example.myContentType">
+   </participant>
+</extension>
+```
+
+**用途**:
+- 配置文档分区
+- 设置文档属性
+- 初始化文档结构
+
+### Editors
+
+#### org.eclipse.ui.editors.annotationTypes
+
+定义注解类型，用于在编辑器中显示特定类型的注解。
+
+```xml
+<extension point="org.eclipse.ui.editors.annotationTypes">
+   <type
+      name="com.example.myAnnotation"
+      super="org.eclipse.ui.workbench.texteditor.error"
+      markerType="com.example.myMarker"
+      markerSeverity="2">
+   </type>
+</extension>
+```
+
+**用途**:
+- 定义错误、警告、信息注解
+- 关联标记类型
+- 配置注解显示
+
+#### org.eclipse.ui.editors.documentProviders
+
+定义文档提供者，用于管理编辑器文档。
+
+```xml
+<extension point="org.eclipse.ui.editors.documentProviders">
+   <provider
+      class="com.example.editors.MyDocumentProvider"
+      extensions="myext">
+   </provider>
+</extension>
+```
+
+**用途**:
+- 提供文档内容
+- 管理文档持久化
+- 处理文档保存
+
+#### org.eclipse.ui.editors.markerAnnotationSpecification
+
+定义标记注解规范，用于配置标记在编辑器中的显示。
+
+```xml
+<extension point="org.eclipse.ui.editors.markerAnnotationSpecification">
+   <specification
+      annotationType="com.example.myAnnotation"
+      label="My Annotation"
+      icon="icons/marker.png"
+      textPreferenceKey="myAnnotationText"
+      textPreferenceValue="true"
+      highlightPreferenceKey="myAnnotationHighlight"
+      highlightPreferenceValue="false"
+      colorPreferenceKey="myAnnotationColor"
+      colorPreferenceValue="255,0,0"
+      presentationLayer="5"
+      overviewRulerPreferenceKey="myAnnotationOverview"
+      overviewRulerPreferenceValue="true"
+      verticalRulerPreferenceKey="myAnnotationRuler"
+      verticalRulerPreferenceValue="true">
+   </specification>
+</extension>
+```
+
+**用途**:
+- 配置注解显示样式
+- 设置注解颜色和图标
+- 控制注解在标尺中的显示
+
+#### org.eclipse.ui.editors.markerUpdaters
+
+定义标记更新器，用于在文档变更时更新标记位置。
+
+```xml
+<extension point="org.eclipse.ui.editors.markerUpdaters">
+   <updater
+      class="com.example.editors.MyMarkerUpdater"
+      markerType="com.example.myMarker">
+   </updater>
+</extension>
+```
+
+**用途**:
+- 更新标记位置
+- 处理文档编辑
+- 保持标记同步
+
+#### org.eclipse.ui.editors.templates
+
+定义代码模板，用于快速插入常用代码片段。
+
+```xml
+<extension point="org.eclipse.ui.editors.templates">
+   <contextType
+      id="com.example.templates.context"
+      name="My Template Context"
+      class="com.example.templates.MyContextType">
+   </contextType>
+   <template
+      id="com.example.template1"
+      name="My Template"
+      description="Insert my code template"
+      contextTypeId="com.example.templates.context"
+      pattern="public class ${className} {&#x0A;    ${cursor}&#x0A;}">
+   </template>
+</extension>
+```
+
+**用途**:
+- 提供代码片段
+- 支持模板变量
+- 加速代码编写
+
+### Generic Editor
+
+#### org.eclipse.ui.genericeditor.autoEditStrategies
+
+定义自动编辑策略，用于在输入时自动格式化代码。
+
+```xml
+<extension point="org.eclipse.ui.genericeditor.autoEditStrategies">
+   <autoEditStrategy
+      class="com.example.editor.MyAutoEditStrategy"
+      contentType="com.example.myContentType">
+   </autoEditStrategy>
+</extension>
+```
+
+**用途**:
+- 自动缩进
+- 自动闭合括号
+- 智能换行
+
+#### org.eclipse.ui.genericeditor.characterPairMatchers
+
+定义字符配对匹配器，用于高亮显示配对的字符。
+
+```xml
+<extension point="org.eclipse.ui.genericeditor.characterPairMatchers">
+   <characterPairMatcher
+      class="com.example.editor.MyCharacterPairMatcher"
+      contentType="com.example.myContentType">
+   </characterPairMatcher>
+</extension>
+```
+
+**用途**:
+- 高亮配对括号
+- 支持跳转到匹配字符
+- 提供括号匹配提示
+
+#### org.eclipse.ui.genericeditor.contentAssistProcessors
+
+定义内容辅助处理器，用于提供代码补全建议。
+
+```xml
+<extension point="org.eclipse.ui.genericeditor.contentAssistProcessors">
+   <contentAssistProcessor
+      class="com.example.editor.MyContentAssistProcessor"
+      contentType="com.example.myContentType">
+   </contentAssistProcessor>
+</extension>
+```
+
+**Java 实现**:
+
+```java
+public class MyContentAssistProcessor implements IContentAssistProcessor {
+    
+    @Override
+    public ICompletionProposal[] computeCompletionProposals(
+            ITextViewer viewer, int offset) {
+        List<ICompletionProposal> proposals = new ArrayList<>();
+        
+        // 添加补全建议
+        proposals.add(new CompletionProposal(
+            "public", offset, 0, 6,
+            null, "public", null, "Public modifier"
+        ));
+        
+        return proposals.toArray(new ICompletionProposal[0]);
+    }
+    
+    @Override
+    public IContextInformation[] computeContextInformation(
+            ITextViewer viewer, int offset) {
+        return null;
+    }
+    
+    @Override
+    public char[] getCompletionProposalAutoActivationCharacters() {
+        return new char[] { '.' };
+    }
+    
+    @Override
+    public char[] getContextInformationAutoActivationCharacters() {
+        return null;
+    }
+    
+    @Override
+    public String getErrorMessage() {
+        return null;
+    }
+    
+    @Override
+    public IContextInformationValidator getContextInformationValidator() {
+        return null;
+    }
+}
+```
+
+**用途**:
+- 提供代码补全
+- 智能提示
+- 上下文感知建议
+
+#### org.eclipse.ui.genericeditor.foldingReconcilers
+
+定义折叠调节器，用于支持代码折叠功能。
+
+```xml
+<extension point="org.eclipse.ui.genericeditor.foldingReconcilers">
+   <foldingReconciler
+      class="com.example.editor.MyFoldingReconciler"
+      contentType="com.example.myContentType">
+   </foldingReconciler>
+</extension>
+```
+
+**用途**:
+- 实现代码折叠
+- 定义折叠区域
+- 改善大文件阅读体验
+
+#### org.eclipse.ui.genericeditor.highlightReconcilers
+
+定义高亮调节器，用于语法高亮。
+
+```xml
+<extension point="org.eclipse.ui.genericeditor.highlightReconcilers">
+   <highlightReconciler
+      class="com.example.editor.MyHighlightReconciler"
+      contentType="com.example.myContentType">
+   </highlightReconciler>
+</extension>
+```
+
+**用途**:
+- 实现语法高亮
+- 高亮显示关键字
+- 提供视觉反馈
+
+#### org.eclipse.ui.genericeditor.hoverProviders
+
+定义悬停提供者，用于显示悬停提示信息。
+
+```xml
+<extension point="org.eclipse.ui.genericeditor.hoverProviders">
+   <hoverProvider
+      class="com.example.editor.MyHoverProvider"
+      contentType="com.example.myContentType">
+   </hoverProvider>
+</extension>
+```
+
+**用途**:
+- 显示文档提示
+- 提供快速信息
+- 显示错误详情
+
+#### org.eclipse.ui.genericeditor.icons
+
+定义图标提供者，用于在编辑器中显示图标。
+
+```xml
+<extension point="org.eclipse.ui.genericeditor.icons">
+   <icon
+      class="com.example.editor.MyIconProvider"
+      contentType="com.example.myContentType">
+   </icon>
+</extension>
+```
+
+**用途**:
+- 在编辑器标尺显示图标
+- 标识特殊行
+- 提供视觉标记
+
+#### org.eclipse.ui.genericeditor.presentationReconcilers
+
+定义呈现调节器，用于管理文本样式。
+
+```xml
+<extension point="org.eclipse.ui.genericeditor.presentationReconcilers">
+   <presentationReconciler
+      class="com.example.editor.MyPresentationReconciler"
+      contentType="com.example.myContentType">
+   </presentationReconciler>
+</extension>
+```
+
+**用途**:
+- 管理文本样式
+- 实现语法着色
+- 配置文本显示
+
+#### org.eclipse.ui.genericeditor.reconcilers
+
+定义调节器，用于后台分析文档。
+
+```xml
+<extension point="org.eclipse.ui.genericeditor.reconcilers">
+   <reconciler
+      class="com.example.editor.MyReconciler"
+      contentType="com.example.myContentType">
+   </reconciler>
+</extension>
+```
+
+**用途**:
+- 后台语法检查
+- 实时错误检测
+- 增量分析
+
+#### org.eclipse.ui.genericeditor.quickAssistProcessors
+
+定义快速辅助处理器，用于提供快速修复建议。
+
+```xml
+<extension point="org.eclipse.ui.genericeditor.quickAssistProcessors">
+   <quickAssistProcessor
+      class="com.example.editor.MyQuickAssistProcessor"
+      contentType="com.example.myContentType">
+   </quickAssistProcessor>
+</extension>
+```
+
+**用途**:
+- 提供快速修复
+- 代码重构建议
+- 自动修正错误
+
+#### org.eclipse.ui.genericeditor.textDoubleClickStrategies
+
+定义双击策略，用于自定义双击选择行为。
+
+```xml
+<extension point="org.eclipse.ui.genericeditor.textDoubleClickStrategies">
+   <textDoubleClickStrategy
+      class="com.example.editor.MyDoubleClickStrategy"
+      contentType="com.example.myContentType">
+   </textDoubleClickStrategy>
+</extension>
+```
+
+**用途**:
+- 自定义双击选择
+- 智能选择单词
+- 选择语法元素
+
+### Text Editor
+
+#### org.eclipse.ui.workbench.texteditor.codeMiningProviders
+
+定义代码挖掘提供者，用于在编辑器中显示内联提示。
+
+```xml
+<extension point="org.eclipse.ui.workbench.texteditor.codeMiningProviders">
+   <codeMiningProvider
+      class="com.example.editor.MyCodeMiningProvider"
+      label="My Code Mining">
+      <enabledWhen>
+         <with variable="editorInput">
+            <adapt type="org.eclipse.core.resources.IFile">
+               <test property="org.eclipse.core.resources.extension"
+                     value="java"/>
+            </adapt>
+         </with>
+      </enabledWhen>
+   </codeMiningProvider>
+</extension>
+```
+
+**用途**:
+- 显示方法引用计数
+- 显示参数提示
+- 提供内联信息
+
+#### org.eclipse.ui.workbench.texteditor.hyperlinkDetectors
+
+定义超链接检测器，用于在编辑器中创建可点击的链接。
+
+```xml
+<extension point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectors">
+   <hyperlinkDetector
+      id="com.example.hyperlinkDetector"
+      name="My Hyperlink Detector"
+      class="com.example.editor.MyHyperlinkDetector"
+      targetId="com.example.editor">
+   </hyperlinkDetector>
+</extension>
+```
+
+**用途**:
+- 创建导航链接
+- 支持跳转到定义
+- 打开相关资源
+
+#### org.eclipse.ui.workbench.texteditor.hyperlinkDetectorTargets
+
+定义超链接检测器目标，用于组织超链接检测器。
+
+```xml
+<extension point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectorTargets">
+   <target
+      id="com.example.hyperlinkTarget"
+      name="My Hyperlink Target"
+      description="Target for my hyperlink detectors">
+   </target>
+</extension>
+```
+
+**用途**:
+- 组织超链接检测器
+- 定义检测器作用域
+- 管理链接类型
+
+#### org.eclipse.ui.workbench.texteditor.rulerColumns
+
+定义标尺列，用于在编辑器标尺中显示自定义列。
+
+```xml
+<extension point="org.eclipse.ui.workbench.texteditor.rulerColumns">
+   <column
+      id="com.example.rulerColumn"
+      name="My Ruler Column"
+      class="com.example.editor.MyRulerColumn"
+      enabled="true"
+      global="true"
+      includeInMenu="true">
+   </column>
+</extension>
+```
+
+**用途**:
+- 显示自定义标尺列
+- 添加行号显示
+- 提供额外信息栏
+
+#### org.eclipse.ui.workbench.texteditor.quickDiffReferenceProvider
+
+定义快速差异参考提供者，用于显示文档变更。
+
+```xml
+<extension point="org.eclipse.ui.workbench.texteditor.quickDiffReferenceProvider">
+   <referenceprovider
+      id="com.example.quickDiffProvider"
+      label="My Quick Diff Provider"
+      class="com.example.editor.MyQuickDiffProvider">
+   </referenceprovider>
+</extension>
+```
+
+**用途**:
+- 显示文档变更
+- 对比原始版本
+- 提供差异视图
+
+#### org.eclipse.ui.workbench.texteditor.spellingEngine
+
+定义拼写检查引擎，用于检查文档拼写。
+
+```xml
+<extension point="org.eclipse.ui.workbench.texteditor.spellingEngine">
+   <spellingEngine
+      id="com.example.spellingEngine"
+      label="My Spelling Engine"
+      class="com.example.editor.MySpellingEngine"
+      default="false">
+   </spellingEngine>
+</extension>
+```
+
+**用途**:
+- 实现拼写检查
+- 提供拼写建议
+- 支持自定义字典
+
 ## PDE 扩展点
 
 PDE (Plug-in Development Environment) 提供了一系列扩展点，用于扩展插件开发环境的能力。以下是 PDE 的主要扩展点：
