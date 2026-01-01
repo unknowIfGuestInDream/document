@@ -10,7 +10,6 @@
  * [ANTD](/antd/)
  * [日语](/japanese/)
  * [Javafx](/javafx/)
- * [Eclipse 开发](/eclipse/)
 
 * [🐮🐮 TangLiang's Blog](https://blog.tlcsdm.com  ':target=_blank')
-* [❤️❤️ Gitee](https://gitee.com/unknowIfGuestInDream  ':target=_blank')
+* [❤️❤️ Gitee](https://gitee.com/unknowIfGuestInDream  ':target=_blank') 
