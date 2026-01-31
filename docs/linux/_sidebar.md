@@ -1,6 +1,7 @@
 - Linux基础使用
   - [Linux常用命令](linux/basic/BASIC.md)
   - [Linux常用脚本](linux/basic/shell.md)
+  - [生成随机二进制文件](linux/basic/random.md)
 
 - Linux下载软件
   - [安装java](linux/soft/java.md)
