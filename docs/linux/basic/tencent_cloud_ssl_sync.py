@@ -140,6 +140,15 @@ def parse_time(value: str) -> dt.datetime:
     return dt.datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
 
 
+def parse_time_or_min(value: Any) -> dt.datetime:
+    if isinstance(value, str) and value:
+        try:
+            return parse_time(value)
+        except ValueError:
+            pass
+    return dt.datetime.min
+
+
 def _apex_domain(domain: str) -> Optional[str]:
     labels = domain.strip().lower().split(".")
     if len(labels) > 2:
@@ -332,16 +341,12 @@ def get_latest_certificate_for_domain(domain: str) -> Dict[str, Any]:
     if not matched:
         matched = certificates
 
-    def cert_sort_key(cert: Dict[str, Any]) -> dt.datetime:
-        parsed_dates: List[dt.datetime] = []
-        for field in ("CertBeginTime", "CertEndTime"):
-            value = cert.get(field)
-            if isinstance(value, str) and value:
-                try:
-                    parsed_dates.append(parse_time(value))
-                except ValueError:
-                    continue
-        return max(parsed_dates) if parsed_dates else dt.datetime.min
+    def cert_sort_key(cert: Dict[str, Any]) -> Tuple[dt.datetime, dt.datetime, dt.datetime]:
+        return (
+            parse_time_or_min(cert.get("CertEndTime")),
+            parse_time_or_min(cert.get("InsertTime")),
+            parse_time_or_min(cert.get("CertBeginTime")),
+        )
 
     return max(matched, key=cert_sort_key)
 
@@ -479,12 +484,12 @@ def get_certificate_id_for_domain(certificate_selection: Dict[str, Dict[str, Any
     return cert_id
 
 
-def reload_nginx(dry_run: bool = False) -> None:
-    print("[NGINX] 重新加载配置")
+def restart_nginx(dry_run: bool = False) -> None:
+    print("[NGINX] 重启服务")
     if dry_run:
         return
     subprocess.run(["nginx", "-t"], check=True)
-    subprocess.run(["systemctl", "reload", "nginx"], check=True)
+    subprocess.run(["systemctl", "restart", "nginx"], check=True)
 
 
 def ensure_dependencies() -> None:
@@ -539,7 +544,7 @@ def run(
             update_cdn_domain_cert(domain, cert_id, dry_run=dry_run)
 
     if nginx_changed and not skip_nginx_reload:
-        reload_nginx(dry_run=dry_run)
+        restart_nginx(dry_run=dry_run)
 
     print("完成：证书检查与同步流程结束")
     return 0
@@ -548,7 +553,12 @@ def run(
 def parse_args(argv: Iterable[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="腾讯云 SSL 证书同步脚本（Nginx + CDN）")
     parser.add_argument("--dry-run", action="store_true", help="仅打印将执行的操作，不写入文件、不调用更新 API")
-    parser.add_argument("--skip-nginx-reload", action="store_true", help="更新证书后不执行 nginx reload")
+    parser.add_argument(
+        "--skip-nginx-reload",
+        "--skip-nginx-restart",
+        action="store_true",
+        help="更新证书后不执行 nginx restart",
+    )
     parser.add_argument("--disable-nginx-sync", action="store_true", help="跳过 /etc/nginx/cert 本地证书同步")
     parser.add_argument("--disable-cdn-sync", action="store_true", help="跳过 CDN HTTPS 托管证书更新")
     parser.add_argument("--debug", action="store_true", help="输出详细调试日志（证书列表、域名匹配过程等）")
