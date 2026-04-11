@@ -4,6 +4,91 @@
 1. [useful-scripts](https://github.com/oldratlee/useful-scripts ':target=_blank')
 2. [doubi](https://github.com/ToyoDAdoubi/doubi ':target=_blank')
 
+## 腾讯云 SSL 证书自动同步（Nginx + CDN）
+脚本路径：`docs/linux/basic/tencent_cloud_ssl_sync.py`
+
+功能：
+- 每次运行时自动检查腾讯云最新证书
+- 每个域名只选当前最新证书（优先按到期时间，其次按证书插入时间、签发开始时间）；如果与本地 `/etc/nginx/cert` 中已有证书内容不同，才会替换对应域名证书文件
+- 本地证书发生变化后会先执行 `nginx -t`，再执行 `systemctl restart nginx`
+- 启用本地 Nginx 证书同步时，如果本地证书发生变化，还会通过 `mailx` 发送通知邮件到 `liang.tang.cx@gmail.com`（`--dry-run` 不发送；即使使用跳过 Nginx 重启参数，仍会发送邮件）
+- 自动更新 CDN 域名的 HTTPS 托管证书配置；对于能对应到本地 Nginx 证书的域名，如果本地证书内容未变化，则跳过对应 CDN 更新
+
+前置条件：
+```shell
+# 1) 安装腾讯云 CLI
+pip3 install tccli
+
+# 2) 配置凭据（按提示输入 SecretId/SecretKey/Region）
+tccli configure
+
+# 3) 确保 mailx 已安装且可正常发信（证书变更通知依赖）
+# 可先自测：
+# echo test | mailx -s test your-email@example.com
+```
+
+`SecretId/SecretKey` 获取方式：腾讯云控制台 -> 访问管理 CAM -> API 密钥管理（建议使用子账号最小权限）。  
+`Region` 获取方式：选择你实际使用的地域（例如广州 `ap-guangzhou`），可在 CDN/SSL 资源所在地域配置。
+
+建议最小权限（CAM）：
+- SSL：证书查询与下载相关权限（如 `ssl:DescribeCertificates`、`ssl:DownloadCertificate`）
+- CDN：域名 HTTPS 配置更新权限（如 `cdn:UpdateDomainConfig`）
+
+执行方式：
+```shell
+# 建议放到固定目录并赋权
+chmod +x /path/to/tencent_cloud_ssl_sync.py
+python3 /path/to/tencent_cloud_ssl_sync.py
+
+# 仅预览，不执行写入/更新
+python3 /path/to/tencent_cloud_ssl_sync.py --dry-run
+
+# 只更新 /etc/nginx/cert，不更新 CDN
+python3 /path/to/tencent_cloud_ssl_sync.py --disable-cdn-sync
+
+# 只更新 CDN HTTPS 配置，不更新 /etc/nginx/cert
+python3 /path/to/tencent_cloud_ssl_sync.py --disable-nginx-sync
+
+# 更新本地证书但不备份旧文件
+python3 /path/to/tencent_cloud_ssl_sync.py --disable-backup
+
+# 查看详细调试日志（含 API 原始响应、证书列表、域名匹配过程）
+python3 /path/to/tencent_cloud_ssl_sync.py --debug --dry-run
+
+# 显式指定 region（如 tccli 返回空结果时可尝试）
+python3 /path/to/tencent_cloud_ssl_sync.py --region ap-guangzhou
+```
+
+`state-dir` 说明：默认是 `/usr/local/scripts/tencent-ssl-sync`；启用备份时，旧证书会保存到 `<state-dir>/backup`。  
+如果你不需要备份，可加 `--disable-backup`，此时不会创建 `<state-dir>/backup`。  
+如果你把脚本放在 `/usr/local/scripts/tencent-ssl-sync`，可显式指定：
+
+```shell
+python3 /usr/local/scripts/tencent-ssl-sync/tencent_cloud_ssl_sync.py \
+  --state-dir /usr/local/scripts/tencent-ssl-sync/state
+```
+
+排查 tccli 返回空结果：
+```shell
+# 1. 手动确认 tccli 能查到证书
+tccli ssl DescribeCertificates --output json --Limit 10
+
+# 2. 如果返回空，检查凭据配置
+tccli configure list
+
+# 3. 尝试指定 region
+tccli ssl DescribeCertificates --output json --Limit 10 --region ap-guangzhou
+```
+
+每月执行一次（cron）：
+```shell
+crontab -e
+```
+
+```cron
+0 3 1 * * /usr/bin/python3 /path/to/tencent_cloud_ssl_sync.py >> /var/log/tencent-ssl-sync.log 2>&1
+```
+
 ## 自动化部署
 ```shell
 #!/bin/bash
