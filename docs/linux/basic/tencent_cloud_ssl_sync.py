@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, NamedTuple, Optional, Tuple
 
 CERT_DIR = Path("/etc/nginx/cert")
-DEFAULT_STATE_DIR = Path("/var/lib/tencent-ssl-sync")
+DEFAULT_STATE_DIR = Path("/usr/local/scripts/tencent-ssl-sync")
 MAILX_NOTIFICATION_TO = "liang.tang.cx@gmail.com"
 
 NGINX_CERT_DOMAINS = [
