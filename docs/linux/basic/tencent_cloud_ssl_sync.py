@@ -223,14 +223,14 @@ def run(
     sync_cdn: bool = True,
     state_dir: Path = DEFAULT_STATE_DIR,
 ) -> int:
+    if not sync_nginx and not sync_cdn:
+        print("已跳过：Nginx 和 CDN 同步均被关闭")
+        return 0
+
     ensure_dependencies()
 
     cert_cache: Dict[str, Tuple[str, str]] = {}
     certificate_selection: Dict[str, Dict[str, Any]] = {}
-
-    if not sync_nginx and not sync_cdn:
-        print("已跳过：Nginx 和 CDN 同步均被关闭")
-        return 0
 
     # 保留配置顺序并去重，确保日志输出顺序稳定
     selected_domains: List[str] = []

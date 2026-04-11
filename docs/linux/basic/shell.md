@@ -24,6 +24,10 @@ tccli configure
 `SecretId/SecretKey` 获取方式：腾讯云控制台 -> 访问管理 CAM -> API 密钥管理（建议使用子账号最小权限）。  
 `Region` 获取方式：选择你实际使用的地域（例如广州 `ap-guangzhou`），可在 CDN/SSL 资源所在地域配置。
 
+建议最小权限（CAM）：
+- SSL：证书查询与下载相关权限（如 `ssl:DescribeCertificates`、`ssl:DownloadCertificate`）
+- CDN：域名 HTTPS 配置更新权限（如 `cdn:UpdateDomainConfig`）
+
 执行方式：
 ```shell
 # 建议放到固定目录并赋权
