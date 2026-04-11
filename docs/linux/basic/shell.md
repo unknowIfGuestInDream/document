@@ -43,8 +43,11 @@ python3 /path/to/tencent_cloud_ssl_sync.py --disable-cdn-sync
 # 只更新 CDN HTTPS 配置，不更新 /etc/nginx/cert
 python3 /path/to/tencent_cloud_ssl_sync.py --disable-nginx-sync
 
-# 查看详细调试日志（含证书列表、域名匹配过程）
+# 查看详细调试日志（含 API 原始响应、证书列表、域名匹配过程）
 python3 /path/to/tencent_cloud_ssl_sync.py --debug --dry-run
+
+# 显式指定 region（如 tccli 返回空结果时可尝试）
+python3 /path/to/tencent_cloud_ssl_sync.py --region ap-guangzhou
 ```
 
 `state-dir` 说明：用于存放证书备份（默认 `/var/lib/tencent-ssl-sync`，备份在 `<state-dir>/backup`）。  
@@ -53,6 +56,18 @@ python3 /path/to/tencent_cloud_ssl_sync.py --debug --dry-run
 ```shell
 python3 /usr/local/scripts/tencent-ssl-sync/tencent_cloud_ssl_sync.py \
   --state-dir /usr/local/scripts/tencent-ssl-sync/state
+```
+
+排查 tccli 返回空结果：
+```shell
+# 1. 手动确认 tccli 能查到证书
+tccli ssl DescribeCertificates --output json --Limit 10
+
+# 2. 如果返回空，检查凭据配置
+tccli configure list
+
+# 3. 尝试指定 region
+tccli ssl DescribeCertificates --output json --Limit 10 --region ap-guangzhou
 ```
 
 每月执行一次（cron）：

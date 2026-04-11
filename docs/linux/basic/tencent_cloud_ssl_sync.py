@@ -46,8 +46,13 @@ def debug_log(msg: str) -> None:
         print(f"[DEBUG] {msg}")
 
 
+TCCLI_REGION: Optional[str] = None
+
+
 def run_tccli(service: str, action: str, params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     cmd = ["tccli", service, action, "--output", "json"]
+    if TCCLI_REGION:
+        cmd.extend(["--region", TCCLI_REGION])
     if params:
         for key, value in params.items():
             if isinstance(value, (dict, list)):
@@ -60,11 +65,25 @@ def run_tccli(service: str, action: str, params: Optional[Dict[str, Any]] = None
         raise RuntimeError(
             f"tccli 调用失败: {' '.join(cmd)}\nstdout: {result.stdout}\nstderr: {result.stderr}"
         )
+    if result.stderr and result.stderr.strip():
+        debug_log(f"tccli stderr: {result.stderr.strip()}")
 
     try:
-        return json.loads(result.stdout)
+        parsed = json.loads(result.stdout)
     except json.JSONDecodeError as exc:
         raise RuntimeError(f"tccli 输出不是有效 JSON: {result.stdout}") from exc
+
+    debug_log(f"tccli 原始响应: {json.dumps(parsed, ensure_ascii=False)[:2000]}")
+
+    # 检测 API 错误响应
+    resp = parsed.get("Response", {})
+    error = resp.get("Error")
+    if error:
+        raise RuntimeError(
+            f"tccli API 错误: Code={error.get('Code')}, Message={error.get('Message')}"
+        )
+
+    return parsed
 
 
 def parse_time(value: str) -> dt.datetime:
@@ -141,8 +160,10 @@ def describe_certificates(search_key: Optional[str] = None, limit: int = 100) ->
 
         resp = run_tccli("ssl", "DescribeCertificates", params)
         payload = resp.get("Response", {})
-        certificates = payload.get("Certificates", [])
+        # 兼容 Certificates 和 CertificateSet 两种响应字段名
+        certificates = payload.get("Certificates") or payload.get("CertificateSet") or []
         if not isinstance(certificates, list):
+            debug_log(f"API 响应中未找到证书列表字段，payload keys={list(payload.keys())}")
             break
         all_certificates.extend(certificates)
 
@@ -158,7 +179,7 @@ def describe_certificates(search_key: Optional[str] = None, limit: int = 100) ->
             break
         offset += limit
 
-    debug_log(f"describe_certificates(SearchKey={search_key!r}): 返回 {len(all_certificates)} 条")
+    debug_log(f"describe_certificates(SearchKey={search_key!r}): 返回 {len(all_certificates)} 条 (TotalCount={total_count})")
     return all_certificates
 
 
@@ -233,11 +254,22 @@ def get_latest_certificate_for_domain(domain: str) -> Dict[str, Any]:
         sample_domains = sorted({
             c.get("Domain", "?") for c in (all_certificates or [])
         })[:20]
-        raise RuntimeError(
+        hint_lines = [
             f"未查询到证书: {domain} (SearchKeys={search_keys}, "
-            f"全量证书={total}, 域名样本={sample_domains})\n"
-            f"提示: 请用 --debug 运行查看完整证书列表"
-        )
+            f"全量证书={total}, 域名样本={sample_domains})",
+        ]
+        if total == 0:
+            hint_lines.append(
+                "诊断: tccli ssl DescribeCertificates 返回 0 条证书，请检查：\n"
+                "  1) 手动运行: tccli ssl DescribeCertificates --output json --Limit 10\n"
+                "     确认是否有返回数据\n"
+                "  2) 如返回 0 条，请检查 tccli 凭据配置: tccli configure list\n"
+                "  3) 尝试指定 region: python3 脚本.py --region ap-guangzhou\n"
+                "  4) 确认 SecretId/SecretKey 对应的账号有 ssl:DescribeCertificates 权限"
+            )
+        else:
+            hint_lines.append("提示: 请用 --debug 运行查看完整证书列表")
+        raise RuntimeError("\n".join(hint_lines))
 
     # 从候选中精确匹配目标域名
     matched = certificates if used_fallback_match else [
@@ -420,6 +452,12 @@ def parse_args(argv: Iterable[str]) -> argparse.Namespace:
     parser.add_argument("--disable-cdn-sync", action="store_true", help="跳过 CDN HTTPS 托管证书更新")
     parser.add_argument("--debug", action="store_true", help="输出详细调试日志（证书列表、域名匹配过程等）")
     parser.add_argument(
+        "--region",
+        default=os.getenv("TENCENT_SSL_SYNC_REGION"),
+        help="显式指定 tccli region（如 ap-guangzhou），默认使用 tccli 配置的 region；"
+        "也可通过环境变量 TENCENT_SSL_SYNC_REGION 设置",
+    )
+    parser.add_argument(
         "--state-dir",
         default=os.getenv("TENCENT_SSL_SYNC_STATE_DIR", str(DEFAULT_STATE_DIR)),
         help="状态目录（用于证书备份），默认 /var/lib/tencent-ssl-sync，可用环境变量 TENCENT_SSL_SYNC_STATE_DIR 覆盖",
@@ -428,9 +466,10 @@ def parse_args(argv: Iterable[str]) -> argparse.Namespace:
 
 
 def main(argv: Iterable[str]) -> int:
-    global DEBUG
+    global DEBUG, TCCLI_REGION
     args = parse_args(argv)
     DEBUG = args.debug
+    TCCLI_REGION = args.region
     try:
         return run(
             dry_run=args.dry_run,
