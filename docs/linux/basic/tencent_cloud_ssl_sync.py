@@ -640,24 +640,20 @@ def run(
 
     if sync_cdn:
         for domain in CDN_DOMAINS:
+            cert_id = get_certificate_id_for_domain(certificate_selection, domain)
             nginx_reference_domain = get_nginx_reference_domain_for_cdn(domain)
             if nginx_reference_domain is not None:
-                cert_id = get_certificate_id_for_domain(certificate_selection, domain)
-                if cert_id not in cert_cache:
-                    cert_cache[cert_id] = download_certificate(cert_id)
-                cert_pem, key_pem = cert_cache[cert_id]
-                local_cert_changed = (
-                    nginx_domain_changed.get(nginx_reference_domain)
-                    if sync_nginx
-                    else is_local_nginx_cert_changed(nginx_reference_domain, cert_pem, key_pem)
-                )
+                local_cert_changed = nginx_domain_changed.get(nginx_reference_domain)
+                if local_cert_changed is None:
+                    if cert_id not in cert_cache:
+                        cert_cache[cert_id] = download_certificate(cert_id)
+                    cert_pem, key_pem = cert_cache[cert_id]
+                    local_cert_changed = is_local_nginx_cert_changed(nginx_reference_domain, cert_pem, key_pem)
                 if local_cert_changed is False:
                     print(
                         f"[CDN] {domain}: 参考域名 {nginx_reference_domain} 的本地证书内容未变化，跳过 CDN 更新"
                     )
                     continue
-            else:
-                cert_id = get_certificate_id_for_domain(certificate_selection, domain)
             update_cdn_domain_cert(domain, cert_id, dry_run=dry_run)
 
     nginx_restarted = False
