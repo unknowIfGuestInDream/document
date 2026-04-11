@@ -505,8 +505,8 @@ def send_certificate_change_notification(
     nginx_restarted: bool,
     dry_run: bool = False,
 ) -> None:
-    action = "模拟发送证书变更通知" if dry_run else "发送证书变更通知"
-    print(f"[MAILX] {action} -> {MAILX_NOTIFICATION_TO}")
+    notification_message = "模拟发送证书变更通知" if dry_run else "发送证书变更通知"
+    print(f"[MAILX] {notification_message} -> {MAILX_NOTIFICATION_TO}")
     if dry_run:
         return
 
@@ -524,12 +524,15 @@ def send_certificate_change_notification(
         )
     body = "\n".join(lines) + "\n"
     subject = f"[tencent-ssl-sync] 本地证书已更新 ({len(changed_domains)} 个域名)"
-    subprocess.run(
-        ["mailx", "-s", subject, MAILX_NOTIFICATION_TO],
-        input=body,
-        text=True,
-        check=True,
-    )
+    try:
+        subprocess.run(
+            ["mailx", "-s", subject, MAILX_NOTIFICATION_TO],
+            input=body,
+            text=True,
+            check=True,
+        )
+    except subprocess.CalledProcessError as exc:
+        raise RuntimeError(f"mailx 发送证书变更通知失败: {exc}") from exc
 
 
 def ensure_dependencies(require_mailx: bool = False) -> None:
