@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 CERT_DIR = Path("/etc/nginx/cert")
-STATE_DIR = Path("/var/lib/tencent-ssl-sync")
+DEFAULT_STATE_DIR = Path("/var/lib/tencent-ssl-sync")
 
 NGINX_CERT_DOMAINS = [
     "docs.tlcsdm.com",
@@ -35,7 +35,6 @@ CDN_DOMAINS = [
 
 # 某些域名可能共用主域名证书，可按需覆盖查询域名
 CERT_QUERY_DOMAIN_OVERRIDES = {
-    "blog.tlcsdm.com": "tlcsdm.com",
     "www.tlcsdm.com": "tlcsdm.com",
 }
 
@@ -142,17 +141,19 @@ def write_file_atomic(path: Path, content: str, mode: int) -> None:
     os.replace(temp_path, path)
 
 
-def backup_file(path: Path) -> None:
+def backup_file(path: Path, state_dir: Path) -> None:
     if not path.exists():
         return
-    backup_root = STATE_DIR / "backup"
+    backup_root = state_dir / "backup"
     backup_root.mkdir(parents=True, exist_ok=True)
     timestamp = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%d%H%M%SZ")
     backup_path = backup_root / f"{path.name}.{timestamp}.bak"
     shutil.copy2(path, backup_path)
 
 
-def update_nginx_cert_files(domain: str, cert_pem: str, key_pem: str, dry_run: bool = False) -> bool:
+def update_nginx_cert_files(
+    domain: str, cert_pem: str, key_pem: str, state_dir: Path, dry_run: bool = False
+) -> bool:
     cert_file = CERT_DIR / f"{domain}_bundle.crt"
     key_file = CERT_DIR / f"{domain}.key"
 
@@ -168,8 +169,8 @@ def update_nginx_cert_files(domain: str, cert_pem: str, key_pem: str, dry_run: b
     if dry_run:
         return True
 
-    backup_file(cert_file)
-    backup_file(key_file)
+    backup_file(cert_file, state_dir)
+    backup_file(key_file, state_dir)
     write_file_atomic(cert_file, cert_pem, 0o644)
     write_file_atomic(key_file, key_pem, 0o600)
     return True
@@ -215,14 +216,29 @@ def ensure_dependencies() -> None:
         raise RuntimeError("未找到 tccli，请先安装并配置腾讯云 CLI 凭据")
 
 
-def run(dry_run: bool = False, skip_nginx_reload: bool = False) -> int:
+def run(
+    dry_run: bool = False,
+    skip_nginx_reload: bool = False,
+    sync_nginx: bool = True,
+    sync_cdn: bool = True,
+    state_dir: Path = DEFAULT_STATE_DIR,
+) -> int:
     ensure_dependencies()
 
     cert_cache: Dict[str, Tuple[str, str]] = {}
     certificate_selection: Dict[str, Dict[str, Any]] = {}
 
+    if not sync_nginx and not sync_cdn:
+        print("已跳过：Nginx 和 CDN 同步均被关闭")
+        return 0
+
     # 保留配置顺序并去重，确保日志输出顺序稳定
-    all_domains = list(dict.fromkeys(NGINX_CERT_DOMAINS + CDN_DOMAINS))
+    selected_domains: List[str] = []
+    if sync_nginx:
+        selected_domains.extend(NGINX_CERT_DOMAINS)
+    if sync_cdn:
+        selected_domains.extend(CDN_DOMAINS)
+    all_domains = list(dict.fromkeys(selected_domains))
 
     for domain in all_domains:
         latest_cert = get_latest_certificate_for_domain(domain)
@@ -232,17 +248,19 @@ def run(dry_run: bool = False, skip_nginx_reload: bool = False) -> int:
         print(f"[SSL] {domain}: 选中证书 {cert_id} (过期时间: {end_time})")
 
     nginx_changed = False
-    for domain in NGINX_CERT_DOMAINS:
-        cert_id = get_certificate_id_for_domain(certificate_selection, domain)
-        if cert_id not in cert_cache:
-            cert_cache[cert_id] = download_certificate(cert_id)
-        cert_pem, key_pem = cert_cache[cert_id]
-        changed = update_nginx_cert_files(domain, cert_pem, key_pem, dry_run=dry_run)
-        nginx_changed = nginx_changed or changed
+    if sync_nginx:
+        for domain in NGINX_CERT_DOMAINS:
+            cert_id = get_certificate_id_for_domain(certificate_selection, domain)
+            if cert_id not in cert_cache:
+                cert_cache[cert_id] = download_certificate(cert_id)
+            cert_pem, key_pem = cert_cache[cert_id]
+            changed = update_nginx_cert_files(domain, cert_pem, key_pem, state_dir=state_dir, dry_run=dry_run)
+            nginx_changed = nginx_changed or changed
 
-    for domain in CDN_DOMAINS:
-        cert_id = get_certificate_id_for_domain(certificate_selection, domain)
-        update_cdn_domain_cert(domain, cert_id, dry_run=dry_run)
+    if sync_cdn:
+        for domain in CDN_DOMAINS:
+            cert_id = get_certificate_id_for_domain(certificate_selection, domain)
+            update_cdn_domain_cert(domain, cert_id, dry_run=dry_run)
 
     if nginx_changed and not skip_nginx_reload:
         reload_nginx(dry_run=dry_run)
@@ -255,13 +273,26 @@ def parse_args(argv: Iterable[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="腾讯云 SSL 证书同步脚本（Nginx + CDN）")
     parser.add_argument("--dry-run", action="store_true", help="仅打印将执行的操作，不写入文件、不调用更新 API")
     parser.add_argument("--skip-nginx-reload", action="store_true", help="更新证书后不执行 nginx reload")
+    parser.add_argument("--disable-nginx-sync", action="store_true", help="跳过 /etc/nginx/cert 本地证书同步")
+    parser.add_argument("--disable-cdn-sync", action="store_true", help="跳过 CDN HTTPS 托管证书更新")
+    parser.add_argument(
+        "--state-dir",
+        default=os.getenv("TENCENT_SSL_SYNC_STATE_DIR", str(DEFAULT_STATE_DIR)),
+        help="状态目录（用于证书备份），默认 /var/lib/tencent-ssl-sync，可用环境变量 TENCENT_SSL_SYNC_STATE_DIR 覆盖",
+    )
     return parser.parse_args(list(argv))
 
 
 def main(argv: Iterable[str]) -> int:
     args = parse_args(argv)
     try:
-        return run(dry_run=args.dry_run, skip_nginx_reload=args.skip_nginx_reload)
+        return run(
+            dry_run=args.dry_run,
+            skip_nginx_reload=args.skip_nginx_reload,
+            sync_nginx=not args.disable_nginx_sync,
+            sync_cdn=not args.disable_cdn_sync,
+            state_dir=Path(args.state_dir),
+        )
     except Exception as exc:
         print(f"执行失败: {exc}", file=sys.stderr)
         traceback.print_exc()

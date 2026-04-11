@@ -21,6 +21,9 @@ pip3 install tccli
 tccli configure
 ```
 
+`SecretId/SecretKey` 获取方式：腾讯云控制台 -> 访问管理 CAM -> API 密钥管理（建议使用子账号最小权限）。  
+`Region` 获取方式：选择你实际使用的地域（例如广州 `ap-guangzhou`），可在 CDN/SSL 资源所在地域配置。
+
 执行方式：
 ```shell
 # 建议放到固定目录并赋权
@@ -29,6 +32,20 @@ python3 /path/to/tencent_cloud_ssl_sync.py
 
 # 仅预览，不执行写入/更新
 python3 /path/to/tencent_cloud_ssl_sync.py --dry-run
+
+# 只更新 /etc/nginx/cert，不更新 CDN
+python3 /path/to/tencent_cloud_ssl_sync.py --disable-cdn-sync
+
+# 只更新 CDN HTTPS 配置，不更新 /etc/nginx/cert
+python3 /path/to/tencent_cloud_ssl_sync.py --disable-nginx-sync
+```
+
+`state-dir` 说明：用于存放证书备份（默认 `/var/lib/tencent-ssl-sync`，备份在 `${state-dir}/backup`）。  
+如果你把脚本放在 `/usr/local/scripts/tencent-ssl-sync`，可显式指定：
+
+```shell
+python3 /usr/local/scripts/tencent-ssl-sync/tencent_cloud_ssl_sync.py \
+  --state-dir /usr/local/scripts/tencent-ssl-sync/state
 ```
 
 每月执行一次（cron）：
