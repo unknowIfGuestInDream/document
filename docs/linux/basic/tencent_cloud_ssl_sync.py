@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import base64
+import binascii
 import datetime as dt
 import io
 import json
@@ -12,7 +13,7 @@ import tempfile
 import traceback
 import zipfile
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Tuple
+from typing import Any, Dict, Iterable, List, NamedTuple, Optional, Tuple
 
 CERT_DIR = Path("/etc/nginx/cert")
 DEFAULT_STATE_DIR = Path("/var/lib/tencent-ssl-sync")
@@ -42,6 +43,39 @@ CERT_QUERY_DOMAIN_OVERRIDES = {
 }
 
 DEBUG = False
+
+
+class CertCandidate(NamedTuple):
+    score: int
+    cert_count: int
+    text: str
+
+
+class KeyCandidate(NamedTuple):
+    score: int
+    text: str
+
+
+def score_key_candidate(file_name: str) -> int:
+    score = 0
+    lower_name = file_name.lower()
+    if "nginx" in lower_name:
+        score += 2
+    if lower_name.endswith((".key", ".pem")):
+        score += 1
+    return score
+
+
+def score_cert_candidate(file_name: str, cert_count: int) -> int:
+    score = cert_count * 10
+    lower_name = file_name.lower()
+    if "nginx" in lower_name:
+        score += 3
+    if "bundle" in lower_name or "fullchain" in lower_name:
+        score += 2
+    if "root" in lower_name or "ca" in lower_name:
+        score -= 3
+    return score
 
 
 def debug_log(msg: str) -> None:
@@ -332,11 +366,11 @@ def download_certificate(certificate_id: str) -> Tuple[str, str]:
 def extract_certificate_from_download_content(content: str, certificate_id: str) -> Tuple[str, str]:
     try:
         raw_zip = base64.b64decode(content)
-    except Exception as exc:
+    except (binascii.Error, ValueError) as exc:
         raise RuntimeError(f"下载证书内容不是有效 Base64: {certificate_id}") from exc
 
-    cert_candidates: List[Tuple[int, int, str]] = []
-    key_candidates: List[Tuple[int, str]] = []
+    cert_candidates: List[CertCandidate] = []
+    key_candidates: List[KeyCandidate] = []
 
     try:
         with zipfile.ZipFile(io.BytesIO(raw_zip)) as archive:
@@ -348,26 +382,14 @@ def extract_certificate_from_download_content(content: str, certificate_id: str)
                 except UnicodeDecodeError:
                     continue
 
-                lower_name = name.lower()
                 upper_text = text.upper()
-                if "PRIVATE KEY" in upper_text:
-                    key_score = 0
-                    if "nginx" in lower_name:
-                        key_score += 2
-                    if lower_name.endswith((".key", ".pem")):
-                        key_score += 1
-                    key_candidates.append((key_score, text))
+                contains_private_key = "PRIVATE KEY" in upper_text
+                if contains_private_key:
+                    key_candidates.append(KeyCandidate(score_key_candidate(name), text))
 
                 cert_count = upper_text.count("BEGIN CERTIFICATE")
-                if cert_count > 0:
-                    cert_score = cert_count * 10
-                    if "nginx" in lower_name:
-                        cert_score += 3
-                    if "bundle" in lower_name or "fullchain" in lower_name:
-                        cert_score += 2
-                    if "root" in lower_name or "ca" in lower_name:
-                        cert_score -= 3
-                    cert_candidates.append((cert_score, cert_count, text))
+                if cert_count > 0 and not contains_private_key:
+                    cert_candidates.append(CertCandidate(score_cert_candidate(name, cert_count), cert_count, text))
     except zipfile.BadZipFile as exc:
         raise RuntimeError(f"下载证书内容不是有效 ZIP: {certificate_id}") from exc
 
@@ -377,8 +399,8 @@ def extract_certificate_from_download_content(content: str, certificate_id: str)
         )
         return "", ""
 
-    cert_pem = max(cert_candidates, key=lambda item: (item[0], item[1]))[2]
-    key_pem = max(key_candidates, key=lambda item: item[0])[1]
+    cert_pem = max(cert_candidates, key=lambda item: (item.score, item.cert_count)).text
+    key_pem = max(key_candidates, key=lambda item: item.score).text
     return cert_pem, key_pem
 
 
