@@ -11,7 +11,7 @@
 - 每次运行时自动检查腾讯云最新证书
 - 每个域名只选当前最新证书（优先按到期时间，其次按证书插入时间、签发开始时间）；如果与本地 `/etc/nginx/cert` 中已有证书内容不同，才会替换对应域名证书文件
 - 本地证书发生变化后会先执行 `nginx -t`，再执行 `systemctl restart nginx`
-- 本地证书发生变化后还会通过 `mailx` 发送通知邮件到 `liang.tang.cx@gmail.com`（`--dry-run` 不发送；即使使用跳过 Nginx 重启参数，仍会发送邮件）
+- 启用本地 Nginx 证书同步时，如果本地证书发生变化，还会通过 `mailx` 发送通知邮件到 `liang.tang.cx@gmail.com`（`--dry-run` 不发送；即使使用跳过 Nginx 重启参数，仍会发送邮件）
 - 自动更新 CDN 域名的 HTTPS 托管证书配置
 
 前置条件：
@@ -23,6 +23,8 @@ pip3 install tccli
 tccli configure
 
 # 3) 确保 mailx 已安装且可正常发信（证书变更通知依赖）
+# 可先自测：
+# echo test | mailx -s test your-email@example.com
 ```
 
 `SecretId/SecretKey` 获取方式：腾讯云控制台 -> 访问管理 CAM -> API 密钥管理（建议使用子账号最小权限）。  

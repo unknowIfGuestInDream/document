@@ -595,7 +595,7 @@ def run(
     if nginx_changed and not skip_nginx_reload:
         restart_nginx(dry_run=dry_run)
         nginx_restarted = True
-    if nginx_changed:
+    if sync_nginx and nginx_changed:
         send_certificate_change_notification(
             changed_domains=changed_nginx_domains,
             certificate_selection=certificate_selection,
