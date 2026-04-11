@@ -49,6 +49,9 @@ python3 /path/to/tencent_cloud_ssl_sync.py --disable-cdn-sync
 # 只更新 CDN HTTPS 配置，不更新 /etc/nginx/cert
 python3 /path/to/tencent_cloud_ssl_sync.py --disable-nginx-sync
 
+# 更新本地证书但不备份旧文件
+python3 /path/to/tencent_cloud_ssl_sync.py --disable-backup
+
 # 查看详细调试日志（含 API 原始响应、证书列表、域名匹配过程）
 python3 /path/to/tencent_cloud_ssl_sync.py --debug --dry-run
 
@@ -56,7 +59,8 @@ python3 /path/to/tencent_cloud_ssl_sync.py --debug --dry-run
 python3 /path/to/tencent_cloud_ssl_sync.py --region ap-guangzhou
 ```
 
-`state-dir` 说明：用于存放证书备份（默认 `/var/lib/tencent-ssl-sync`，备份在 `<state-dir>/backup`）。  
+`state-dir` 说明：默认是 `/usr/local/scripts/tencent-ssl-sync`；启用备份时，旧证书会保存到 `<state-dir>/backup`。  
+如果你不需要备份，可加 `--disable-backup`，此时不会创建 `<state-dir>/backup`。  
 如果你把脚本放在 `/usr/local/scripts/tencent-ssl-sync`，可显式指定：
 
 ```shell

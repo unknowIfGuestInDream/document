@@ -448,7 +448,12 @@ def normalize_pem_text(content: Optional[str]) -> Optional[str]:
 
 
 def update_nginx_cert_files(
-    domain: str, cert_pem: str, key_pem: str, state_dir: Path, dry_run: bool = False
+    domain: str,
+    cert_pem: str,
+    key_pem: str,
+    state_dir: Path,
+    dry_run: bool = False,
+    backup_enabled: bool = True,
 ) -> bool:
     cert_file = CERT_DIR / f"{domain}_bundle.crt"
     key_file = CERT_DIR / f"{domain}.key"
@@ -474,8 +479,9 @@ def update_nginx_cert_files(
     if dry_run:
         return True
 
-    backup_file(cert_file, state_dir)
-    backup_file(key_file, state_dir)
+    if backup_enabled:
+        backup_file(cert_file, state_dir)
+        backup_file(key_file, state_dir)
     write_file_atomic(cert_file, next_cert, 0o644)
     write_file_atomic(key_file, next_key, 0o600)
     return True
@@ -569,6 +575,7 @@ def run(
     sync_nginx: bool = True,
     sync_cdn: bool = True,
     state_dir: Path = DEFAULT_STATE_DIR,
+    backup_enabled: bool = True,
 ) -> int:
     if not sync_nginx and not sync_cdn:
         print("已跳过：Nginx 和 CDN 同步均被关闭")
@@ -602,7 +609,14 @@ def run(
             if cert_id not in cert_cache:
                 cert_cache[cert_id] = download_certificate(cert_id)
             cert_pem, key_pem = cert_cache[cert_id]
-            changed = update_nginx_cert_files(domain, cert_pem, key_pem, state_dir=state_dir, dry_run=dry_run)
+            changed = update_nginx_cert_files(
+                domain,
+                cert_pem,
+                key_pem,
+                state_dir=state_dir,
+                dry_run=dry_run,
+                backup_enabled=backup_enabled,
+            )
             nginx_changed = nginx_changed or changed
             if changed:
                 changed_nginx_domains.append(domain)
@@ -640,6 +654,7 @@ def parse_args(argv: Iterable[str]) -> argparse.Namespace:
     )
     parser.add_argument("--disable-nginx-sync", action="store_true", help="跳过 /etc/nginx/cert 本地证书同步")
     parser.add_argument("--disable-cdn-sync", action="store_true", help="跳过 CDN HTTPS 托管证书更新")
+    parser.add_argument("--disable-backup", action="store_true", help="更新本地证书前不备份旧文件")
     parser.add_argument("--debug", action="store_true", help="输出详细调试日志（证书列表、域名匹配过程等）")
     parser.add_argument(
         "--region",
@@ -650,7 +665,7 @@ def parse_args(argv: Iterable[str]) -> argparse.Namespace:
     parser.add_argument(
         "--state-dir",
         default=os.getenv("TENCENT_SSL_SYNC_STATE_DIR", str(DEFAULT_STATE_DIR)),
-        help="状态目录（用于证书备份），默认 /var/lib/tencent-ssl-sync，可用环境变量 TENCENT_SSL_SYNC_STATE_DIR 覆盖",
+        help="状态目录（用于可选证书备份），默认 /usr/local/scripts/tencent-ssl-sync，可用环境变量 TENCENT_SSL_SYNC_STATE_DIR 覆盖",
     )
     return parser.parse_args(list(argv))
 
@@ -667,6 +682,7 @@ def main(argv: Iterable[str]) -> int:
             sync_nginx=not args.disable_nginx_sync,
             sync_cdn=not args.disable_cdn_sync,
             state_dir=Path(args.state_dir),
+            backup_enabled=not args.disable_backup,
         )
     except Exception as exc:
         print(f"执行失败: {exc}", file=sys.stderr)
