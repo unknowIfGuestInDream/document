@@ -161,7 +161,7 @@ def describe_certificates(search_key: Optional[str] = None, limit: int = 100) ->
         resp = run_tccli("ssl", "DescribeCertificates", params)
         payload = resp.get("Response", {})
         # 兼容 Certificates 和 CertificateSet 两种响应字段名
-        certificates = payload.get("Certificates") or payload.get("CertificateSet") or []
+        certificates = payload.get("Certificates") if "Certificates" in payload else payload.get("CertificateSet", [])
         if not isinstance(certificates, list):
             debug_log(f"API 响应中未找到证书列表字段，payload keys={list(payload.keys())}")
             break
