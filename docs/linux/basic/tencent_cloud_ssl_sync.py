@@ -504,11 +504,10 @@ def send_certificate_change_notification(
     certificate_selection: Dict[str, Dict[str, Any]],
     dry_run: bool = False,
 ) -> None:
-    print(f"[MAILX] 发送证书变更通知 -> {MAILX_NOTIFICATION_TO}")
+    action = "模拟发送证书变更通知" if dry_run else "发送证书变更通知"
+    print(f"[MAILX] {action} -> {MAILX_NOTIFICATION_TO}")
     if dry_run:
         return
-    if shutil.which("mailx") is None:
-        raise RuntimeError("本地证书已更新，但未找到 mailx，无法发送变更通知邮件")
 
     lines = [
         "腾讯云 SSL 同步检测到本地证书已更新。",
