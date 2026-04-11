@@ -342,6 +342,7 @@ def get_latest_certificate_for_domain(domain: str) -> Dict[str, Any]:
         matched = certificates
 
     def cert_sort_key(cert: Dict[str, Any]) -> Tuple[dt.datetime, dt.datetime, dt.datetime]:
+        """Return a max() key: newer end time wins, then insert time, then begin time."""
         return (
             parse_time_or_min(cert.get("CertEndTime")),
             parse_time_or_min(cert.get("InsertTime")),
@@ -557,7 +558,7 @@ def parse_args(argv: Iterable[str]) -> argparse.Namespace:
         "--skip-nginx-reload",
         "--skip-nginx-restart",
         action="store_true",
-        help="更新证书后不执行 nginx restart",
+        help="更新证书后不执行 nginx restart（旧名称 --skip-nginx-reload 仍兼容）",
     )
     parser.add_argument("--disable-nginx-sync", action="store_true", help="跳过 /etc/nginx/cert 本地证书同步")
     parser.add_argument("--disable-cdn-sync", action="store_true", help="跳过 CDN HTTPS 托管证书更新")
