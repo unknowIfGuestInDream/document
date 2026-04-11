@@ -455,6 +455,26 @@ def update_nginx_cert_files(
     dry_run: bool = False,
     backup_enabled: bool = True,
 ) -> bool:
+    changed = is_local_nginx_cert_changed(domain, cert_pem, key_pem)
+    if not changed:
+        print(f"[NGINX] {domain}: 本地证书已是最新")
+        return False
+
+    print(f"[NGINX] {domain}: 检测到新证书，准备更新")
+    if dry_run:
+        return True
+
+    cert_file = CERT_DIR / f"{domain}_bundle.crt"
+    key_file = CERT_DIR / f"{domain}.key"
+    if backup_enabled:
+        backup_file(cert_file, state_dir)
+        backup_file(key_file, state_dir)
+    write_file_atomic(cert_file, normalize_pem_text(cert_pem) or "", 0o644)
+    write_file_atomic(key_file, normalize_pem_text(key_pem) or "", 0o600)
+    return True
+
+
+def is_local_nginx_cert_changed(domain: str, cert_pem: str, key_pem: str) -> bool:
     cert_file = CERT_DIR / f"{domain}_bundle.crt"
     key_file = CERT_DIR / f"{domain}.key"
 
@@ -470,21 +490,7 @@ def update_nginx_cert_files(
             missing_parts.append("私钥")
         raise RuntimeError(f"{domain} 下载到的{'和'.join(missing_parts)}内容为空，无法更新本地文件")
 
-    changed = current_cert != next_cert or current_key != next_key
-    if not changed:
-        print(f"[NGINX] {domain}: 本地证书已是最新")
-        return False
-
-    print(f"[NGINX] {domain}: 检测到新证书，准备更新")
-    if dry_run:
-        return True
-
-    if backup_enabled:
-        backup_file(cert_file, state_dir)
-        backup_file(key_file, state_dir)
-    write_file_atomic(cert_file, next_cert, 0o644)
-    write_file_atomic(key_file, next_key, 0o600)
-    return True
+    return current_cert != next_cert or current_key != next_key
 
 
 def update_cdn_domain_cert(domain: str, certificate_id: str, dry_run: bool = False) -> None:
@@ -634,13 +640,24 @@ def run(
 
     if sync_cdn:
         for domain in CDN_DOMAINS:
-            nginx_reference_domain = get_nginx_reference_domain_for_cdn(domain) if sync_nginx else None
-            if nginx_reference_domain is not None and not nginx_domain_changed.get(nginx_reference_domain, False):
-                print(
-                    f"[CDN] {domain}: 本地证书未变化（参考 {nginx_reference_domain}），跳过 CDN 更新"
+            nginx_reference_domain = get_nginx_reference_domain_for_cdn(domain)
+            if nginx_reference_domain is not None:
+                cert_id = get_certificate_id_for_domain(certificate_selection, domain)
+                if cert_id not in cert_cache:
+                    cert_cache[cert_id] = download_certificate(cert_id)
+                cert_pem, key_pem = cert_cache[cert_id]
+                local_cert_changed = (
+                    nginx_domain_changed.get(nginx_reference_domain)
+                    if sync_nginx
+                    else is_local_nginx_cert_changed(nginx_reference_domain, cert_pem, key_pem)
                 )
-                continue
-            cert_id = get_certificate_id_for_domain(certificate_selection, domain)
+                if local_cert_changed is False:
+                    print(
+                        f"[CDN] {domain}: 参考域名 {nginx_reference_domain} 的本地证书内容未变化，跳过 CDN 更新"
+                    )
+                    continue
+            else:
+                cert_id = get_certificate_id_for_domain(certificate_selection, domain)
             update_cdn_domain_cert(domain, cert_id, dry_run=dry_run)
 
     nginx_restarted = False
