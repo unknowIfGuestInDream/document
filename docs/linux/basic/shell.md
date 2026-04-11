@@ -12,7 +12,7 @@
 - 每个域名只选当前最新证书（优先按到期时间，其次按证书插入时间、签发开始时间）；如果与本地 `/etc/nginx/cert` 中已有证书内容不同，才会替换对应域名证书文件
 - 本地证书发生变化后会先执行 `nginx -t`，再执行 `systemctl restart nginx`
 - 启用本地 Nginx 证书同步时，如果本地证书发生变化，还会通过 `mailx` 发送通知邮件到 `liang.tang.cx@gmail.com`（`--dry-run` 不发送；即使使用跳过 Nginx 重启参数，仍会发送邮件）
-- 自动更新 CDN 域名的 HTTPS 托管证书配置
+- 自动更新 CDN 域名的 HTTPS 托管证书配置；对于能对应到本地 Nginx 证书的域名，如果本地证书内容未变化，则跳过对应 CDN 更新
 
 前置条件：
 ```shell

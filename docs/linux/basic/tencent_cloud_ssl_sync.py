@@ -514,6 +514,15 @@ def get_certificate_id_for_domain(certificate_selection: Dict[str, Dict[str, Any
     return cert_id
 
 
+def get_nginx_reference_domain_for_cdn(domain: str) -> Optional[str]:
+    if domain in NGINX_CERT_DOMAINS:
+        return domain
+    mapped_domain = CERT_QUERY_DOMAIN_OVERRIDES.get(domain)
+    if mapped_domain in NGINX_CERT_DOMAINS:
+        return mapped_domain
+    return None
+
+
 def restart_nginx(dry_run: bool = False) -> None:
     """Validate config, then fully restart nginx service."""
     print("[NGINX] 重启服务")
@@ -585,6 +594,7 @@ def run(
 
     cert_cache: Dict[str, Tuple[str, str]] = {}
     certificate_selection: Dict[str, Dict[str, Any]] = {}
+    nginx_domain_changed: Dict[str, bool] = {}
 
     # 保留配置顺序并去重，确保日志输出顺序稳定
     selected_domains: List[str] = []
@@ -617,12 +627,19 @@ def run(
                 dry_run=dry_run,
                 backup_enabled=backup_enabled,
             )
+            nginx_domain_changed[domain] = changed
             nginx_changed = nginx_changed or changed
             if changed:
                 changed_nginx_domains.append(domain)
 
     if sync_cdn:
         for domain in CDN_DOMAINS:
+            nginx_reference_domain = get_nginx_reference_domain_for_cdn(domain) if sync_nginx else None
+            if nginx_reference_domain is not None and not nginx_domain_changed.get(nginx_reference_domain, False):
+                print(
+                    f"[CDN] {domain}: 本地证书未变化（参考 {nginx_reference_domain}），跳过 CDN 更新"
+                )
+                continue
             cert_id = get_certificate_id_for_domain(certificate_selection, domain)
             update_cdn_domain_cert(domain, cert_id, dry_run=dry_run)
 
