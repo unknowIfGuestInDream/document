@@ -539,7 +539,10 @@ def ensure_dependencies(require_mailx: bool = False) -> None:
     if shutil.which("tccli") is None:
         raise RuntimeError("未找到 tccli，请先安装并配置腾讯云 CLI 凭据")
     if require_mailx and shutil.which("mailx") is None:
-        raise RuntimeError("未找到 mailx，请先安装并配置 SMTP 或本机 MTA 发信能力以便发送证书变更通知")
+        raise RuntimeError(
+            "未找到 mailx，请先安装 mailutils/bsd-mailx（按发行版选择）并配置 SMTP 或本机 MTA 发信能力，"
+            "以便发送证书变更通知"
+        )
 
 
 def run(
@@ -595,6 +598,7 @@ def run(
     if nginx_changed and not skip_nginx_reload:
         restart_nginx(dry_run=dry_run)
         nginx_restarted = True
+    # 即使本次跳过 nginx 重启，只要本地证书文件发生变化，仍发送邮件通知。
     if sync_nginx and nginx_changed:
         send_certificate_change_notification(
             changed_domains=changed_nginx_domains,
