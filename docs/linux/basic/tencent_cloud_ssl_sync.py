@@ -351,7 +351,10 @@ def download_certificate(certificate_id: str) -> Tuple[str, str]:
     payload = get_tccli_payload(resp)
     cert_pem = payload.get("Certificate")
     key_pem = payload.get("PrivateKey")
-    if cert_pem and key_pem:
+    if (
+        isinstance(cert_pem, str) and cert_pem.strip()
+        and isinstance(key_pem, str) and key_pem.strip()
+    ):
         return cert_pem, key_pem
 
     content = payload.get("Content")
@@ -399,7 +402,7 @@ def extract_certificate_from_download_content(content: str, certificate_id: str)
         )
         return "", ""
 
-    cert_pem = max(cert_candidates, key=lambda item: (item.score, item.cert_count)).text
+    cert_pem = max(cert_candidates, key=lambda item: item.score).text
     key_pem = max(key_candidates, key=lambda item: item.score).text
     return cert_pem, key_pem
 
