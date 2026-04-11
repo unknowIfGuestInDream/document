@@ -530,9 +530,11 @@ def send_certificate_change_notification(
     )
 
 
-def ensure_dependencies() -> None:
+def ensure_dependencies(require_mailx: bool = False) -> None:
     if shutil.which("tccli") is None:
         raise RuntimeError("未找到 tccli，请先安装并配置腾讯云 CLI 凭据")
+    if require_mailx and shutil.which("mailx") is None:
+        raise RuntimeError("未找到 mailx，请先安装并配置发信能力以便发送证书变更通知")
 
 
 def run(
@@ -546,7 +548,7 @@ def run(
         print("已跳过：Nginx 和 CDN 同步均被关闭")
         return 0
 
-    ensure_dependencies()
+    ensure_dependencies(require_mailx=sync_nginx and not dry_run)
 
     cert_cache: Dict[str, Tuple[str, str]] = {}
     certificate_selection: Dict[str, Dict[str, Any]] = {}
