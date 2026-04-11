@@ -40,7 +40,7 @@ python3 /path/to/tencent_cloud_ssl_sync.py --disable-cdn-sync
 python3 /path/to/tencent_cloud_ssl_sync.py --disable-nginx-sync
 ```
 
-`state-dir` 说明：用于存放证书备份（默认 `/var/lib/tencent-ssl-sync`，备份在 `${state-dir}/backup`）。  
+`state-dir` 说明：用于存放证书备份（默认 `/var/lib/tencent-ssl-sync`，备份在 `<state-dir>/backup`）。  
 如果你把脚本放在 `/usr/local/scripts/tencent-ssl-sync`，可显式指定：
 
 ```shell
