@@ -342,7 +342,7 @@ def get_latest_certificate_for_domain(domain: str) -> Dict[str, Any]:
         matched = certificates
 
     def cert_sort_key(cert: Dict[str, Any]) -> Tuple[dt.datetime, dt.datetime, dt.datetime]:
-        """Return a max() key for the newest cert.
+        """Return a tuple for max() comparison to select the newest cert.
 
         Prefer the later expiry time first. If expiry is the same, prefer the one
         inserted later by Tencent Cloud, then fall back to begin time.
@@ -490,7 +490,7 @@ def get_certificate_id_for_domain(certificate_selection: Dict[str, Dict[str, Any
 
 
 def restart_nginx(dry_run: bool = False) -> None:
-    """Validate config, then fully restart nginx when local cert files changed."""
+    """Validate config, then fully restart nginx service."""
     print("[NGINX] 重启服务")
     if dry_run:
         return
