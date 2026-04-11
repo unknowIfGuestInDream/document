@@ -107,7 +107,9 @@ def get_latest_certificate_for_domain(domain: str) -> Dict[str, Any]:
                 search_keys.append(apex_domain)
 
     certificates: List[Dict[str, Any]] = []
+    fallback_certificates: Optional[List[Dict[str, Any]]] = None
     for key in search_keys:
+        # 依次尝试更精确的搜索关键词，命中后直接使用该结果
         certificates = describe_certificates(search_key=key)
         if certificates:
             break
@@ -121,7 +123,8 @@ def get_latest_certificate_for_domain(domain: str) -> Dict[str, Any]:
 
     matched = [cert for cert in certificates if cert_matches_domain(cert, domain) or cert_matches_domain(cert, search_key)]
     if not matched:
-        fallback_certificates = describe_certificates(search_key=None)
+        if fallback_certificates is None:
+            fallback_certificates = describe_certificates(search_key=None)
         matched = [cert for cert in fallback_certificates if cert_matches_domain(cert, domain)]
     if not matched:
         matched = certificates
