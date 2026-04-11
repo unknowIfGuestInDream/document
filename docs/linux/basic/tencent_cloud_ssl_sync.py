@@ -108,6 +108,7 @@ def get_latest_certificate_for_domain(domain: str) -> Dict[str, Any]:
 
     certificates: List[Dict[str, Any]] = []
     fallback_certificates: Optional[List[Dict[str, Any]]] = None
+    used_fallback_match = False
     for key in search_keys:
         # 依次尝试更精确的搜索关键词，命中后直接使用该结果
         certificates = describe_certificates(search_key=key)
@@ -117,12 +118,15 @@ def get_latest_certificate_for_domain(domain: str) -> Dict[str, Any]:
     if not certificates:
         fallback_certificates = describe_certificates(search_key=None)
         certificates = [cert for cert in fallback_certificates if cert_matches_domain(cert, domain)]
+        used_fallback_match = True
 
     if not certificates:
         raise RuntimeError(f"未查询到证书: {domain} (SearchKey={search_key}, Fallback=all-certificates)")
 
-    matched = [cert for cert in certificates if cert_matches_domain(cert, domain) or cert_matches_domain(cert, search_key)]
-    if not matched:
+    matched = certificates if used_fallback_match else [
+        cert for cert in certificates if cert_matches_domain(cert, domain) or cert_matches_domain(cert, search_key)
+    ]
+    if not matched and not used_fallback_match:
         if fallback_certificates is None:
             fallback_certificates = describe_certificates(search_key=None)
         matched = [cert for cert in fallback_certificates if cert_matches_domain(cert, domain)]
