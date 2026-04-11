@@ -4,6 +4,42 @@
 1. [useful-scripts](https://github.com/oldratlee/useful-scripts ':target=_blank')
 2. [doubi](https://github.com/ToyoDAdoubi/doubi ':target=_blank')
 
+## 腾讯云 SSL 证书自动同步（Nginx + CDN）
+脚本路径：`docs/linux/basic/tencent_cloud_ssl_sync.py`
+
+功能：
+- 每次运行时自动检查腾讯云最新证书
+- 如果证书有更新，则替换 `/etc/nginx/cert` 下对应域名证书文件
+- 自动更新 CDN 域名的 HTTPS 托管证书配置
+
+前置条件：
+```shell
+# 1) 安装腾讯云 CLI
+pip3 install tccli
+
+# 2) 配置凭据（按提示输入 SecretId/SecretKey/Region）
+tccli configure
+```
+
+执行方式：
+```shell
+# 建议放到固定目录并赋权
+chmod +x /path/to/tencent_cloud_ssl_sync.py
+python3 /path/to/tencent_cloud_ssl_sync.py
+
+# 仅预览，不执行写入/更新
+python3 /path/to/tencent_cloud_ssl_sync.py --dry-run
+```
+
+每月执行一次（cron）：
+```shell
+crontab -e
+```
+
+```cron
+0 3 1 * * /usr/bin/python3 /path/to/tencent_cloud_ssl_sync.py >> /var/log/tencent-ssl-sync.log 2>&1
+```
+
 ## 自动化部署
 ```shell
 #!/bin/bash
