@@ -441,7 +441,7 @@ def backup_file(path: Path, state_dir: Path) -> None:
 def normalize_pem_text(content: Optional[str]) -> Optional[str]:
     if content is None:
         return None
-    normalized = content.replace("\r\n", "\n").replace("\r", "\n").strip()
+    normalized = "\n".join(content.splitlines()).strip()
     if not normalized:
         return None
     return normalized + "\n"
@@ -458,7 +458,12 @@ def update_nginx_cert_files(
     next_cert = normalize_pem_text(cert_pem)
     next_key = normalize_pem_text(key_pem)
     if next_cert is None or next_key is None:
-        raise RuntimeError(f"{domain} 下载到的证书或私钥内容为空，无法更新本地文件")
+        missing_parts = []
+        if next_cert is None:
+            missing_parts.append("证书")
+        if next_key is None:
+            missing_parts.append("私钥")
+        raise RuntimeError(f"{domain} 下载到的{'和'.join(missing_parts)}内容为空，无法更新本地文件")
 
     changed = current_cert != next_cert or current_key != next_key
     if not changed:
