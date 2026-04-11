@@ -87,23 +87,42 @@ def cert_matches_domain(cert: Dict[str, Any], domain: str) -> bool:
     return False
 
 
+def describe_certificates(search_key: Optional[str] = None, limit: int = 100) -> List[Dict[str, Any]]:
+    params: Dict[str, Any] = {"Limit": limit, "Offset": 0}
+    if search_key:
+        params["SearchKey"] = search_key
+    resp = run_tccli("ssl", "DescribeCertificates", params)
+    certificates = resp.get("Response", {}).get("Certificates", [])
+    return certificates if isinstance(certificates, list) else []
+
+
 def get_latest_certificate_for_domain(domain: str) -> Dict[str, Any]:
     search_key = CERT_QUERY_DOMAIN_OVERRIDES.get(domain, domain)
-    resp = run_tccli(
-        "ssl",
-        "DescribeCertificates",
-        {
-            "SearchKey": search_key,
-            "Limit": 100,
-            "Offset": 0,
-        },
-    )
+    search_keys = [search_key]
+    if search_key == domain:
+        labels = domain.split(".")
+        if len(labels) > 2:
+            apex_domain = ".".join(labels[-2:])
+            if apex_domain and apex_domain not in search_keys:
+                search_keys.append(apex_domain)
 
-    certificates = resp.get("Response", {}).get("Certificates", [])
+    certificates: List[Dict[str, Any]] = []
+    for key in search_keys:
+        certificates = describe_certificates(search_key=key)
+        if certificates:
+            break
+
     if not certificates:
-        raise RuntimeError(f"未查询到证书: {domain} (SearchKey={search_key})")
+        fallback_certificates = describe_certificates(search_key=None)
+        certificates = [cert for cert in fallback_certificates if cert_matches_domain(cert, domain)]
+
+    if not certificates:
+        raise RuntimeError(f"未查询到证书: {domain} (SearchKey={search_key}, Fallback=all-certificates)")
 
     matched = [cert for cert in certificates if cert_matches_domain(cert, domain) or cert_matches_domain(cert, search_key)]
+    if not matched:
+        fallback_certificates = describe_certificates(search_key=None)
+        matched = [cert for cert in fallback_certificates if cert_matches_domain(cert, domain)]
     if not matched:
         matched = certificates
 
