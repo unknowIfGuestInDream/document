@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import argparse
+import base64
 import datetime as dt
+import io
 import json
 import os
 import shutil
@@ -8,6 +10,7 @@ import subprocess
 import sys
 import tempfile
 import traceback
+import zipfile
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
@@ -314,8 +317,68 @@ def download_certificate(certificate_id: str) -> Tuple[str, str]:
     payload = get_tccli_payload(resp)
     cert_pem = payload.get("Certificate")
     key_pem = payload.get("PrivateKey")
-    if not cert_pem or not key_pem:
-        raise RuntimeError(f"下载证书失败或证书不含私钥: {certificate_id}")
+    if cert_pem and key_pem:
+        return cert_pem, key_pem
+
+    content = payload.get("Content")
+    if isinstance(content, str) and content.strip():
+        cert_pem, key_pem = extract_certificate_from_download_content(content, certificate_id)
+        if cert_pem and key_pem:
+            return cert_pem, key_pem
+
+    raise RuntimeError(f"下载证书失败或证书不含私钥: {certificate_id}")
+
+
+def extract_certificate_from_download_content(content: str, certificate_id: str) -> Tuple[str, str]:
+    try:
+        raw_zip = base64.b64decode(content)
+    except Exception as exc:
+        raise RuntimeError(f"下载证书内容不是有效 Base64: {certificate_id}") from exc
+
+    cert_candidates: List[Tuple[int, int, str]] = []
+    key_candidates: List[Tuple[int, str]] = []
+
+    try:
+        with zipfile.ZipFile(io.BytesIO(raw_zip)) as archive:
+            for name in archive.namelist():
+                if name.endswith("/"):
+                    continue
+                try:
+                    text = archive.read(name).decode("utf-8")
+                except UnicodeDecodeError:
+                    continue
+
+                lower_name = name.lower()
+                upper_text = text.upper()
+                if "PRIVATE KEY" in upper_text:
+                    key_score = 0
+                    if "nginx" in lower_name:
+                        key_score += 2
+                    if lower_name.endswith((".key", ".pem")):
+                        key_score += 1
+                    key_candidates.append((key_score, text))
+
+                cert_count = upper_text.count("BEGIN CERTIFICATE")
+                if cert_count > 0:
+                    cert_score = cert_count * 10
+                    if "nginx" in lower_name:
+                        cert_score += 3
+                    if "bundle" in lower_name or "fullchain" in lower_name:
+                        cert_score += 2
+                    if "root" in lower_name or "ca" in lower_name:
+                        cert_score -= 3
+                    cert_candidates.append((cert_score, cert_count, text))
+    except zipfile.BadZipFile as exc:
+        raise RuntimeError(f"下载证书内容不是有效 ZIP: {certificate_id}") from exc
+
+    if not cert_candidates or not key_candidates:
+        debug_log(
+            f"DownloadCertificate ZIP 中未找到完整证书/私钥: certs={len(cert_candidates)}, keys={len(key_candidates)}"
+        )
+        return "", ""
+
+    cert_pem = max(cert_candidates, key=lambda item: (item[0], item[1]))[2]
+    key_pem = max(key_candidates, key=lambda item: item[0])[1]
     return cert_pem, key_pem
 
 
