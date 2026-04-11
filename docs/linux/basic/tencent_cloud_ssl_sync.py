@@ -7,6 +7,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import traceback
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
@@ -108,14 +109,15 @@ def get_latest_certificate_for_domain(domain: str) -> Dict[str, Any]:
         matched = certificates
 
     def cert_sort_key(cert: Dict[str, Any]) -> dt.datetime:
+        parsed_dates: List[dt.datetime] = []
         for field in ("CertBeginTime", "CertEndTime"):
             value = cert.get(field)
             if isinstance(value, str) and value:
                 try:
-                    return parse_time(value)
+                    parsed_dates.append(parse_time(value))
                 except ValueError:
                     continue
-        return dt.datetime.min
+        return max(parsed_dates) if parsed_dates else dt.datetime.min
 
     return max(matched, key=cert_sort_key)
 
@@ -145,7 +147,7 @@ def backup_file(path: Path) -> None:
         return
     backup_root = STATE_DIR / "backup"
     backup_root.mkdir(parents=True, exist_ok=True)
-    timestamp = dt.datetime.now().strftime("%Y%m%d%H%M%S")
+    timestamp = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%d%H%M%SZ")
     backup_path = backup_root / f"{path.name}.{timestamp}.bak"
     shutil.copy2(path, backup_path)
 
@@ -193,6 +195,13 @@ def update_cdn_domain_cert(domain: str, certificate_id: str, dry_run: bool = Fal
     )
 
 
+def get_certificate_id_for_domain(certificate_selection: Dict[str, Dict[str, Any]], domain: str) -> str:
+    cert_id = certificate_selection[domain].get("CertificateId")
+    if not cert_id:
+        raise RuntimeError(f"{domain} 未找到有效 CertificateId")
+    return cert_id
+
+
 def reload_nginx(dry_run: bool = False) -> None:
     print("[NGINX] 重新加载配置")
     if dry_run:
@@ -212,6 +221,7 @@ def run(dry_run: bool = False, skip_nginx_reload: bool = False) -> int:
     cert_cache: Dict[str, Tuple[str, str]] = {}
     certificate_selection: Dict[str, Dict[str, Any]] = {}
 
+    # 保留配置顺序并去重，确保日志输出顺序稳定
     all_domains = list(dict.fromkeys(NGINX_CERT_DOMAINS + CDN_DOMAINS))
 
     for domain in all_domains:
@@ -223,7 +233,7 @@ def run(dry_run: bool = False, skip_nginx_reload: bool = False) -> int:
 
     nginx_changed = False
     for domain in NGINX_CERT_DOMAINS:
-        cert_id = certificate_selection[domain]["CertificateId"]
+        cert_id = get_certificate_id_for_domain(certificate_selection, domain)
         if cert_id not in cert_cache:
             cert_cache[cert_id] = download_certificate(cert_id)
         cert_pem, key_pem = cert_cache[cert_id]
@@ -231,7 +241,7 @@ def run(dry_run: bool = False, skip_nginx_reload: bool = False) -> int:
         nginx_changed = nginx_changed or changed
 
     for domain in CDN_DOMAINS:
-        cert_id = certificate_selection[domain]["CertificateId"]
+        cert_id = get_certificate_id_for_domain(certificate_selection, domain)
         update_cdn_domain_cert(domain, cert_id, dry_run=dry_run)
 
     if nginx_changed and not skip_nginx_reload:
@@ -254,6 +264,7 @@ def main(argv: Iterable[str]) -> int:
         return run(dry_run=args.dry_run, skip_nginx_reload=args.skip_nginx_reload)
     except Exception as exc:
         print(f"执行失败: {exc}", file=sys.stderr)
+        traceback.print_exc()
         return 1
 
 
