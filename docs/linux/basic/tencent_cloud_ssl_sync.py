@@ -64,36 +64,76 @@ def parse_time(value: str) -> dt.datetime:
 
 
 def extract_domains_from_cert(cert: Dict[str, Any]) -> List[str]:
+    def add_domain_value(values: List[str], raw: Any) -> None:
+        if not isinstance(raw, str):
+            return
+        for part in raw.replace("\n", ",").split(","):
+            item = part.strip().lower()
+            if not item:
+                continue
+            if item.startswith("dns:"):
+                item = item[4:].strip()
+            if item:
+                values.append(item)
+
     domains: List[str] = []
     primary = cert.get("Domain")
-    if isinstance(primary, str) and primary:
-        domains.append(primary.strip())
+    add_domain_value(domains, primary)
 
     san = cert.get("SubjectAltName")
     if isinstance(san, list):
-        domains.extend([item.strip() for item in san if isinstance(item, str) and item.strip()])
+        for item in san:
+            if isinstance(item, dict):
+                for key in ("DNSName", "Domain", "Value"):
+                    add_domain_value(domains, item.get(key))
+            else:
+                add_domain_value(domains, item)
     elif isinstance(san, str) and san.strip():
-        domains.extend([part.strip() for part in san.split(",") if part.strip()])
+        add_domain_value(domains, san)
 
     return list(dict.fromkeys(domains))
 
 
 def cert_matches_domain(cert: Dict[str, Any], domain: str) -> bool:
+    target_domain = domain.strip().lower()
     for cert_domain in extract_domains_from_cert(cert):
-        if cert_domain == domain:
+        if cert_domain == target_domain:
             return True
-        if cert_domain.startswith("*.") and domain.endswith(cert_domain[1:]):
+        if cert_domain.startswith("*.") and target_domain.endswith(cert_domain[1:]):
             return True
     return False
 
 
 def describe_certificates(search_key: Optional[str] = None, limit: int = 100) -> List[Dict[str, Any]]:
-    params: Dict[str, Any] = {"Limit": limit, "Offset": 0}
-    if search_key:
-        params["SearchKey"] = search_key
-    resp = run_tccli("ssl", "DescribeCertificates", params)
-    certificates = resp.get("Response", {}).get("Certificates", [])
-    return certificates if isinstance(certificates, list) else []
+    all_certificates: List[Dict[str, Any]] = []
+    offset = 0
+    total_count: Optional[int] = None
+
+    while True:
+        params: Dict[str, Any] = {"Limit": limit, "Offset": offset}
+        if search_key:
+            params["SearchKey"] = search_key
+
+        resp = run_tccli("ssl", "DescribeCertificates", params)
+        payload = resp.get("Response", {})
+        certificates = payload.get("Certificates", [])
+        if not isinstance(certificates, list):
+            break
+        all_certificates.extend(certificates)
+
+        if total_count is None:
+            count = payload.get("TotalCount")
+            if isinstance(count, int) and count >= 0:
+                total_count = count
+        if not certificates:
+            break
+        if len(certificates) < limit:
+            break
+        if total_count is not None and len(all_certificates) >= total_count:
+            break
+        offset += limit
+
+    return all_certificates
 
 
 def get_latest_certificate_for_domain(domain: str) -> Dict[str, Any]:
