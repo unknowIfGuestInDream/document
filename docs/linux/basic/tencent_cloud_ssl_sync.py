@@ -438,16 +438,27 @@ def backup_file(path: Path, state_dir: Path) -> None:
     shutil.copy2(path, backup_path)
 
 
+def normalize_pem_text(content: Optional[str]) -> Optional[str]:
+    if content is None:
+        return None
+    normalized = content.replace("\r\n", "\n").replace("\r", "\n").strip()
+    if not normalized:
+        return ""
+    return normalized + "\n"
+
+
 def update_nginx_cert_files(
     domain: str, cert_pem: str, key_pem: str, state_dir: Path, dry_run: bool = False
 ) -> bool:
     cert_file = CERT_DIR / f"{domain}_bundle.crt"
     key_file = CERT_DIR / f"{domain}.key"
 
-    current_cert = cert_file.read_text(encoding="utf-8") if cert_file.exists() else None
-    current_key = key_file.read_text(encoding="utf-8") if key_file.exists() else None
+    current_cert = normalize_pem_text(cert_file.read_text(encoding="utf-8")) if cert_file.exists() else None
+    current_key = normalize_pem_text(key_file.read_text(encoding="utf-8")) if key_file.exists() else None
+    next_cert = normalize_pem_text(cert_pem)
+    next_key = normalize_pem_text(key_pem)
 
-    changed = current_cert != cert_pem or current_key != key_pem
+    changed = current_cert != next_cert or current_key != next_key
     if not changed:
         print(f"[NGINX] {domain}: 本地证书已是最新")
         return False
@@ -458,8 +469,8 @@ def update_nginx_cert_files(
 
     backup_file(cert_file, state_dir)
     backup_file(key_file, state_dir)
-    write_file_atomic(cert_file, cert_pem, 0o644)
-    write_file_atomic(key_file, key_pem, 0o600)
+    write_file_atomic(cert_file, next_cert or "", 0o644)
+    write_file_atomic(key_file, next_key or "", 0o600)
     return True
 
 
