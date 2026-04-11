@@ -49,6 +49,13 @@ def debug_log(msg: str) -> None:
 TCCLI_REGION: Optional[str] = None
 
 
+def get_tccli_payload(parsed: Dict[str, Any]) -> Dict[str, Any]:
+    response = parsed.get("Response")
+    if isinstance(response, dict):
+        return response
+    return parsed
+
+
 def run_tccli(service: str, action: str, params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     cmd = ["tccli", service, action, "--output", "json"]
     if TCCLI_REGION:
@@ -75,9 +82,9 @@ def run_tccli(service: str, action: str, params: Optional[Dict[str, Any]] = None
 
     debug_log(f"tccli 原始响应: {json.dumps(parsed, ensure_ascii=False)[:2000]}")
 
-    # 检测 API 错误响应
-    resp = parsed.get("Response", {})
-    error = resp.get("Error")
+    # 兼容 tccli 直接返回顶层业务字段或嵌套在 Response 下两种格式
+    payload = get_tccli_payload(parsed)
+    error = payload.get("Error")
     if error:
         raise RuntimeError(
             f"tccli API 错误: Code={error.get('Code')}, Message={error.get('Message')}"
@@ -159,7 +166,7 @@ def describe_certificates(search_key: Optional[str] = None, limit: int = 100) ->
             params["SearchKey"] = search_key
 
         resp = run_tccli("ssl", "DescribeCertificates", params)
-        payload = resp.get("Response", {})
+        payload = get_tccli_payload(resp)
         # 兼容 Certificates 和 CertificateSet 两种响应字段名
         certificates = payload.get("Certificates") if "Certificates" in payload else payload.get("CertificateSet", [])
         if not isinstance(certificates, list):
@@ -185,7 +192,7 @@ def describe_certificates(search_key: Optional[str] = None, limit: int = 100) ->
 
 def describe_certificate_detail(certificate_id: str) -> Dict[str, Any]:
     resp = run_tccli("ssl", "DescribeCertificateDetail", {"CertificateId": certificate_id})
-    return resp.get("Response", {})
+    return get_tccli_payload(resp)
 
 
 def get_latest_certificate_for_domain(domain: str) -> Dict[str, Any]:
@@ -298,7 +305,7 @@ def get_latest_certificate_for_domain(domain: str) -> Dict[str, Any]:
 
 def download_certificate(certificate_id: str) -> Tuple[str, str]:
     resp = run_tccli("ssl", "DownloadCertificate", {"CertificateId": certificate_id})
-    payload = resp.get("Response", {})
+    payload = get_tccli_payload(resp)
     cert_pem = payload.get("Certificate")
     key_pem = payload.get("PrivateKey")
     if not cert_pem or not key_pem:
