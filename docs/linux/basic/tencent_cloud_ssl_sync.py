@@ -140,7 +140,7 @@ def parse_time(value: str) -> dt.datetime:
     return dt.datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
 
 
-def parse_time_or_min(value: Any) -> dt.datetime:
+def parse_time_or_datetime_min(value: Any) -> dt.datetime:
     if isinstance(value, str) and value:
         try:
             return parse_time(value)
@@ -344,13 +344,13 @@ def get_latest_certificate_for_domain(domain: str) -> Dict[str, Any]:
     def cert_sort_key(cert: Dict[str, Any]) -> Tuple[dt.datetime, dt.datetime, dt.datetime]:
         """Return a max() key for the newest cert.
 
-        Prefer the longer validity first. If expiry is the same, prefer the one
+        Prefer the later expiry time first. If expiry is the same, prefer the one
         inserted later by Tencent Cloud, then fall back to begin time.
         """
         return (
-            parse_time_or_min(cert.get("CertEndTime")),
-            parse_time_or_min(cert.get("InsertTime")),
-            parse_time_or_min(cert.get("CertBeginTime")),
+            parse_time_or_datetime_min(cert.get("CertEndTime")),
+            parse_time_or_datetime_min(cert.get("InsertTime")),
+            parse_time_or_datetime_min(cert.get("CertBeginTime")),
         )
 
     return max(matched, key=cert_sort_key)
