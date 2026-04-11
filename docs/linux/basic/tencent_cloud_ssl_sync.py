@@ -17,6 +17,7 @@ from typing import Any, Dict, Iterable, List, NamedTuple, Optional, Tuple
 
 CERT_DIR = Path("/etc/nginx/cert")
 DEFAULT_STATE_DIR = Path("/var/lib/tencent-ssl-sync")
+MAILX_NOTIFICATION_TO = "liang.tang.cx@gmail.com"
 
 NGINX_CERT_DOMAINS = [
     "docs.tlcsdm.com",
@@ -498,6 +499,37 @@ def restart_nginx(dry_run: bool = False) -> None:
     subprocess.run(["systemctl", "restart", "nginx"], check=True)
 
 
+def send_certificate_change_notification(
+    changed_domains: List[str],
+    certificate_selection: Dict[str, Dict[str, Any]],
+    dry_run: bool = False,
+) -> None:
+    print(f"[MAILX] 发送证书变更通知 -> {MAILX_NOTIFICATION_TO}")
+    if dry_run:
+        return
+    if shutil.which("mailx") is None:
+        raise RuntimeError("本地证书已更新，但未找到 mailx，无法发送变更通知邮件")
+
+    lines = [
+        "腾讯云 SSL 同步检测到本地证书已更新。",
+        "",
+        "变更域名：",
+    ]
+    for domain in changed_domains:
+        cert = certificate_selection.get(domain, {})
+        lines.append(
+            f"- {domain}: {cert.get('CertificateId', '')} (过期时间: {cert.get('CertEndTime', 'unknown')})"
+        )
+    body = "\n".join(lines) + "\n"
+    subject = f"[tencent-ssl-sync] 本地证书已更新 ({len(changed_domains)} 个域名)"
+    subprocess.run(
+        ["mailx", "-s", subject, MAILX_NOTIFICATION_TO],
+        input=body,
+        text=True,
+        check=True,
+    )
+
+
 def ensure_dependencies() -> None:
     if shutil.which("tccli") is None:
         raise RuntimeError("未找到 tccli，请先安装并配置腾讯云 CLI 凭据")
@@ -535,6 +567,7 @@ def run(
         print(f"[SSL] {domain}: 选中证书 {cert_id} (过期时间: {end_time})")
 
     nginx_changed = False
+    changed_nginx_domains: List[str] = []
     if sync_nginx:
         for domain in NGINX_CERT_DOMAINS:
             cert_id = get_certificate_id_for_domain(certificate_selection, domain)
@@ -543,6 +576,8 @@ def run(
             cert_pem, key_pem = cert_cache[cert_id]
             changed = update_nginx_cert_files(domain, cert_pem, key_pem, state_dir=state_dir, dry_run=dry_run)
             nginx_changed = nginx_changed or changed
+            if changed:
+                changed_nginx_domains.append(domain)
 
     if sync_cdn:
         for domain in CDN_DOMAINS:
@@ -551,6 +586,12 @@ def run(
 
     if nginx_changed and not skip_nginx_reload:
         restart_nginx(dry_run=dry_run)
+    if nginx_changed:
+        send_certificate_change_notification(
+            changed_domains=changed_nginx_domains,
+            certificate_selection=certificate_selection,
+            dry_run=dry_run,
+        )
 
     print("完成：证书检查与同步流程结束")
     return 0
