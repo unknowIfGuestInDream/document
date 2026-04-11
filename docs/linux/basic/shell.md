@@ -42,6 +42,9 @@ python3 /path/to/tencent_cloud_ssl_sync.py --disable-cdn-sync
 
 # 只更新 CDN HTTPS 配置，不更新 /etc/nginx/cert
 python3 /path/to/tencent_cloud_ssl_sync.py --disable-nginx-sync
+
+# 查看详细调试日志（含证书列表、域名匹配过程）
+python3 /path/to/tencent_cloud_ssl_sync.py --debug --dry-run
 ```
 
 `state-dir` 说明：用于存放证书备份（默认 `/var/lib/tencent-ssl-sync`，备份在 `<state-dir>/backup`）。  

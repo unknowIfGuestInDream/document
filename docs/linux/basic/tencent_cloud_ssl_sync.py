@@ -38,6 +38,13 @@ CERT_QUERY_DOMAIN_OVERRIDES = {
     "www.tlcsdm.com": "tlcsdm.com",
 }
 
+DEBUG = False
+
+
+def debug_log(msg: str) -> None:
+    if DEBUG:
+        print(f"[DEBUG] {msg}")
+
 
 def run_tccli(service: str, action: str, params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     cmd = ["tccli", service, action, "--output", "json"]
@@ -47,6 +54,7 @@ def run_tccli(service: str, action: str, params: Optional[Dict[str, Any]] = None
                 value = json.dumps(value, ensure_ascii=False)
             cmd.extend([f"--{key}", str(value)])
 
+    debug_log(f"tccli 调用: {' '.join(cmd)}")
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
         raise RuntimeError(
@@ -61,6 +69,13 @@ def run_tccli(service: str, action: str, params: Optional[Dict[str, Any]] = None
 
 def parse_time(value: str) -> dt.datetime:
     return dt.datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
+
+
+def _apex_domain(domain: str) -> Optional[str]:
+    labels = domain.strip().lower().split(".")
+    if len(labels) > 2:
+        return ".".join(labels[-2:])
+    return None
 
 
 def extract_domains_from_cert(cert: Dict[str, Any]) -> List[str]:
@@ -80,16 +95,26 @@ def extract_domains_from_cert(cert: Dict[str, Any]) -> List[str]:
     primary = cert.get("Domain")
     add_domain_value(domains, primary)
 
-    san = cert.get("SubjectAltName")
-    if isinstance(san, list):
-        for item in san:
-            if isinstance(item, dict):
-                for key in ("DNSName", "Domain", "Value"):
-                    add_domain_value(domains, item.get(key))
-            else:
-                add_domain_value(domains, item)
-    elif isinstance(san, str) and san.strip():
-        add_domain_value(domains, san)
+    # 兼容 SubjectAltName 和 CertSANs 两种字段名
+    for san_field in ("SubjectAltName", "CertSANs"):
+        san = cert.get(san_field)
+        if isinstance(san, list):
+            for item in san:
+                if isinstance(item, dict):
+                    for key in ("DNSName", "Domain", "Value"):
+                        add_domain_value(domains, item.get(key))
+                else:
+                    add_domain_value(domains, item)
+        elif isinstance(san, str) and san.strip():
+            add_domain_value(domains, san)
+
+    # 如果证书标记为泛域名但域名列表中尚未包含通配符形式，自动补充
+    if cert.get("IsWildcard"):
+        primary_lower = (primary or "").strip().lower()
+        if primary_lower and not primary_lower.startswith("*."):
+            wildcard = "*." + primary_lower
+            if wildcard not in domains:
+                domains.append(wildcard)
 
     return list(dict.fromkeys(domains))
 
@@ -133,43 +158,94 @@ def describe_certificates(search_key: Optional[str] = None, limit: int = 100) ->
             break
         offset += limit
 
+    debug_log(f"describe_certificates(SearchKey={search_key!r}): 返回 {len(all_certificates)} 条")
     return all_certificates
+
+
+def describe_certificate_detail(certificate_id: str) -> Dict[str, Any]:
+    resp = run_tccli("ssl", "DescribeCertificateDetail", {"CertificateId": certificate_id})
+    return resp.get("Response", {})
 
 
 def get_latest_certificate_for_domain(domain: str) -> Dict[str, Any]:
     search_key = CERT_QUERY_DOMAIN_OVERRIDES.get(domain, domain)
-    search_keys = [search_key]
+    search_keys: List[str] = [search_key]
     if search_key == domain:
-        labels = domain.split(".")
-        if len(labels) > 2:
-            apex_domain = ".".join(labels[-2:])
-            if apex_domain and apex_domain not in search_keys:
-                search_keys.append(apex_domain)
+        apex = _apex_domain(domain)
+        if apex and apex not in search_keys:
+            search_keys.append(apex)
+            # 泛域名证书可能仅以 *.apex 为 Domain，尝试该关键词
+            wildcard_key = "*." + apex
+            if wildcard_key not in search_keys:
+                search_keys.append(wildcard_key)
 
     certificates: List[Dict[str, Any]] = []
-    fallback_certificates: Optional[List[Dict[str, Any]]] = None
+    all_certificates: Optional[List[Dict[str, Any]]] = None
     used_fallback_match = False
+
+    # 阶段 1：按 SearchKey 依次查询
     for key in search_keys:
-        # 依次尝试更精确的搜索关键词，命中后直接使用该结果
         certificates = describe_certificates(search_key=key)
         if certificates:
+            debug_log(f"SearchKey={key!r} 命中 {len(certificates)} 条")
             break
 
+    # 阶段 2：全量拉取后按域名匹配
     if not certificates:
-        fallback_certificates = describe_certificates(search_key=None)
-        certificates = [cert for cert in fallback_certificates if cert_matches_domain(cert, domain)]
+        all_certificates = describe_certificates(search_key=None)
+        debug_log(f"全量证书共 {len(all_certificates)} 条，按域名匹配 {domain}")
+        if DEBUG:
+            for c in all_certificates:
+                debug_log(
+                    f"  cert={c.get('CertificateId')} Domain={c.get('Domain')} "
+                    f"SAN={c.get('SubjectAltName')} CertSANs={c.get('CertSANs')} "
+                    f"IsWildcard={c.get('IsWildcard')}"
+                )
+        certificates = [cert for cert in all_certificates if cert_matches_domain(cert, domain)]
+        used_fallback_match = True
+
+    # 阶段 3：全量证书中取 apex 域名候选，逐个查详情获取完整 SAN 再匹配
+    if not certificates:
+        apex = _apex_domain(domain) or domain
+        candidates = [
+            c for c in (all_certificates or [])
+            if (c.get("Domain", "").strip().lower() in (apex, "*." + apex))
+            and c.get("CertificateId")
+        ]
+        debug_log(f"候选 apex 证书 {len(candidates)} 条，逐个查询详情")
+        for c in candidates[:10]:
+            try:
+                detail = describe_certificate_detail(c["CertificateId"])
+                debug_log(
+                    f"  detail cert={detail.get('CertificateId')} "
+                    f"Domain={detail.get('Domain')} SAN={detail.get('SubjectAltName')} "
+                    f"CertSANs={detail.get('CertSANs')}"
+                )
+                if cert_matches_domain(detail, domain):
+                    certificates.append(detail)
+            except Exception:
+                debug_log(f"  查询详情失败: {c.get('CertificateId')}")
         used_fallback_match = True
 
     if not certificates:
-        raise RuntimeError(f"未查询到证书: {domain} (SearchKey={search_key}, Fallback=all-certificates)")
+        total = len(all_certificates) if all_certificates else 0
+        sample_domains = sorted({
+            c.get("Domain", "?") for c in (all_certificates or [])
+        })[:20]
+        raise RuntimeError(
+            f"未查询到证书: {domain} (SearchKeys={search_keys}, "
+            f"全量证书={total}, 域名样本={sample_domains})\n"
+            f"提示: 请用 --debug 运行查看完整证书列表"
+        )
 
+    # 从候选中精确匹配目标域名
     matched = certificates if used_fallback_match else [
         cert for cert in certificates if cert_matches_domain(cert, domain) or cert_matches_domain(cert, search_key)
     ]
     if not matched and not used_fallback_match:
-        if fallback_certificates is None:
-            fallback_certificates = describe_certificates(search_key=None)
-        matched = [cert for cert in fallback_certificates if cert_matches_domain(cert, domain)]
+        if all_certificates is None:
+            all_certificates = describe_certificates(search_key=None)
+        matched = [cert for cert in all_certificates if cert_matches_domain(cert, domain)]
     if not matched:
         matched = certificates
 
@@ -341,6 +417,7 @@ def parse_args(argv: Iterable[str]) -> argparse.Namespace:
     parser.add_argument("--skip-nginx-reload", action="store_true", help="更新证书后不执行 nginx reload")
     parser.add_argument("--disable-nginx-sync", action="store_true", help="跳过 /etc/nginx/cert 本地证书同步")
     parser.add_argument("--disable-cdn-sync", action="store_true", help="跳过 CDN HTTPS 托管证书更新")
+    parser.add_argument("--debug", action="store_true", help="输出详细调试日志（证书列表、域名匹配过程等）")
     parser.add_argument(
         "--state-dir",
         default=os.getenv("TENCENT_SSL_SYNC_STATE_DIR", str(DEFAULT_STATE_DIR)),
@@ -350,7 +427,9 @@ def parse_args(argv: Iterable[str]) -> argparse.Namespace:
 
 
 def main(argv: Iterable[str]) -> int:
+    global DEBUG
     args = parse_args(argv)
+    DEBUG = args.debug
     try:
         return run(
             dry_run=args.dry_run,
