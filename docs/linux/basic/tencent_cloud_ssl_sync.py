@@ -50,6 +50,7 @@ TCCLI_REGION: Optional[str] = None
 
 
 def get_tccli_payload(parsed: Dict[str, Any]) -> Dict[str, Any]:
+    """Return tccli business payload for both nested and top-level JSON shapes."""
     response = parsed.get("Response")
     if isinstance(response, dict):
         return response
