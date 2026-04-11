@@ -213,6 +213,7 @@ def get_latest_certificate_for_domain(domain: str) -> Dict[str, Any]:
             and c.get("CertificateId")
         ]
         debug_log(f"候选 apex 证书 {len(candidates)} 条，逐个查询详情")
+        # 限制详情查询数量以避免大量 API 调用
         for c in candidates[:10]:
             try:
                 detail = describe_certificate_detail(c["CertificateId"])
@@ -223,8 +224,8 @@ def get_latest_certificate_for_domain(domain: str) -> Dict[str, Any]:
                 )
                 if cert_matches_domain(detail, domain):
                     certificates.append(detail)
-            except Exception:
-                debug_log(f"  查询详情失败: {c.get('CertificateId')}")
+            except Exception as exc:
+                debug_log(f"  查询详情失败: {c.get('CertificateId')}: {exc}")
         used_fallback_match = True
 
     if not certificates:
