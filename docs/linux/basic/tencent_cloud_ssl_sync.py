@@ -502,6 +502,7 @@ def restart_nginx(dry_run: bool = False) -> None:
 def send_certificate_change_notification(
     changed_domains: List[str],
     certificate_selection: Dict[str, Dict[str, Any]],
+    nginx_restarted: bool,
     dry_run: bool = False,
 ) -> None:
     action = "模拟发送证书变更通知" if dry_run else "发送证书变更通知"
@@ -511,6 +512,8 @@ def send_certificate_change_notification(
 
     lines = [
         "腾讯云 SSL 同步检测到本地证书已更新。",
+        "",
+        f"Nginx 处理：{'已执行重启' if nginx_restarted else '未重启（本次跳过）'}",
         "",
         "变更域名：",
     ]
@@ -585,12 +588,15 @@ def run(
             cert_id = get_certificate_id_for_domain(certificate_selection, domain)
             update_cdn_domain_cert(domain, cert_id, dry_run=dry_run)
 
+    nginx_restarted = False
     if nginx_changed and not skip_nginx_reload:
         restart_nginx(dry_run=dry_run)
+        nginx_restarted = True
     if nginx_changed:
         send_certificate_change_notification(
             changed_domains=changed_nginx_domains,
             certificate_selection=certificate_selection,
+            nginx_restarted=nginx_restarted,
             dry_run=dry_run,
         )
 
