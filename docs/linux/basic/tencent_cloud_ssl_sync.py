@@ -33,7 +33,7 @@ CDN_DOMAINS = [
     "resume.tlcsdm.com",
     "javafxtool.tlcsdm.com",
     "file.tlcsdm.com",
-    "blog.tlcsdm.com",
+    "intro.tlcsdm.com",
     "www.tlcsdm.com",
     "tlcsdm.com",
 ]

@@ -11,5 +11,5 @@
  * [日语](/japanese/)
  * [Javafx](/javafx/)
 
-* [🐮🐮 TangLiang's Blog](https://blog.tlcsdm.com  ':target=_blank')
+* [🐮🐮 TangLiang's Blog](https://intro.tlcsdm.com  ':target=_blank')
 * [❤️❤️ Gitee](https://gitee.com/unknowIfGuestInDream  ':target=_blank') 

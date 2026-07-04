@@ -20,6 +20,6 @@ springBoot学习教程涵盖了SpringBoot 2.3.1、Elasticsearch 7.6.2、RabbitMQ
 | Lombok          | 1.18.12 | 简化对象封装工具 |
 
 ## 项目地址
-- 博客地址：[https://blog.tlcsdm.com](https://blog.tlcsdm.com ':target=_blank')
+- 博客地址：[https://intro.tlcsdm.com](https://intro.tlcsdm.com ':target=_blank')
 - github地址：[https://github.com/unknowIfGuestInDream](https://github.com/unknowIfGuestInDream ':target=_blank')
 - 码云地址：[https://gitee.com/unknowIfGuestInDream](https://gitee.com/unknowIfGuestInDream ':target=_blank')

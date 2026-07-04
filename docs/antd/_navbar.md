@@ -12,5 +12,5 @@
  * [Javafx](/javafx/)
  * [Eclipse 开发](/eclipse/)
 
-* [🐮🐮 TangLiang's Blog](https://blog.tlcsdm.com)
+* [🐮🐮 TangLiang's Blog](https://intro.tlcsdm.com)
 * [❤️❤️ Gitee](https://gitee.com/unknowIfGuestInDream)
