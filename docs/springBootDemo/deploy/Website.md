@@ -19,3 +19,4 @@
 [正则可视化](https://goldtools.cn/regexp ':target=_blank')  
 [测试浏览器支持项](https://html5test.teamdev.com/ ':target=_blank')  
 [AI创作图片](https://creator.nightcafe.studio/ ':target=_blank')  
+[图片压缩工具](https://docsmall.com/image-compress ':target=_blank')  
