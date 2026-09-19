@@ -14,6 +14,9 @@ on:
       - '.github/scripts/check_docs_links.py'
       - '.github/workflows/docs-check.yml'
 
+permissions:
+  contents: read
+
 jobs:
   local-link-check:
     name: Check Docsify links
