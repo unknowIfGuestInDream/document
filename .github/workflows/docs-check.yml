@@ -1,0 +1,68 @@
+name: Docs Check
+
+on:
+  pull_request:
+    branches: [ master ]
+    paths:
+      - 'docs/**/*.md'
+      - '.github/scripts/check_docs_links.py'
+      - '.github/workflows/docs-check.yml'
+  push:
+    branches-ignore: [ master ]
+    paths:
+      - 'docs/**/*.md'
+      - '.github/scripts/check_docs_links.py'
+      - '.github/workflows/docs-check.yml'
+
+jobs:
+  local-link-check:
+    name: Check Docsify links
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Validate checker script
+        run: python -m py_compile .github/scripts/check_docs_links.py
+
+      - name: Collect changed markdown files
+        id: changed-files
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            base_sha="${{ github.event.pull_request.base.sha }}"
+            head_sha="${{ github.event.pull_request.head.sha }}"
+          else
+            base_sha="${{ github.event.before }}"
+            head_sha="${{ github.sha }}"
+          fi
+
+          if [[ -z "$base_sha" || "$base_sha" =~ ^0+$ ]]; then
+            mapfile -t changed_markdown_files < <(find docs -type f -name '*.md' | sort)
+          else
+            mapfile -t changed_markdown_files < <(git diff --name-only "$base_sha" "$head_sha" | grep -E '^docs/.*\.md$' || true)
+          fi
+
+          if [[ ${#changed_markdown_files[@]} -eq 0 ]]; then
+            echo "has_files=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          printf '%s\n' "${changed_markdown_files[@]}" > changed-doc-files.txt
+          echo "has_files=true" >> "$GITHUB_OUTPUT"
+
+      - name: Run Docsify link check
+        if: steps.changed-files.outputs.has_files == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t changed_markdown_files < changed-doc-files.txt
+          python .github/scripts/check_docs_links.py "${changed_markdown_files[@]}"
