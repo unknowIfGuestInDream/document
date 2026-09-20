@@ -57,11 +57,13 @@ def strip_code_fences(lines: Iterable[str]) -> Iterator[tuple[int, str]]:
 
 
 def normalize_destination(raw_destination: str) -> str:
-    destination = raw_destination.strip().strip("<>")
+    destination = raw_destination.strip()
     if not destination:
         return destination
-    if any(char.isspace() for char in destination):
-        destination = destination.split()[0]
+    if destination.startswith("<"):
+        destination = destination[1:].split(">", 1)[0]
+    else:
+        destination = destination.split(maxsplit=1)[0]
     return destination
 
 
