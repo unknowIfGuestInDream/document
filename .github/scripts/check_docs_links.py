@@ -112,7 +112,7 @@ def find_problems(markdown_file: Path) -> list[Problem]:
                 continue
 
             candidates = resolve_target(markdown_file, destination)
-            if any(candidate.exists() for candidate in candidates):
+            if any(candidate.is_file() for candidate in candidates):
                 continue
 
             preferred = candidates[1] if len(candidates) > 1 else candidates[0]
