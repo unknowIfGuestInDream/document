@@ -69,7 +69,7 @@ def normalize_destination(raw_destination: str) -> str:
 
 def is_external_link(destination: str) -> bool:
     lowered = destination.lower()
-    return lowered.startswith(("http://", "https://", "mailto:", "tel:", "javascript:"))
+    return lowered.startswith(("//", "http://", "https://", "mailto:", "tel:", "javascript:", "data:"))
 
 
 def resolve_target(current_file: Path, destination: str) -> list[Path]:
